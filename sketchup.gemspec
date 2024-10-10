@@ -19,6 +19,6 @@ Gem::Specification.new do |spec|
   spec.extensions    = ['ext/extconf.rb']
   spec.required_ruby_version = '>= 2.5'
 
-  spec.add_development_dependency 'bundler', '~> 2.2.16'
+  spec.add_development_dependency 'bundler', '~> 2.4.10'
   spec.add_development_dependency 'rake', '~> 13.0'
 end
