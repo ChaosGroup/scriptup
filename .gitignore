@@ -3,4 +3,5 @@ sketchup-sdk-*
 tmp
 *.o
 *.bundle
+*.gem
 Makefile

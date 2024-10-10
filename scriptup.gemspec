@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = 'scriptup'
-  spec.version       = '2024.0.0'
+  spec.version       = ENV['GITHUB_REF']&.then{ |ref| ref[/^v\d+\.\d+\.\d+$/] }&.delete('v') || '0.0.0'
   spec.authors       = ['Noel Warren']
   spec.email         = ['noel.warren@chaos.com']
   spec.summary       = 'Ruby bindings for the SketchUp C API'
