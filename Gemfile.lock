@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    scriptup (2024.0.0)
+    scriptup (0.0.0)
 
 GEM
   remote: https://rubygems.org/
