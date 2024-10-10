@@ -28,7 +28,7 @@ jobs:
 
     - name: Build gem
       run: |
-        bundler exec download
+        bundler exec rake download
         gem build scriptup.gemspec
 
     - name: Publish gem to RubyGems
