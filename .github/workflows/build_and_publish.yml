@@ -21,8 +21,14 @@ jobs:
       with:
         ruby-version: '2.7'  # Updated Ruby version
 
+    - name: Install dependencies
+      run: |
+        gem install bundler -v 2.4.22
+        bundle install
+
     - name: Build gem
       run: |
+        bundler exec download
         gem build scriptup.gemspec
 
     - name: Publish gem to RubyGems
