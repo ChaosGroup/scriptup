@@ -1,9 +1,9 @@
 name: Build and Publish Ruby Gem
 
 on:
-  push:
-    tags:
-      - 'v*'  # This triggers on tags that start with 'v'
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
