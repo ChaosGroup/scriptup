@@ -1,0 +1,32 @@
+name: Build and Publish Ruby Gem
+
+on:
+  push:
+    tags:
+      - 'v*'  # This triggers on tags that start with 'v'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '2.7'  # Updated Ruby version
+
+    - name: Build gem
+      run: |
+        gem build scriptup.gemspec
+
+    - name: Publish gem to RubyGems
+      env:
+        RUBYGEMS_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
+      run: |
+        gem push scriptup-*.gem
