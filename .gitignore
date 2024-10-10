@@ -1,0 +1,6 @@
+.DS_Store
+sketchup-sdk-*
+tmp
+*.o
+*.bundle
+Makefile

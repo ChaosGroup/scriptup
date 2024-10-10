@@ -1,0 +1,30 @@
+PATH
+  remote: .
+  specs:
+    scriptup (2024.0.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    minitest (5.23.1)
+    rake (13.2.1)
+    rake-compiler (1.2.7)
+      rake
+    rubyzip (2.3.2)
+
+PLATFORMS
+  arm64-darwin-23
+
+DEPENDENCIES
+  bundler (~> 2.4.10)
+  minitest
+  rake
+  rake-compiler
+  rubyzip (~> 2.3)
+  scriptup!
+
+RUBY VERSION
+   ruby 2.7.8p225
+
+BUNDLED WITH
+   2.4.10
