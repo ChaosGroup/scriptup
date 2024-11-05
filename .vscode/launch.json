@@ -19,7 +19,7 @@
             "environment": [],
             "externalConsole": false,
             "MIMode": "lldb",
-            "preLaunchTask": "Compile extension homebrew ruby@2.7"
+            "preLaunchTask": "Compile extension homebrew ruby@3.2"
         },
         {
             "name": "(lldb) homebrew ruby@2.7",
