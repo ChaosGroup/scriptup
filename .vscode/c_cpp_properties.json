@@ -4,10 +4,12 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/ext",
+                "${workspaceFolder}/sketchup-sdk-mac/headers",
                 "/opt/homebrew/opt/ruby@3.2/include/ruby-3.2.0",
                 "/opt/homebrew/opt/ruby@3.2/include/ruby-3.2.0/arm64-darwin*",
                 "/opt/homebrew/opt/ruby@2.7/include/ruby-2.7.0",
                 "/opt/homebrew/opt/ruby@2.7/include/ruby-2.7.0/arm64-darwin*"
+                
             ],
             "defines": [],
             "macFrameworkPath": [
