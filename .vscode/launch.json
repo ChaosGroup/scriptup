@@ -5,6 +5,23 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "(lldb) homebrew ruby@3.2",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/opt/homebrew/opt/ruby@3.2/bin/ruby",
+            "args": [
+                "-Ilib",
+                "-rsketchup",
+                "playground.rb"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "preLaunchTask": "Compile extension homebrew ruby@2.7"
+        },
+        {
             "name": "(lldb) homebrew ruby@2.7",
             "type": "cppdbg",
             "request": "launch",
