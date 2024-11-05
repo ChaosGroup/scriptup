@@ -38,6 +38,7 @@ task :compile do
 end
 
 Rake::TestTask.new do |t|
+  ENV['TEST_RESOURCES'] = "#{__dir__}/test-resources"
   t.libs << 'lib'
   t.test_files = FileList['test/**/test_*.rb']
 end
