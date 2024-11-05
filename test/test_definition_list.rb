@@ -60,9 +60,9 @@ class TestDefinitionList < Minitest::Test
 
   def test_load
     assert_raises(StandardError) {
-      @definitions.load("#{__dir__}/Untitled.skp")
+      @definitions.load("#{ENV['TEST_RESOURCES']}/Untitled.skp")
     }
-    assert_instance_of(Sketchup::ComponentDefinition, @definitions.load("#{__dir__}/Heather.skp"))
+    assert_instance_of(Sketchup::ComponentDefinition, @definitions.load("#{ENV['TEST_RESOURCES']}/Heather.skp"))
   end
 
   def test_remove

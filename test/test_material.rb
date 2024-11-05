@@ -107,7 +107,7 @@ class TestMaterial < Minitest::Test
   def test_texture
     refute(@material.texture)
     @material.texture = "#{__dir__}/texture_map.png"
-    assert_instance_of(String, @material.texture = "#{__dir__}/texture_map.png")
+    assert_instance_of(String, @material.texture = "#{ENV['TEST_RESOURCES']}/texture_map.png")
     assert_instance_of(Sketchup::Texture, @material.texture)
     refute(@material.texture = nil)
     refute(@material.texture)
