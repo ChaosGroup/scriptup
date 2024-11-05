@@ -1,0 +1,12 @@
+{
+	"sketchup-sdk-mac" : {
+		"tag": "v0.0.0",
+		"file": "SDK_Mac_2024-0-595.zip",
+		"sha": "41968e873fcf74ead4eee95faa22dc8148e08dad7442fdab3d294cbb724cc2e3"
+	},
+	"sketchup-sdk-win": {
+		"tag": "v0.0.0",
+		"file": "SDK_WIN_x64_2024-0-594.zip",
+		"sha": "aa16603d53b75d805ad05cf4cd748f3b0e97076100aba442a034697e54a95b3e"
+	}
+}
