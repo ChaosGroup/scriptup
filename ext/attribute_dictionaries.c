@@ -30,7 +30,7 @@ static VALUE Sketchup_AttributeDictionaries_length(VALUE self)
 	SUModelRef model = {DATA_PTR(self)};
 	size_t count;
 	SUModelGetNumAttributeDictionaries(model, &count);
-	return INT2NUM(count);
+	return ULL2NUM(count);
 }
 
 VALUE AttributeDictionaries_Init(VALUE Sketchup, VALUE Sketchup_Entity)

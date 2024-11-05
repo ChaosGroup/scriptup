@@ -61,7 +61,7 @@ static VALUE Sketchup_ComponentDefinition_count_instances(VALUE self)
 	SUComponentDefinitionRef definition = {DATA_PTR(self)};
 	size_t count = 0;
 	SUComponentDefinitionGetNumInstances(definition, &count);
-	return INT2NUM(count);
+	return ULL2NUM(count);
 }
 
 static VALUE Sketchup_ComponentDefinition_count_used_instances(VALUE self)
@@ -69,7 +69,7 @@ static VALUE Sketchup_ComponentDefinition_count_used_instances(VALUE self)
 	SUComponentDefinitionRef definition = {DATA_PTR(self)};
 	size_t count = 0;
 	SUComponentDefinitionGetNumUsedInstances(definition, &count);
-	return INT2NUM(count);
+	return ULL2NUM(count);
 }
 
 static VALUE Sketchup_ComponentDefinition_live_component(VALUE self)

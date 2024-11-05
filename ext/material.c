@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <material.h>
 #include <SketchUpAPI/sketchup.h>
+#include <SketchUpAPI/model/material.h>
 #include <utils.h>
 
 static int GETCOLOR(VALUE obj)
@@ -23,11 +24,6 @@ static float GETALPHA(VALUE obj)
 		return 0.0;
 	else
 		return alpha;
-}
-
-static void dealloc(SUColor* ptr)
-{
-	free(ptr);
 }
 
 static VALUE VALUE2COLOR(VALUE obj)
@@ -54,7 +50,7 @@ static VALUE VALUE2COLOR(VALUE obj)
 		rb_raise(rb_eTypeError, "no implicit conversion to Color");
 }
 
-static VALUE VALUE2COLORIZATION(VALUE obj)
+static enum SUMaterialColorizeType VALUE2COLORIZATION(VALUE obj)
 {
 	int colorization = NUM2INT(obj);
 	if (colorization < 0)
@@ -130,7 +126,8 @@ static VALUE Sketchup_Material_Get_color(VALUE self)
 static VALUE Sketchup_Material_Set_color(VALUE self, VALUE color)
 {
 	SUMaterialRef material = {DATA_PTR(self)};
-	VALUE valueColor = VALUE2COLOR(color);
+	VALUE2COLOR(color);
+	SUMaterialSetColor(material, DATA_PTR(VALUE2COLOR(color)));
 	return color;
 }
 
