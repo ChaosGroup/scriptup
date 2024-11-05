@@ -235,6 +235,7 @@ static VALUE Sketchup_Entity_set_attribute(int argc, VALUE* argv, VALUE self)
 VALUE Entity_Init(VALUE Sketchup, VALUE rb_cObject)
 {
 	VALUE Sketchup_Entity = rb_define_class_under(Sketchup, ENTITY, rb_cObject);
+	rb_undef_alloc_func(Sketchup_Entity);
 	rb_define_method(Sketchup_Entity, "persistent_id", Sketchup_Entity_persistentId, 0);
 	rb_define_method(Sketchup_Entity, "entityID", Sketchup_Entity_entityId, 0);
 	rb_define_method(Sketchup_Entity, "typename", Sketchup_Entity_typename, 0);

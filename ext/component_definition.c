@@ -166,6 +166,7 @@ static VALUE Sketchup_ComponentDefinition_save_as(int argc, VALUE* argv, VALUE s
 VALUE ComponentDefinition_Init(VALUE Sketchup, VALUE Sketchup_DrawingElement)
 {
 	VALUE Sketchup_ComponentDefinition = rb_define_class_under(Sketchup, COMPONENTDEFINITION, Sketchup_DrawingElement);
+	rb_undef_alloc_func(Sketchup_ComponentDefinition);
 	rb_define_method(Sketchup_ComponentDefinition, "name", Sketchup_ComponentDefinition_Get_name, 0);
 	rb_define_method(Sketchup_ComponentDefinition, "name=", Sketchup_ComponentDefinition_Set_name, 1);
 	rb_define_method(Sketchup_ComponentDefinition, "==", Sketchup_ComponentDefinition_Object_equ, 1);

@@ -36,6 +36,7 @@ static VALUE Sketchup_AttributeDictionaries_length(VALUE self)
 VALUE AttributeDictionaries_Init(VALUE Sketchup, VALUE Sketchup_Entity)
 {
 	VALUE Sketchup_AttributeDictionaries = rb_define_class_under(Sketchup, ATTRIBUTEDICTIONARIES, Sketchup_Entity);
+	rb_undef_alloc_func(Sketchup_AttributeDictionaries);
 	rb_include_module(Sketchup_AttributeDictionaries, rb_mEnumerable);
 	rb_define_method(Sketchup_AttributeDictionaries, "[]", Sketchup_AttributeDictionaries_get, 1);
 	rb_define_method(Sketchup_AttributeDictionaries, "each", Sketchup_AttributeDictionaries_each, 0);

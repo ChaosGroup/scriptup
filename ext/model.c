@@ -32,6 +32,7 @@ static VALUE Sketchup_Model_attribute_dictionaries(VALUE self)
 VALUE Model_Init(VALUE Sketchup, VALUE rb_cObject)
 {
 	VALUE Sketchup_Model = rb_define_class_under(Sketchup, MODEL, rb_cObject);
+	rb_undef_alloc_func(Sketchup_Model);
 	rb_define_const(Sketchup_Model, "LOAD_STATUS_SUCCESS", INT2FIX(0));
 	rb_define_const(Sketchup_Model, "LOAD_STATUS_SUCCESS_MORE_RECENT", INT2FIX(1));
 	rb_define_method(Sketchup_Model, "close", Sketchup_Model_close, 0);
