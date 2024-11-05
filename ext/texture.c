@@ -6,4 +6,5 @@
 void Texture_Init(VALUE Sketchup, VALUE Sketchup_Entity)
 {
 	VALUE Sketchup_Texture = rb_define_class_under(Sketchup, TEXTURE, Sketchup_Entity);
+	rb_undef_alloc_func(Sketchup_Texture);
 }

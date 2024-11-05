@@ -222,6 +222,7 @@ static VALUE Sketchup_Material_display_name(VALUE self)
 void Material_Init(VALUE Sketchup, VALUE Sketchup_Entity)
 {
 	VALUE Sketchup_Material = rb_define_class_under(Sketchup, MATERIAL, Sketchup_Entity);
+	rb_undef_alloc_func(Sketchup_Material);
 	rb_define_method(Sketchup_Material, "name", Sketchup_Material_Get_name, 0);
 	rb_define_method(Sketchup_Material, "name=", Sketchup_Material_Set_name, 1);
 	rb_define_method(Sketchup_Material, "texture", Sketchup_Material_Get_texture, 0);

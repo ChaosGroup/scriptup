@@ -140,6 +140,7 @@ static VALUE Sketchup_AttributeDictionary_delete_key(VALUE self, VALUE key)
 VALUE AttributeDictionary_Init(VALUE Sketchup, VALUE Sketchup_Entity)
 {
 	VALUE Sketchup_AttributeDictionary = rb_define_class_under(Sketchup, ATTRIBUTEDICTIONARY, Sketchup_Entity);
+	rb_undef_alloc_func(Sketchup_AttributeDictionary);
 	rb_include_module(Sketchup_AttributeDictionary, rb_mEnumerable);
 	rb_define_method(Sketchup_AttributeDictionary, "[]", Sketchup_AttributeDictionary_get, 1);
 	rb_define_method(Sketchup_AttributeDictionary, "[]=", Sketchup_AttributeDictionary_set, 2);

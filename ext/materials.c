@@ -73,6 +73,7 @@ static VALUE Sketchup_Materials_get(VALUE self, VALUE key)
 VALUE Materials_Init(VALUE Sketchup, VALUE Sketchup_Entity)
 {
 	VALUE Sketchup_Materials = rb_define_class_under(Sketchup, MATERIALS, Sketchup_Entity);
+	rb_undef_alloc_func(Sketchup_Materials);
 	rb_include_module(Sketchup_Materials, rb_mEnumerable);
 	rb_define_method(Sketchup_Materials, "each", Sketchup_Materials_each, 0);
 	rb_define_method(Sketchup_Materials, "[]", Sketchup_Materials_get, 1);

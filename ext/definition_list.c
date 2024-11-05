@@ -132,6 +132,7 @@ static VALUE Sketchup_DefinitionList_remove(VALUE self, VALUE rb_definition)
 VALUE DefinitionList_Init(VALUE Sketchup, VALUE Sketchup_Entity)
 {
 	VALUE Sketchup_DefinitionList = rb_define_class_under(Sketchup, DEFINITIONLIST, Sketchup_Entity);
+	rb_undef_alloc_func(Sketchup_DefinitionList);
 	rb_include_module(Sketchup_DefinitionList, rb_mEnumerable);
 	rb_define_method(Sketchup_DefinitionList, "each", Sketchup_DefinitionList_each, 0);
 	rb_define_method(Sketchup_DefinitionList, "count", Sketchup_DefinitionList_count, 0);
