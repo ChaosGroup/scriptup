@@ -15,6 +15,7 @@
 #include <definition_list.h>
 #include <drawing_element.h>
 #include <behavior.h>
+#include <not_implemented.h>
 #include <utils.h>
 
 SUModelRef active_model = SU_INVALID;
@@ -82,8 +83,21 @@ void Init_sketchup() {
 	AttributeDictionaries_Init(Sketchup, Sketchup_Entity);
 	Texture_Init(Sketchup, Sketchup_Entity);
 	Behavior_Init(Sketchup, Sketchup_Entity);
+	Layer_Init(Sketchup, Sketchup_Entity);
 	
 	VALUE Sketchup_DrawingElement = DrawingElement_Init(Sketchup, Sketchup_Entity);
 	ComponentInstance_Init(Sketchup, Sketchup_DrawingElement);
 	ComponentDefinition_Init(Sketchup, Sketchup_DrawingElement);
+	Face_Init(Sketchup, Sketchup_DrawingElement);
+	ConstructionLine_Init(Sketchup, Sketchup_DrawingElement);
+	ConstructionPoint_Init(Sketchup, Sketchup_DrawingElement);
+	Dimension_Init(Sketchup, Sketchup_DrawingElement);
+	Edge_Init(Sketchup, Sketchup_DrawingElement);
+	Group_Init(Sketchup, Sketchup_DrawingElement);
+	Image_Init(Sketchup, Sketchup_DrawingElement);
+	SectionPlane_Init(Sketchup, Sketchup_DrawingElement);
+	Text_Init(Sketchup, Sketchup_DrawingElement);	
+	
+	VALUE Geom = rb_define_module(GEOM);
+	BoundingBox_Init(Geom, rb_cObject);
 }
