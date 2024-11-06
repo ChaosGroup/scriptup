@@ -111,13 +111,13 @@ static VALUE Sketchup_Entity_remove_observer(VALUE self, VALUE observer)
 	return RTEST(result) ? Qtrue : Qfalse;
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wcompound-token-split-by-macro"
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 static VALUE Sketchup_Entity_add_observer(VALUE self, VALUE observer)
 {
 	VALUE observers = Qnil;
-	#pragma clang diagnostic push
-	#pragma clang diagnostic ignored "-Wcompound-token-split-by-macro"
 	if (RTEST(rb_ivar_defined(self, rb_intern("@observers"))))
-	#pragma clang diagnostic pop
 	{
 		observers = rb_iv_get(self, "@observers");
 	}
@@ -129,6 +129,7 @@ static VALUE Sketchup_Entity_add_observer(VALUE self, VALUE observer)
 	rb_hash_aset(self, observer, observer);
 	return Qtrue;
 }
+#pragma clang diagnostic pop
 
 void Sketchup_Entity_attribute_dictionaries_Iterator(SUAttributeDictionaryRef dictionary, VALUE* ary)
 {

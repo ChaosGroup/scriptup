@@ -41,20 +41,20 @@ static VALUE Sketchup_Color_names(VALUE self)
 	size_t count = 0;
 	SUColorGetNumNames(&count);
 	SUStringRef* names = malloc(count * sizeof(SUStringRef));
-	for (int i = 0; i < count; i++)
+	for (size_t i = 0; i < count; i++)
 	{
 		names[i].ptr = 0;
 		SUStringCreate(&names[i]);
 	}
 	SUColorGetNames(names, count);
 	VALUE ary = rb_ary_new2(count);
-	for (int i = 0; i < count; i++)
+	for (size_t i = 0; i < count; i++)
 	{
 		VALUE name;
 		GETUTF8FROMSTRING(names[i], name);
 		rb_ary_push(ary, name);
 	}
-	for (int i = 0; i < count; i++)
+	for (size_t i = 0; i < count; i++)
 	{
 		SUStringRelease(&names[i]);
 	}

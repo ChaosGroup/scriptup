@@ -10,7 +10,7 @@ Bundler.setup
 prefix = RbConfig::CONFIG['prefix']
 ENV['PATH'] = "#{prefix}/msys64/usr/bin;#{prefix}/msys64/mingw64/bin;#{ENV['PATH']}"
 
-CLEAN.include 'lib/sketchup.*', 'Makefile', 'tmp', '*.o', 'sketchup.bundle', 'sketchup.so'
+CLEAN.include 'lib/sketchup.bundle', 'lib/sketchup.so', 'Makefile', 'tmp', '*.o', 'sketchup.bundle', 'sketchup.so'
 
 Rake::ExtensionTask.new 'sketchup' do |ext|
   ext.lib_dir = 'lib'

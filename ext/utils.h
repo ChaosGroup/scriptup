@@ -39,7 +39,7 @@
 	SUGetNum(ref, &num); \
 	SURef* array = malloc(num * sizeof(SURef)); \
 	SUGet(ref, num, array, &num); \
-	for( int i = 0; i < num; i++) \
+	for(size_t i = 0; i < num; i++) \
 		callback(array[i], userdata); \
 	free(array); \
 }
@@ -48,15 +48,15 @@
 	size_t num; \
 	SUGetNum(ref, &num); \
 	SURef* array = malloc(num * sizeof(SURef)); \
-	for (int i = 0; i < num; i++) \
+	for (size_t i = 0; i < num; i++) \
 	{ \
 		array[i].ptr = 0; \
 		SUStringCreate(&array[i]); \
 	} \
 	SUGet(ref, num, array, &num); \
-	for (int i = 0; i < num; i++) \
+	for (size_t i = 0; i < num; i++) \
 		callback(array[i], userdata); \
-	for (int i = 0; i < num; i++) \
+	for (size_t i = 0; i < num; i++) \
 		SUStringRelease(&array[i]); \
 	free(array); \
 }

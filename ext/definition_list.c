@@ -28,7 +28,7 @@ static VALUE Sketchup_DefinitionList_count(VALUE self)
 	size_t gd_count = 0;
 	SUModelGetNumComponentDefinitions(model, &cd_count);
 	SUModelGetNumGroupDefinitions(model, &gd_count);
-	return INT2NUM(cd_count + gd_count);
+	return ULL2NUM(cd_count + gd_count);
 }
 
 static VALUE Sketchup_DefinitionList_load(VALUE self, VALUE path)
