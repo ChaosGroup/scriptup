@@ -10,27 +10,11 @@ void Sketchup_Entities_Iterator(SUFaceRef face, void* _)
 
 static VALUE Sketchup_Entities_each(VALUE self)
 {
-	SUEntitiesRef entities = SU_INVALID;
-	if (rb_obj_is_kind_of(self, rb_path2class(SKETCHUP_MODEL)))
-	{
-		SUModelRef model = {DATA_PTR(self)};
-		SUModelGetEntities(model, &entities);
-	}
-	else if (rb_obj_is_kind_of(self, rb_path2class(SKETCHUP_GROUP)))
-	{
-		SUGroupRef group = {DATA_PTR(self)};
-		SUGroupGetEntities(group, &entities);
-	}
-	else if (rb_obj_is_kind_of(self, rb_path2class(SKETCHUP_COMPONENTDEFINITION)))
-	{
-		SUComponentDefinitionRef component_definition = {DATA_PTR(self)};
-		SUComponentDefinitionGetEntities(component_definition, &entities);
-	}
-	if SUIsInvalid(entities)
-		return Qnil;
-	
 	// This is only used for the current tests
 	// ToDo implement foreach for all possible types
+	SUComponentDefinitionRef component_definition = {DATA_PTR(self)};
+	SUEntitiesRef entities = SU_INVALID;
+	SUComponentDefinitionGetEntities(component_definition, &entities);
 	FOREACH(SUEntitiesGetNumFaces, SUEntitiesGetFaces, SUFaceRef, entities, Sketchup_Entities_Iterator, 0);
 	return self;
 }
