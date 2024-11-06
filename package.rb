@@ -53,8 +53,6 @@ class Package
     Zip::File.open(zip_file_path) do |zip_file|
       zip_file.each do |entry|
         destination_path = "#{output}/#{entry.name}"
-        next unless entry.name.start_with?('binaries/sketchup', 'headers/SketchUpAPI', 'SketchUpAPI.framework')
-
         if entry.ftype == :symlink
           target = entry.get_input_stream.read # Symlink target is stored as file content
           File.symlink(target, destination_path)

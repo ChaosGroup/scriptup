@@ -20,7 +20,9 @@ end
 task :download do
   JSON.parse(File.read("#{__dir__}/packages.json"), symbolize_names: true).each { |package_name, package_info|
     path = "#{__dir__}/#{package_name}"
-    Package.new(*package_info).download(path) unless File.exist?(path)
+    next if File.exist?(path)
+    puts "Fetching #{package_name} => #{package_info}"
+    Package.new(**package_info).download(path)
   }
 end
 
