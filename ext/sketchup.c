@@ -84,7 +84,7 @@ void Init_sketchup() {
 	Texture_Init(Sketchup, Sketchup_Entity);
 	Behavior_Init(Sketchup, Sketchup_Entity);
 	Layer_Init(Sketchup, Sketchup_Entity);
-	
+
 	VALUE Sketchup_DrawingElement = DrawingElement_Init(Sketchup, Sketchup_Entity);
 	ComponentInstance_Init(Sketchup, Sketchup_DrawingElement);
 	ComponentDefinition_Init(Sketchup, Sketchup_DrawingElement);
