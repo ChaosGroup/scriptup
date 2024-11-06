@@ -4,7 +4,7 @@ require 'sketchup'
 class TestDrawingElement < Minitest::Test
 
   def setup
-    Sketchup.open_file("#{__dir__}/../test-resources/Untitled.skp")
+    Sketchup.open_file("#{ENV['TEST_RESOURCES']}/Untitled.skp")
     @drawing_element = Sketchup.active_model.definitions.find { |d| d.name == 'Heather' }
   end
 
