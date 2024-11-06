@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.summary       = 'Ruby bindings for the SketchUp C API'
   spec.description   = 'This project provides ruby bindings around the SketchUp C API. They are designed to mimmic the SketchUp ruby api for use in Sketchup extension tests outside the SketchUp application.  You can however use them for general purpouse scripting.'
   spec.homepage      = 'https://git.chaosgroup.com/sketchup/sketchup-ruby-bindings'
-  spec.license       = 'MIT'
+  spec.license       = 'BSD-3-Clause'
 
   spec.files         = Dir[
     'README.md',
