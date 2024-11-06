@@ -13,7 +13,9 @@ Gem::Specification.new do |spec|
     'LICENSE.txt',
     'lib/sketchup.rb',
     'ext/*',
-    'sketchup-sdk-*/**/*',
+    'sketchup-sdk-win/binaries/**/*',
+    'sketchup-sdk-win/headers/**/*',
+    'sketchup-sdk-mac/SketchUpAPI.framework/**/*'
   ].reject { |f| File.symlink?(f) }
   spec.require_paths = ['lib']
   spec.extensions    = ['ext/extconf.rb']

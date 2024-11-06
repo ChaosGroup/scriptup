@@ -1,5 +1,6 @@
 .DS_Store
 sketchup-sdk-*
+test-resources
 tmp
 *.o
 *.bundle

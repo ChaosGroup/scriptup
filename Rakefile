@@ -2,8 +2,8 @@ require 'bundler/setup'
 require 'rake/extensiontask'
 require 'rake/testtask'
 require 'rake/clean'
-require 'tmpdir'
-require_relative 'sketchup_sdk'
+require 'json'
+require_relative 'package'
 
 Bundler.setup
 
@@ -18,16 +18,11 @@ Rake::ExtensionTask.new 'sketchup' do |ext|
 end
 
 task :download do
-  mac_sdk = "#{__dir__}/sketchup-sdk-mac"
-  win_sdk = "#{__dir__}/sketchup-sdk-win"
-  next if File.exist?(mac_sdk) && File.exist?(win_sdk)
-
-  puts 'Downloading SketchUp SDK'
-  Dir.mktmpdir { |tmpdir|
-    win_package = SketchUpSDK.download(:win, tmpdir)
-    mac_package = SketchUpSDK.download(:mac, tmpdir)
-    SketchUpSDK.unzip(win_package, win_sdk)
-    SketchUpSDK.unzip(mac_package, mac_sdk)
+  JSON.parse(File.read("#{__dir__}/packages.json"), symbolize_names: true).each { |package_name, package_info|
+    path = "#{__dir__}/#{package_name}"
+    next if File.exist?(path)
+    puts "Fetching #{package_name} => #{package_info}"
+    Package.new(**package_info).download(path)
   }
 end
 
@@ -38,6 +33,7 @@ task :compile do
 end
 
 Rake::TestTask.new do |t|
+  ENV['TEST_RESOURCES'] = "#{__dir__}/test-resources"
   t.libs << 'lib'
   t.test_files = FileList['test/**/test_*.rb']
 end
