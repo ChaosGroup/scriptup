@@ -13,8 +13,10 @@ jobs:
   test:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [macos-latest, windows-latest]
+        ruby-version: ['2.7', '3.2']
 
     steps:
     - name: Checkout code
@@ -23,7 +25,7 @@ jobs:
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '2.7'  # Specify your Ruby version
+        ruby-version: '${{matrix.ruby-version}}'  # Specify your Ruby version
 
     - name: Install dependencies
       run: |
