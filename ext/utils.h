@@ -1,7 +1,11 @@
 #include <ruby.h>
 
 #ifndef UTILS_H
+#ifdef TEXT
+#undef TEXT
+#endif //TEXT
 #define SKETCHUP "Sketchup"
+#define GEOM "Geom"
 #define MODEL "Model"
 #define MATERIAL "Material"
 #define MATERIALS "Materials"
@@ -16,6 +20,17 @@
 #define ATTRIBUTEDICTIONARIES "AttributeDictionaries"
 #define DRAWINGELEMENT "DrawingElement"
 #define BEHAVIOR "Behavior"
+#define BOUNDINGBOX "BoundingBox"
+#define FACE "Face"
+#define LAYER "Layer"
+#define CONSTRUCTIONLINE "ConstructionLine"
+#define CONSTRUCTIONPOINT "ConstructionPoint"
+#define DIMENSION "Dimension"
+#define EDGE "Edge"
+#define IMAGE "Image"
+#define SECTIONPLANE "SectionPlane"
+#define GROUP "Group"
+#define TEXT "Text"
 #define SKETCHUP_MATERIAL SKETCHUP "::" MATERIAL
 #define SKETCHUP_MATERIALS SKETCHUP "::" MATERIALS
 #define SKETCHUP_TEXTURE SKETCHUP "::" TEXTURE
@@ -28,6 +43,17 @@
 #define SKETCHUP_ATTRIBUTEDICTIONARIES SKETCHUP "::" ATTRIBUTEDICTIONARIES
 #define SKETCHUP_DEFINITIONLIST SKETCHUP "::" DEFINITIONLIST
 #define SKETCHUP_BEHAVIOR SKETCHUP "::" BEHAVIOR
+#define GEOM_BOUNDINGBOX GEOM "::" BOUNDINGBOX
+#define SKETCHUP_FACE SKETCHUP "::" FACE
+#define SKETCHUP_LAYER SKETCHUP "::" LAYER
+#define SKETCHUP_CONSTRUCTIONLINE SKETCHUP "::" CONSTRUCTIONLINE
+#define SKETCHUP_CONSTRUCTIONPOINT SKETCHUP "::" CONSTRUCTIONPOINT
+#define SKETCHUP_DIMENSION SKETCHUP "::" DIMENSION
+#define SKETCHUP_EDGER SKETCHUP "::" EDGE
+#define SKETCHUP_IMAGE SKETCHUP "::" IMAGE
+#define SKETCHUP_SECTIONPLANE SKETCHUP "::" SECTIONPLANE
+#define SKETCHUP_GROUP SKETCHUP "::" GROUP
+#define SKETCHUP_TEXT SKETCHUP "::" TEXT
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wbackslash-newline-escape"
