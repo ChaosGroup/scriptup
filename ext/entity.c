@@ -159,6 +159,10 @@ void Sketchup_Entity_attribute_dictionary_Iterator(SUAttributeDictionaryRef dict
 
 static VALUE Sketchup_Entity_attribute_dictionary(int argc, VALUE* argv, VALUE self)
 {
+	if (!rb_obj_is_kind_of(self, rb_path2class(SKETCHUP_MATERIALS)))
+		return Qnil;
+	if (!rb_obj_is_kind_of(self, rb_path2class(SKETCHUP_DEFINITIONLIST)))
+		return Qnil;
 	SUEntityRef entity = {DATA_PTR(self)};
 	struct AttributeDictionaryIterationContext attribute_dictionary_struct = {argv[0], SU_INVALID};
 	FOREACH(SUEntityGetNumAttributeDictionaries, SUEntityGetAttributeDictionaries, SUAttributeDictionaryRef, entity, Sketchup_Entity_attribute_dictionary_Iterator, &attribute_dictionary_struct);
