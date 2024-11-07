@@ -27,7 +27,7 @@ $CFLAGS << " #{'-Werror' if MAC } -O0 " if ENV['SCRIPTUP_DEVELOPMENT']
 
 if MAC
   $DLDFLAGS.gsub!('-Wl,-multiply_defined,suppress', '')
-  $DLDFLAGS << ' -Wl,-ld_classic'
+  $DLDFLAGS << ' -Wl'
   $DLDFLAGS << " -F#{sdk_path} -framework SketchUpAPI"
   $DLDFLAGS << " -Wl,-rpath,#{sdk_path}"
 else
