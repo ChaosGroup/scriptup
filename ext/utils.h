@@ -1,6 +1,9 @@
 #include <ruby.h>
 
 #ifndef UTILS_H
+#ifdef TEXT
+#undef TEXT
+#endif //TEXT
 #define SKETCHUP "Sketchup"
 #define GEOM "Geom"
 #define MODEL "Model"
