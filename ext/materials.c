@@ -70,6 +70,48 @@ static VALUE Sketchup_Materials_get(VALUE self, VALUE key)
 	}
 }
 
+static VALUE Sketchup_Materials_count(VALUE self)
+{
+	SUModelRef model = {DATA_PTR(self)};
+	size_t count = 0;
+	SUModelGetNumMaterials(model, &count);
+	return ULL2NUM(count);
+}
+
+static VALUE Sketchup_Materials_load(VALUE self, VALUE path)
+{
+	SUModelRef model = {DATA_PTR(self)};
+	SUMaterialRef material = SU_INVALID;
+	enum SUResult result = SUModelLoadMaterial(model, StringValuePtr(path), &material);
+	if (result != SU_ERROR_NONE || SUIsInvalid(material))
+		rb_raise(rb_eRuntimeError, "failed to import material to model");
+	return Data_Wrap_Struct(rb_path2class(SKETCHUP_MATERIAL), 0, 0, material.ptr);
+}
+
+static VALUE Sketchup_Materials_remove(VALUE self, VALUE material)
+{
+	if (!rb_obj_is_kind_of(material, rb_path2class(SKETCHUP_MATERIAL)) || rb_type(material) == T_STRING)
+		rb_raise(rb_eTypeError, "no implicit conversion to Color");
+	SUModelRef model = {DATA_PTR(self)};
+	SUMaterialRef materialRef = {DATA_PTR(Sketchup_Materials_get(self, material))};
+	enum SUResult result = SUModelRemoveMaterials(model, 1, &materialRef);
+	if (result != SU_ERROR_NONE)
+		Qfalse;
+	return Qtrue;
+}
+
+static VALUE Sketchup_Materials_unique_name(VALUE self, VALUE name)
+{
+	SUModelRef model = {DATA_PTR(self)};
+	SUStringRef output_name = SU_INVALID;
+	SUStringCreate(&output_name);
+	SUModelGenerateUniqueMaterialName(model, StringValuePtr(name), &output_name);
+	VALUE output;
+	GETUTF8FROMSTRING(output_name, output);
+	SUStringRelease(&output_name);
+	return output;
+}
+
 VALUE Materials_Init(VALUE Sketchup, VALUE Sketchup_Entity)
 {
 	VALUE Sketchup_Materials = rb_define_class_under(Sketchup, MATERIALS, Sketchup_Entity);
@@ -77,5 +119,11 @@ VALUE Materials_Init(VALUE Sketchup, VALUE Sketchup_Entity)
 	rb_include_module(Sketchup_Materials, rb_mEnumerable);
 	rb_define_method(Sketchup_Materials, "each", Sketchup_Materials_each, 0);
 	rb_define_method(Sketchup_Materials, "[]", Sketchup_Materials_get, 1);
+	rb_define_method(Sketchup_Materials, "count", Sketchup_Materials_count, 0);
+	rb_define_method(Sketchup_Materials, "length", Sketchup_Materials_count, 0);
+	rb_define_method(Sketchup_Materials, "load", Sketchup_Materials_load, 1);
+	rb_define_method(Sketchup_Materials, "remove", Sketchup_Materials_remove, 1);
+	rb_define_method(Sketchup_Materials, "size", Sketchup_Materials_count, 0);
+	rb_define_method(Sketchup_Materials, "unique_name", Sketchup_Materials_unique_name, 1);
 	return Sketchup_Materials;
 }
