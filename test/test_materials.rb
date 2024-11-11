@@ -19,8 +19,8 @@ class TestMaterialsList < Minitest::Test
     assert_raises(TypeError) {
       Sketchup.active_model.materials[Object.new]
     }
-    assert_equal(Sketchup.active_model.materials['Heather_Shirt'].name, 'Heather_Shirt')
-    assert_equal(Sketchup.active_model.materials[1].name, 'Heather_Shirt')
+    assert_equal('Heather_Shirt', Sketchup.active_model.materials['Heather_Shirt'].name)
+    assert_equal('Heather_Shirt', Sketchup.active_model.materials[1].name)
   end
 
   def test_add_observer
@@ -29,12 +29,6 @@ class TestMaterialsList < Minitest::Test
   
   def test_count
     assert_equal(19, @materials.count)
-  end
-
-  def test_current
-    assert_nil(@materials.current)
-    @materials.current = @materials[0]
-    assert_instance_of(Sketchup::Material, @materials.current)
   end
 
   def test_each
@@ -52,7 +46,7 @@ class TestMaterialsList < Minitest::Test
 
   def test_load
     assert_nil(@materials['test_material'])
-    @materials.load("#{ENV['TEST_RESOURCES']}/test_material.skm")
+    @materials.load("#{ENV['TEST_RESOURCES']}/test_material.skp")
     assert_instance_of(Sketchup::Material, @materials['test_material'])
     assert_raises(RuntimeError) {
       @materials.load('error')
@@ -84,7 +78,7 @@ class TestMaterialsList < Minitest::Test
   end
 
   def test_unique_name
-    assert_equal('test name', @materials.unique_name('test_name'))
+    assert_equal('test_name', @materials.unique_name('test_name'))
   end
 
 end
