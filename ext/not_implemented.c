@@ -3,9 +3,9 @@
 #include <utils.h>
 #include <SketchUpAPI/sketchup.h>
 
-VALUE BoundingBox_Init(VALUE Sketchup, VALUE Sketchup_Object)
+VALUE BoundingBox_Init(VALUE Geom, VALUE Sketchup_Object)
 {
-	VALUE Sketchup_BoundingBox = rb_define_class_under(Sketchup, BOUNDINGBOX, Sketchup_Object);
+	VALUE Sketchup_BoundingBox = rb_define_class_under(Geom, BOUNDINGBOX, Sketchup_Object);
 	rb_undef_alloc_func(Sketchup_BoundingBox);
 	return Sketchup_BoundingBox;
 }

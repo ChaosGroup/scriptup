@@ -84,6 +84,9 @@ void Init_sketchup() {
 	Texture_Init(Sketchup, Sketchup_Entity);
 	Behavior_Init(Sketchup, Sketchup_Entity);
 	Layer_Init(Sketchup, Sketchup_Entity);
+	
+	VALUE Geom = rb_define_module(GEOM);
+	BoundingBox_Init(Geom, rb_cObject);
 
 	VALUE Sketchup_DrawingElement = DrawingElement_Init(Sketchup, Sketchup_Entity);
 	ComponentInstance_Init(Sketchup, Sketchup_DrawingElement);
@@ -96,8 +99,5 @@ void Init_sketchup() {
 	Group_Init(Sketchup, Sketchup_DrawingElement);
 	Image_Init(Sketchup, Sketchup_DrawingElement);
 	SectionPlane_Init(Sketchup, Sketchup_DrawingElement);
-	Text_Init(Sketchup, Sketchup_DrawingElement);	
-	
-	VALUE Geom = rb_define_module(GEOM);
-	BoundingBox_Init(Geom, rb_cObject);
+	Text_Init(Sketchup, Sketchup_DrawingElement);
 }

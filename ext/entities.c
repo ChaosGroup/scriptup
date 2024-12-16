@@ -10,15 +10,10 @@ void Sketchup_Entities_Iterator(SUFaceRef face, void* _)
 
 static VALUE Sketchup_Entities_each(VALUE self)
 {
-	// This is only used for the current tests
-	// ToDo implement foreach for all possible types
-	SUComponentDefinitionRef component_definition = {DATA_PTR(self)};
-	SUEntitiesRef entities = SU_INVALID;
-	SUComponentDefinitionGetEntities(component_definition, &entities);
+	SUEntitiesRef entities = {DATA_PTR(self)};
 	FOREACH(SUEntitiesGetNumFaces, SUEntitiesGetFaces, SUFaceRef, entities, Sketchup_Entities_Iterator, 0);
 	return self;
 }
-
 
 VALUE Entities_Init(VALUE Sketchup, VALUE rb_cObject)
 {

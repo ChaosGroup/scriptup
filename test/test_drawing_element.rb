@@ -30,13 +30,15 @@ class TestDrawingElement < Minitest::Test
 
   def test_layer
     assert_kind_of(Sketchup::Layer, @drawing_element.layer)
+    assert_nil(@drawing_element.layer = nil)
     assert_raises(ArgumentError) {
       @drawing_element.layer = Object.new
     }
   end
 
   def test_material
-    assert_kind_of(Sketchup::Material, @drawing_element.material)
+    assert_nil(@drawing_element.material)
+    assert_nil(@drawing_element.material = nil)
     assert_raises(TypeError) {
       @drawing_element.material = Object.new
     }
