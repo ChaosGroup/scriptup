@@ -12,12 +12,12 @@ The SketchUp C API is much more limmited than the ruby api.  There is no gui eve
 * Definition List
 * Entity
 * Material
+* Drawingelement
 
 # Partially implemented classes
 * Attribute Dictionaries
 * Behavior
 * Component Instance
-* Drawing Element
 * Entities
 * Materials
 * Model
