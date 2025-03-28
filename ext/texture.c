@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <texture.h>
 #include <SketchUpAPI/sketchup.h>
+#include <not_implemented.h>
 #include <utils.h>
 
 static VALUE Sketchup_Texture_average_color(VALUE self)
