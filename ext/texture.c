@@ -54,6 +54,12 @@ static VALUE Sketchup_Texture_image_rep(VALUE self)
 	return Data_Wrap_Struct(rb_path2class(SKETCHUP_IMAGEREP), 0, 0, image.ptr);
 }
 
+static VALUE Sketchup_Texture_Get_valid(VALUE self)
+{
+	SUTextureRef texture = {DATA_PTR(self)};
+	return SUIsValid(texture) ? Qtrue : Qfalse;
+}
+
 void Texture_Init(VALUE Sketchup, VALUE Sketchup_Entity)
 {
 	VALUE Sketchup_Texture = rb_define_class_under(Sketchup, TEXTURE, Sketchup_Entity);
@@ -63,4 +69,5 @@ void Texture_Init(VALUE Sketchup, VALUE Sketchup_Entity)
 	rb_define_method(Sketchup_Texture, "image_height", Sketchup_Texture_image_height, 0);
 	rb_define_method(Sketchup_Texture, "image_width", Sketchup_Texture_image_width, 0);
 	rb_define_method(Sketchup_Texture, "image_rep", Sketchup_Texture_image_rep, 0);
+	rb_define_method(Sketchup_Texture, "valid?", Sketchup_Texture_Get_valid, 0);
 }

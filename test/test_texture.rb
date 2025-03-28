@@ -30,10 +30,8 @@ class TestTexture < Minitest::Test
     assert_equal(1024, @texture.image_width)
   end
 
-  def test_size
-  end
-
   def test_valid?
+    assert(@texture.valid?)
   end
 
   def test_write
