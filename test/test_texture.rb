@@ -23,7 +23,7 @@ class TestTexture < Minitest::Test
   end
 
   def test_image_rep
-    assert_instance_of(Sketchup::ImageRep, @texture.image_repa)
+    assert_instance_of(Sketchup::ImageRep, @texture.image_rep)
   end
   
   def test_image_width
