@@ -73,6 +73,7 @@ void Init_sketchup() {
 
 	Model_Init(Sketchup, rb_cObject);
 	Color_Init(Sketchup, rb_cObject);
+	ImageRep_Init(Sketchup, rb_cObject);
 
 	Entities_Init(Sketchup, rb_cObject);
 	VALUE Sketchup_Entity = Entity_Init(Sketchup, rb_cObject);
