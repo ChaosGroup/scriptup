@@ -35,6 +35,19 @@ class TestTexture < Minitest::Test
   end
 
   def test_write
+    basename = @texture.filename
+    Dir.mktmpdir { |dir|
+        path = File.join("#{dir}", basename)
+        refute(File.exist?(path))
+        @texture.write(path, true)
+        assert(File.exist?(path))
+    }
+    Dir.mktmpdir { |dir|
+        path = File.join("#{dir}", basename)
+        refute(File.exist?(path))
+        @texture.write(path, false)
+        assert(File.exist?(path))
+    }
   end
 
 end

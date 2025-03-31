@@ -60,6 +60,18 @@ static VALUE Sketchup_Texture_Get_valid(VALUE self)
 	return SUIsValid(texture) ? Qtrue : Qfalse;
 }
 
+static VALUE Sketchup_Texture_write(VALUE self, VALUE path, VALUE colorize)
+{
+	SUTextureRef texture = {DATA_PTR(self)};
+	const char* path_ptr = StringValuePtr(path);
+	enum SUResult result = SU_ERROR_UNSUPPORTED;
+	if (RTEST(colorize))
+		result = SUTextureWriteToFile(texture, path_ptr);
+	else
+		result = SUTextureWriteOriginalToFile(texture, path_ptr);
+	return result != SU_ERROR_NONE ? Qfalse : Qtrue;
+}
+
 void Texture_Init(VALUE Sketchup, VALUE Sketchup_Entity)
 {
 	VALUE Sketchup_Texture = rb_define_class_under(Sketchup, TEXTURE, Sketchup_Entity);
@@ -70,4 +82,5 @@ void Texture_Init(VALUE Sketchup, VALUE Sketchup_Entity)
 	rb_define_method(Sketchup_Texture, "image_width", Sketchup_Texture_image_width, 0);
 	rb_define_method(Sketchup_Texture, "image_rep", Sketchup_Texture_image_rep, 0);
 	rb_define_method(Sketchup_Texture, "valid?", Sketchup_Texture_Get_valid, 0);
+	rb_define_method(Sketchup_Texture, "write", Sketchup_Texture_write, 2);
 }
