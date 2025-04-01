@@ -79,3 +79,10 @@ VALUE Text_Init(VALUE Sketchup, VALUE DrawingElement)
 	rb_undef_alloc_func(Sketchup_Text);
 	return Sketchup_Text;
 }
+
+VALUE ImageRep_Init(VALUE Sketchup, VALUE Sketchup_Object)
+{
+	VALUE Sketchup_ImageRep = rb_define_class_under(Sketchup, IMAGEREP, Sketchup_Object);
+	rb_undef_alloc_func(Sketchup_ImageRep);
+	return Sketchup_ImageRep;
+}

@@ -13,6 +13,7 @@ The SketchUp C API is much more limmited than the ruby api.  There is no gui eve
 * Entity
 * Material
 * Drawingelement
+* Texture
 
 # Partially implemented classes
 * Attribute Dictionaries
@@ -21,4 +22,3 @@ The SketchUp C API is much more limmited than the ruby api.  There is no gui eve
 * Entities
 * Materials
 * Model
-* Texture
