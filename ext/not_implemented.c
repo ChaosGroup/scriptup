@@ -5,9 +5,9 @@
 
 VALUE BoundingBox_Init(VALUE Geom, VALUE Sketchup_Object)
 {
-	VALUE Sketchup_BoundingBox = rb_define_class_under(Geom, BOUNDINGBOX, Sketchup_Object);
-	rb_undef_alloc_func(Sketchup_BoundingBox);
-	return Sketchup_BoundingBox;
+	VALUE Geom_BoundingBox = rb_define_class_under(Geom, BOUNDINGBOX, Sketchup_Object);
+	rb_undef_alloc_func(Geom_BoundingBox);
+	return Geom_BoundingBox;
 }
 
 VALUE Face_Init(VALUE Sketchup, VALUE DrawingElement)

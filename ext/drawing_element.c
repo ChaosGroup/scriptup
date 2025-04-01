@@ -7,7 +7,7 @@
 static VALUE Sketchup_DrawingElement_bounds(VALUE self)
 {
 	SUDrawingElementRef drawing_element = {DATA_PTR(self)};
-	struct SUBoundingBox3D* bbox;
+	struct SUBoundingBox3D* bbox = 0;
 	SUDrawingElementGetBoundingBox(drawing_element, bbox);
 	return Data_Make_Struct(rb_path2class(GEOM_BOUNDINGBOX), struct SUBoundingBox3D, 0, RUBY_DEFAULT_FREE, bbox);
 }
@@ -23,9 +23,7 @@ static VALUE Sketchup_DrawingElement_Get_casts_shadows(VALUE self)
 static VALUE Sketchup_DrawingElement_Set_casts_shadows(VALUE self, VALUE casts_shadows_flag)
 {
 	SUDrawingElementRef drawing_element = {DATA_PTR(self)};
-	enum SUResult result = SUDrawingElementSetCastsShadows(drawing_element, RTEST(casts_shadows_flag));
-	if(result != SU_ERROR_NONE)
-		return Qnil;
+	SUDrawingElementSetCastsShadows(drawing_element, RTEST(casts_shadows_flag));
 	return casts_shadows_flag;
 }
 
@@ -40,9 +38,7 @@ static VALUE Sketchup_DrawingElement_Get_receives_shadows(VALUE self)
 static VALUE Sketchup_DrawingElement_Set_receives_shadows(VALUE self, VALUE receives_shadows_flag)
 {
 	SUDrawingElementRef drawing_element = {DATA_PTR(self)};
-	enum SUResult result = SUDrawingElementSetReceivesShadows(drawing_element, RTEST(receives_shadows_flag));
-	if(result != SU_ERROR_NONE)
-		return Qnil;
+	SUDrawingElementSetReceivesShadows(drawing_element, RTEST(receives_shadows_flag));
 	return receives_shadows_flag;
 }
 
@@ -57,9 +53,7 @@ static VALUE Sketchup_DrawingElement_Get_hidden(VALUE self)
 static VALUE Sketchup_DrawingElement_Set_hidden(VALUE self, VALUE hide_flag)
 {
 	SUDrawingElementRef drawing_element = {DATA_PTR(self)};
-	enum SUResult result = SUDrawingElementSetHidden(drawing_element, RTEST(hide_flag));
-	if(result != SU_ERROR_NONE)
-		return Qnil;
+	SUDrawingElementSetHidden(drawing_element, RTEST(hide_flag));
 	return hide_flag;
 }
 
@@ -74,9 +68,7 @@ static VALUE Sketchup_DrawingElement_Get_visible(VALUE self)
 static VALUE Sketchup_DrawingElement_Set_visible(VALUE self, VALUE visible_flag)
 {
 	SUDrawingElementRef drawing_element = {DATA_PTR(self)};
-	enum SUResult result = SUDrawingElementSetHidden(drawing_element, RTEST(visible_flag));
-	if(result != SU_ERROR_NONE)
-		return Qnil;
+	SUDrawingElementSetHidden(drawing_element, RTEST(visible_flag));
 	return visible_flag;
 }
 
@@ -93,16 +85,16 @@ static VALUE Sketchup_DrawingElement_Get_material(VALUE self)
 static VALUE Sketchup_DrawingElement_Set_material(VALUE self, VALUE material)
 {
 	SUDrawingElementRef drawing_element = {DATA_PTR(self)};
-	SUMaterialRef drawing_element_material = SU_INVALID;
-	if (material == Qnil)
+	if (rb_type(material) == T_NIL)
 	{
-		SUDrawingElementSetMaterial(drawing_element, drawing_element_material);
+		SUMaterialRef empty_material = SU_INVALID;
+		SUDrawingElementSetMaterial(drawing_element, empty_material);
 		return Qnil;
 	}
 	if (!rb_obj_is_kind_of(material, rb_path2class(SKETCHUP_MATERIAL)))
 		rb_raise(rb_eTypeError, "Wrong type of object given");
 
-	drawing_element_material.ptr = DATA_PTR(material);
+	SUMaterialRef drawing_element_material = {DATA_PTR(material)};
 	SUDrawingElementSetMaterial(drawing_element, drawing_element_material);
 	return material;
 }
@@ -121,9 +113,7 @@ static VALUE Sketchup_DrawingElement_Set_layer(VALUE self, VALUE layer)
 	{
 		SUDrawingElementRef drawing_element = {DATA_PTR(self)};	
 		SULayerRef drawing_element_layer = SU_INVALID;
-		enum SUResult result = SUDrawingElementSetLayer(drawing_element, drawing_element_layer);
-		if (result != SU_ERROR_NONE)
-			return Qfalse;
+		SUDrawingElementSetLayer(drawing_element, drawing_element_layer);
 		return Qnil;
 	}
 	if (!rb_obj_is_kind_of(layer, rb_path2class(SKETCHUP_LAYER)))
