@@ -22,8 +22,16 @@ class TestTexture < Minitest::Test
     assert_equal(1024, @texture.image_height)
   end
 
+  def test_height
+    assert_equal(1.0, @texture.height)
+  end
+
   def test_image_width
     assert_equal(1024, @texture.image_width)
+  end
+
+  def test_width
+    assert_equal(1.0, @texture.width)
   end
 
   def test_image_rep

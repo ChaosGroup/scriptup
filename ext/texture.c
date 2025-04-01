@@ -34,6 +34,28 @@ static VALUE Sketchup_Texture_image_height(VALUE self)
 	return ULL2NUM(height);
 }
 
+static VALUE Sketchup_Texture_height(VALUE self)
+{
+	SUTextureRef texture = {DATA_PTR(self)};
+	size_t width = 0;
+	size_t height = 0;
+	double s_scale = 0.0;
+	double t_scale = 0.0;
+	SUTextureGetDimensions(texture, &width, &height, &s_scale, &t_scale);
+	return DBL2NUM(1.0 / t_scale);
+}
+
+static VALUE Sketchup_Texture_width(VALUE self)
+{
+	SUTextureRef texture = {DATA_PTR(self)};
+	size_t width = 0;
+	size_t height = 0;
+	double s_scale = 0.0;
+	double t_scale = 0.0;
+	SUTextureGetDimensions(texture, &width, &height, &s_scale, &t_scale);
+	return DBL2NUM(1.0 / s_scale);
+}
+
 static VALUE Sketchup_Texture_image_width(VALUE self)
 {
 	SUTextureRef texture = {DATA_PTR(self)};
@@ -78,7 +100,9 @@ void Texture_Init(VALUE Sketchup, VALUE Sketchup_Entity)
 	rb_define_method(Sketchup_Texture, "average_color", Sketchup_Texture_average_color, 0);
 	rb_define_method(Sketchup_Texture, "filename", Sketchup_Texture_filename, 0);
 	rb_define_method(Sketchup_Texture, "image_height", Sketchup_Texture_image_height, 0);
+	rb_define_method(Sketchup_Texture, "height", Sketchup_Texture_height, 0);
 	rb_define_method(Sketchup_Texture, "image_width", Sketchup_Texture_image_width, 0);
+	rb_define_method(Sketchup_Texture, "width", Sketchup_Texture_width, 0);
 	rb_define_method(Sketchup_Texture, "image_rep", Sketchup_Texture_image_rep, 0);
 	rb_define_method(Sketchup_Texture, "valid?", Sketchup_Texture_Get_valid, 0);
 	rb_define_method(Sketchup_Texture, "write", Sketchup_Texture_write, 2);
