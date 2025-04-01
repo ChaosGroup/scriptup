@@ -77,6 +77,8 @@ static VALUE Sketchup_DrawingElement_Get_material(VALUE self)
 	SUDrawingElementRef drawing_element = {DATA_PTR(self)};
 	SUMaterialRef material = SU_INVALID;
 	SUDrawingElementGetMaterial(drawing_element, &material);
+	if (SUIsInvalid(material))
+		return Qnil;
 	return Data_Wrap_Struct(rb_path2class(SKETCHUP_MATERIAL), 0, 0, material.ptr);
 }
 
