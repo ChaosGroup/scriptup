@@ -12,7 +12,6 @@ static VALUE Sketchup_Texture_average_color(VALUE self)
 	enum SUResult result = SUTextureGetAverageColor(texture, color);
 	if (result != SU_ERROR_NONE)
 		return Qnil;
-
 	return c;
 }
 
