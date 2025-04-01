@@ -22,6 +22,10 @@ class TestTexture < Minitest::Test
     assert_equal(1024, @texture.image_height)
   end
 
+  def test_image_width
+    assert_equal(1024, @texture.image_width)
+  end
+
   def test_image_rep
     assert_instance_of(Sketchup::ImageRep, @texture.image_rep)
   end
