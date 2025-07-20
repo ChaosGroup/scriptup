@@ -153,5 +153,6 @@ VALUE AttributeDictionary_Init(VALUE Sketchup, VALUE Sketchup_Entity)
 	rb_define_method(Sketchup_AttributeDictionary, "keys", Sketchup_AttributeDictionary_keys, 0);
 	rb_define_method(Sketchup_AttributeDictionary, "values", Sketchup_AttributeDictionary_values, 0);
 	rb_define_method(Sketchup_AttributeDictionary, "delete_key", Sketchup_AttributeDictionary_delete_key, 1);
+	rb_define_alias(Sketchup_AttributeDictionary, "count", "size");
 	return Sketchup_AttributeDictionary;
 }
