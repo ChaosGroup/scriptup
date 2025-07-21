@@ -1,6 +1,8 @@
+#ifndef SCRIPTUP_UTILS_H
+#define SCRIPTUP_UTILS_H
+
 #include <ruby.h>
 
-#ifndef UTILS_H
 #ifdef TEXT
 #undef TEXT
 #endif //TEXT
@@ -101,6 +103,7 @@
 	GETUTF8FROMSTRING(name, output); \
 	SUStringRelease(&name); \
 }
-#endif // UTILS_H
 
 #pragma clang diagnostic pop
+
+#endif // SCRIPTUP_UTILS_H
