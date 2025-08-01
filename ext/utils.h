@@ -33,6 +33,7 @@
 #define SECTIONPLANE "SectionPlane"
 #define GROUP "Group"
 #define TEXT "Text"
+#define IMAGEREP "ImageRep"
 #define SKETCHUP_MATERIAL SKETCHUP "::" MATERIAL
 #define SKETCHUP_MATERIALS SKETCHUP "::" MATERIALS
 #define SKETCHUP_TEXTURE SKETCHUP "::" TEXTURE
@@ -56,6 +57,7 @@
 #define SKETCHUP_SECTIONPLANE SKETCHUP "::" SECTIONPLANE
 #define SKETCHUP_GROUP SKETCHUP "::" GROUP
 #define SKETCHUP_TEXT SKETCHUP "::" TEXT
+#define SKETCHUP_IMAGEREP SKETCHUP "::" IMAGEREP
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wbackslash-newline-escape"
