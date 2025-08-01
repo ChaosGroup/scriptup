@@ -1,3 +1,6 @@
+#ifndef SCRIPTUP_NOT_IMPLEMENTED_H
+#define SCRIPTUP_NOT_IMPLEMENTED_H
+
 #include <ruby.h>
 
 VALUE BoundingBox_Init(VALUE namespace_object, VALUE parent_class);
@@ -12,3 +15,6 @@ VALUE Image_Init(VALUE namespace_object, VALUE parent_class);
 VALUE SectionPlane_Init(VALUE namespace_object, VALUE parent_class);
 VALUE Text_Init(VALUE namespace_object, VALUE parent_class);
 VALUE ImageRep_Init(VALUE namespace_object, VALUE parent_class);
+
+
+#endif // SCRIPTUP_NOT_IMPLEMENTED_H
