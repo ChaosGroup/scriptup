@@ -14,17 +14,23 @@ class TestAttributeDictionaries < Minitest::Test
   end
 
   def test_accessor
-    skip
     assert_instance_of(Sketchup::AttributeDictionary, @attribute_dictionaries['GeoReference'])
-    assert_instance_of(Sketchup::AttributeDictionary, @attribute_dictionaries[@attribute_dictionaries['GeoReference']])
   end
 
   def test_count
     assert_equal(3, @attribute_dictionaries.count)
   end
 
-  def test_delete
-    skip
+  def test_delete_by_dictionary
+    assert_equal(3, @attribute_dictionaries.length)
+    @attribute_dictionaries.delete(@attribute_dictionaries['GeoReference'])
+    assert_equal(2, @attribute_dictionaries.length)
+  end
+  
+  def test_delete_by_name
+    assert_equal(3, @attribute_dictionaries.length)
+    @attribute_dictionaries.delete('GeoReference')
+    assert_equal(2, @attribute_dictionaries.length)
   end
 
   def test_each
@@ -38,6 +44,10 @@ class TestAttributeDictionaries < Minitest::Test
 
   def test_length
     assert_equal(3, @attribute_dictionaries.length)
+  end
+
+  def test_count
+    assert_equal(3, @attribute_dictionaries.count)
   end
 
   def test_size
