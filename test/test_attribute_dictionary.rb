@@ -77,6 +77,10 @@ class TestAttributeDictionary < Minitest::Test
     assert_equal(7, @attribute_dictionary.size)
   end
 
+  def test_count_is_alias_of_size
+    assert_equal(@attribute_dictionary.size, @attribute_dictionary.count)
+  end
+
   def test_values
     assert_equal(
       [0.1557307335588798, 40.018309, 'Manual', -105.242139, -18_871_519.616960514, -174_402_260.58333763, false],
