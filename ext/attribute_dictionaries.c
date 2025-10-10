@@ -19,11 +19,21 @@ void Sketchup_AttributeDictionaries_Get_By_String_Iterator(SUAttributeDictionary
 
 static VALUE Sketchup_AttributeDictionaries_get(VALUE self, VALUE key)
 {
-	SUModelRef model = {DATA_PTR(self)};
 	SUAttributeDictionaryRef dictionary = SU_INVALID;
-	enum SUResult result = SUModelGetAttributeDictionary(model, StringValuePtr(key), &dictionary);
-	if (result != SU_ERROR_NONE)
-		return Qnil;
+	if (rb_ivar_defined(self, rb_intern("@is_model")) == Qtrue && RTEST(rb_iv_get(self, "@is_model")))
+	{
+		SUModelRef model = {DATA_PTR(self)};
+		enum SUResult result = SUModelGetAttributeDictionary(model, StringValuePtr(key), &dictionary);
+		if (result != SU_ERROR_NONE)
+			return Qnil;
+	}
+	else
+	{
+		SUEntityRef entity = {DATA_PTR(self)};
+		enum SUResult result = SUEntityGetAttributeDictionary(entity, StringValuePtr(key), &dictionary);
+		if (result != SU_ERROR_NONE)
+			return Qnil;
+	}
 	return Data_Wrap_Struct(rb_path2class(SKETCHUP_ATTRIBUTEDICTIONARY), 0, 0, dictionary.ptr);
 }
 

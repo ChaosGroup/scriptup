@@ -15,6 +15,9 @@ class TestAttributeDictionaries < Minitest::Test
 
   def test_accessor
     assert_instance_of(Sketchup::AttributeDictionary, @attribute_dictionaries['GeoReference'])
+    entity = Sketchup.active_model.definitions.find { |d| d.name == 'Heather' }
+    entity.attribute_dictionary('Age', 42)
+    assert_instance_of(Sketchup::AttributeDictionary, entity.attribute_dictionaries['Age'])
   end
 
   def test_count
