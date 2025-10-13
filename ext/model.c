@@ -26,7 +26,9 @@ static VALUE Sketchup_Model_definitions(VALUE self)
 
 static VALUE Sketchup_Model_attribute_dictionaries(VALUE self)
 {
-	return Data_Wrap_Struct(rb_path2class(SKETCHUP_ATTRIBUTEDICTIONARIES), 0, 0, DATA_PTR(self));
+	VALUE obj = Data_Wrap_Struct(rb_path2class(SKETCHUP_ATTRIBUTEDICTIONARIES), 0, 0, DATA_PTR(self));
+	rb_iv_set(obj, "@is_model", Qtrue);
+	return obj;
 }
 
 VALUE Model_Init(VALUE Sketchup, VALUE rb_cObject)
