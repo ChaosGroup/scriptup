@@ -58,7 +58,7 @@ static VALUE Sketchup_AttributeDictionaries_delete(VALUE self, VALUE dictionary)
 			FOREACH(SUModelGetNumAttributeDictionaries, SUModelGetAttributeDictionaries, SUAttributeDictionaryRef, model, Sketchup_AttributeDictionaries_Get_By_String_Iterator, &dictionary_struct);
 			if (SUIsInvalid(dictionary_struct.dictionary))
 				return Qnil;
-			SUAttributeDictionaryRelease(dictionary_struct.dictionary.ptr);
+			SUAttributeDictionaryRelease(&dictionary_struct.dictionary);
 			size_t ad_count = 0;
 			size_t ad_len = 0;
 			SUModelGetNumAttributeDictionaries(model, &ad_len);
@@ -69,7 +69,7 @@ static VALUE Sketchup_AttributeDictionaries_delete(VALUE self, VALUE dictionary)
 		else if (rb_obj_is_kind_of(dictionary, rb_path2class(SKETCHUP_ATTRIBUTEDICTIONARY)))
 		{
 			SUAttributeDictionaryRef dictionary_ref = {DATA_PTR(dictionary)};
-			SUAttributeDictionaryRelease(dictionary_ref.ptr);
+			SUAttributeDictionaryRelease(&dictionary_ref);
 			size_t ad_count = 0;
 			size_t ad_len = 0;
 			SUModelGetNumAttributeDictionaries(model, &ad_len);
@@ -89,7 +89,7 @@ static VALUE Sketchup_AttributeDictionaries_delete(VALUE self, VALUE dictionary)
 			FOREACH(SUEntityGetNumAttributeDictionaries, SUEntityGetAttributeDictionaries, SUAttributeDictionaryRef, entity, Sketchup_AttributeDictionaries_Get_By_String_Iterator, &dictionary_struct);
 			if (SUIsInvalid(dictionary_struct.dictionary))
 				return Qnil;
-			SUAttributeDictionaryRelease(dictionary_struct.dictionary.ptr);
+			SUAttributeDictionaryRelease(&dictionary_struct.dictionary);
 			size_t ad_count = 0;
 			size_t ad_len = 0;
 			SUEntityGetNumAttributeDictionaries(entity, &ad_len);
@@ -100,7 +100,7 @@ static VALUE Sketchup_AttributeDictionaries_delete(VALUE self, VALUE dictionary)
 		else if (rb_obj_is_kind_of(dictionary, rb_path2class(SKETCHUP_ATTRIBUTEDICTIONARY)))
 		{
 			SUAttributeDictionaryRef dictionary_ref = {DATA_PTR(self)};
-			SUAttributeDictionaryRelease(dictionary_ref.ptr);
+			SUAttributeDictionaryRelease(&dictionary_ref);
 			size_t ad_count = 0;
 			size_t ad_len = 0;
 			SUEntityGetNumAttributeDictionaries(entity, &ad_len);
