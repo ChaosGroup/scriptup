@@ -79,6 +79,9 @@ static VALUE Sketchup_Entity_typename(VALUE self)
   		case SURefType_LineStyleManager: return rb_str_new2("LineStyleManager");
   		case SURefType_Selection: return rb_str_new2("Selection");
   		case SURefType_LayerFolder: return rb_str_new2("LayerFolder");
+		case SURefType_Environment: return rb_str_new2("Environment");
+		case SURefType_Environments: return rb_str_new2("Environments");
+		case SURefType_Snap: return rb_str_new2("Snap");
 	}
 }
 
