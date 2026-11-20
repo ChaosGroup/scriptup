@@ -16,6 +16,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Geom::LatLong | 5/6 (no `to_utm`: no C API) |
 | Geom::Point2d | 21/21 |
 | Geom::Point3d | 31/31 |
+| Geom::PolygonMesh | 17/17 |
 | Geom::Transformation | 17/17 |
 | Geom::Transformation2d | 12/12 |
 | Geom::Vector2d | 33/33 |

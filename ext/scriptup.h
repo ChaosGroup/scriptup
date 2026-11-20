@@ -25,6 +25,7 @@
 	X(cTransformation, mGeom, "Transformation", rb_cObject) \
 	X(cTransformation2d, mGeom, "Transformation2d", rb_cObject) \
 	X(cLatLong, mGeom, "LatLong", rb_cObject) \
+	X(cPolygonMesh, mGeom, "PolygonMesh", rb_cObject) \
 	X(cEntity, mSketchup, "Entity", rb_cObject) \
 	X(cMaterials, mSketchup, "Materials", cEntity) \
 	X(cMaterial, mSketchup, "Material", cEntity) \
@@ -68,6 +69,7 @@ void Init_material(void);
 void Init_materials(void);
 void Init_model(void);
 void Init_point2d(void);
+void Init_polygon_mesh(void);
 void Init_point3d(void);
 void Init_texture(void);
 void Init_transformation(void);
@@ -100,6 +102,7 @@ VALUE su_vector3d_new(struct SUVector3D value);
 struct SUVector3D su_to_vector3d(VALUE obj);
 void su_array_to_xyz(VALUE ary, double xyz[3]);
 void su_array_to_xy(VALUE ary, double xy[2]);
+VALUE su_polygon_mesh_new(VALUE points, VALUE polygons, VALUE uvs_front, VALUE uvs_back, VALUE normals);
 VALUE su_lat_long_new(double latitude, double longitude);
 VALUE su_bounding_box_new(struct SUBoundingBox3D value);
 VALUE su_transformation_new(struct SUTransformation value);
