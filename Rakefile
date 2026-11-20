@@ -62,6 +62,11 @@ namespace :rbs do
     rbs_bundle.call('rbs -I sig validate')
   end
 
+  desc 'Compare the compiled extension with sig/ (CLASSES="Sketchup::Face ..." to filter)'
+  task coverage: :compile do
+    rbs_bundle.call("ruby scripts/rbs/bin/coverage #{ENV.fetch('CLASSES', '')}")
+  end
+
   desc 'Run the RBS generator tests'
   task :test do
     rbs_bundle.call(%q(ruby -e 'Dir["scripts/rbs/test/test_*.rb"].each { |f| require File.expand_path(f) }'))
