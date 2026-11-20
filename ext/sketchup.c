@@ -76,6 +76,7 @@ void Init_sketchup(void)
 	Init_geom();
 	Init_lat_long();
 	Init_length();
+	Init_loop();
 	Init_material();
 	Init_materials();
 	Init_model();
