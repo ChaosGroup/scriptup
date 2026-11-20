@@ -238,9 +238,23 @@ static VALUE vector3d_axes(VALUE self)
 	return rb_ary_new_from_args(3, su_vector3d_new(x_axis), su_vector3d_new(y_axis), su_vector3d_new(z_axis));
 }
 
+static VALUE vector3d_transform_bang(VALUE self, VALUE transformation)
+{
+	struct SUTransformation t = su_to_transformation(transformation);
+	SUVector3DTransform(&t, VEC(self));
+	return self;
+}
+
+static VALUE vector3d_transform(VALUE self, VALUE transformation)
+{
+	return vector3d_transform_bang(su_vector3d_new(*VEC(self)), transformation);
+}
+
 void Init_vector3d(void)
 {
 	rb_define_alloc_func(cVector3d, vector3d_alloc);
+	rb_define_method(cVector3d, "transform", vector3d_transform, 1);
+	rb_define_method(cVector3d, "transform!", vector3d_transform_bang, 1);
 	rb_define_singleton_method(cVector3d, "linear_combination", vector3d_linear_combination, -1);
 	rb_define_method(cVector3d, "initialize", vector3d_initialize, -1);
 	rb_define_method(cVector3d, "initialize_copy", vector3d_initialize_copy, 1);

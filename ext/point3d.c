@@ -279,9 +279,23 @@ static VALUE point3d_project_to_plane(VALUE self, VALUE plane)
 	return su_point3d_new(result);
 }
 
+static VALUE point3d_transform_bang(VALUE self, VALUE transformation)
+{
+	struct SUTransformation t = su_to_transformation(transformation);
+	SUPoint3DTransform(&t, PT(self));
+	return self;
+}
+
+static VALUE point3d_transform(VALUE self, VALUE transformation)
+{
+	return point3d_transform_bang(su_point3d_new(*PT(self)), transformation);
+}
+
 void Init_point3d(void)
 {
 	rb_define_alloc_func(cPoint3d, point3d_alloc);
+	rb_define_method(cPoint3d, "transform", point3d_transform, 1);
+	rb_define_method(cPoint3d, "transform!", point3d_transform_bang, 1);
 	rb_define_singleton_method(cPoint3d, "linear_combination", point3d_linear_combination, 4);
 	rb_define_method(cPoint3d, "initialize", point3d_initialize, -1);
 	rb_define_method(cPoint3d, "initialize_copy", point3d_initialize_copy, 1);

@@ -12,6 +12,9 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Class | Methods |
 |---|---|
 | Sketchup::Color | 15/15 |
+| Geom::Point3d | 31/31 |
+| Geom::Transformation | 17/17 |
+| Geom::Vector3d | 38/38 |
 | Length (plus the Numeric and String#to_l extensions) | 9/9 |
 
 ## Mostly implemented
@@ -22,10 +25,8 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::AttributeDictionary | 12/13 | `empty?`; `delete_key` doesn't delete |
 | Sketchup::Texture | 9/10 | `size=` |
 | Sketchup::AttributeDictionaries | 5/6 | `delete` |
-| Geom::Point3d | 29/31 | `transform`, `transform!` (with Geom::Transformation); no InputPoint constructor |
 | Geom::Point2d | 19/21 | `transform`, `transform!` (with Geom::Transformation2d) |
 | Geom::Vector2d | 31/33 | `transform`, `transform!` (with Geom::Transformation2d) |
-| Geom::Vector3d | 36/38 | `transform`, `transform!` (with Geom::Transformation) |
 
 ## Partially implemented
 | Class | Methods |
