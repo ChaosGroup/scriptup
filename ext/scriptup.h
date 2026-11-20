@@ -24,6 +24,7 @@
 	X(cPoint2d, mGeom, "Point2d", rb_cObject) \
 	X(cTransformation, mGeom, "Transformation", rb_cObject) \
 	X(cTransformation2d, mGeom, "Transformation2d", rb_cObject) \
+	X(cLatLong, mGeom, "LatLong", rb_cObject) \
 	X(cEntity, mSketchup, "Entity", rb_cObject) \
 	X(cMaterials, mSketchup, "Materials", cEntity) \
 	X(cMaterial, mSketchup, "Material", cEntity) \
@@ -61,6 +62,7 @@ void Init_definition_list(void);
 void Init_drawing_element(void);
 void Init_entities(void);
 void Init_entity(void);
+void Init_lat_long(void);
 void Init_length(void);
 void Init_material(void);
 void Init_materials(void);
@@ -98,6 +100,7 @@ VALUE su_vector3d_new(struct SUVector3D value);
 struct SUVector3D su_to_vector3d(VALUE obj);
 void su_array_to_xyz(VALUE ary, double xyz[3]);
 void su_array_to_xy(VALUE ary, double xy[2]);
+VALUE su_lat_long_new(double latitude, double longitude);
 VALUE su_bounding_box_new(struct SUBoundingBox3D value);
 VALUE su_transformation_new(struct SUTransformation value);
 struct SUTransformation su_to_transformation(VALUE obj);

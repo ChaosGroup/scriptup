@@ -13,6 +13,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 |---|---|
 | Sketchup::Color | 15/15 |
 | Geom::BoundingBox | 15/15 |
+| Geom::LatLong | 5/6 (no `to_utm`: no C API) |
 | Geom::Point2d | 21/21 |
 | Geom::Point3d | 31/31 |
 | Geom::Transformation | 17/17 |

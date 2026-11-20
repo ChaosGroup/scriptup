@@ -71,6 +71,7 @@ void Init_sketchup(void)
 	Init_drawing_element();
 	Init_entities();
 	Init_entity();
+	Init_lat_long();
 	Init_length();
 	Init_material();
 	Init_materials();
