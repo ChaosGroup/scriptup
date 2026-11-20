@@ -9,7 +9,7 @@ class TestDrawingElement < Minitest::Test
   end
 
   def test_object
-    assert_kind_of(Sketchup::DrawingElement, @drawing_element)
+    assert_kind_of(Sketchup::Drawingelement, @drawing_element)
   end
 
   def test_bounds

@@ -1,109 +1,80 @@
-#include <stdbool.h>
-#include <texture.h>
-#include <SketchUpAPI/sketchup.h>
-#include <not_implemented.h>
-#include <utils.h>
+#include <scriptup.h>
 
-static VALUE Sketchup_Texture_average_color(VALUE self)
+struct texture_dimensions
 {
-	SUTextureRef texture = {DATA_PTR(self)};
-	VALUE c = rb_obj_alloc(rb_path2class(SKETCHUP_COLOR));
-	SUColor* color = DATA_PTR(c);
-	enum SUResult result = SUTextureGetAverageColor(texture, color);
-	if (result != SU_ERROR_NONE)
-		return Qnil;
-	return c;
+	size_t width;
+	size_t height;
+	double s_scale;
+	double t_scale;
+};
+
+static struct texture_dimensions texture_dimensions(VALUE self)
+{
+	struct texture_dimensions d = {0, 0, 0.0, 0.0};
+	SUTextureGetDimensions(SU_REF(SUTextureRef, self), &d.width, &d.height, &d.s_scale, &d.t_scale);
+	return d;
 }
 
-static VALUE Sketchup_Texture_filename(VALUE self)
+DEFINE_STRING_GETTER(texture_filename, SUTextureRef, SUTextureGetFileName)
+
+static void image_rep_free(void* ptr)
 {
-	SUTextureRef texture = {DATA_PTR(self)};
-	VALUE output;
-	GETSTRING(SUTextureGetFileName, texture, output);
-	return output;
+	SUImageRepRef image = {ptr};
+	SUImageRepRelease(&image);
 }
 
-static VALUE Sketchup_Texture_image_height(VALUE self)
+// The caller owns the image rep, so it is released when the Ruby object is collected.
+static VALUE texture_image_rep(int argc, VALUE* argv, VALUE self)
 {
-	SUTextureRef texture = {DATA_PTR(self)};
-	size_t width = 0;
-	size_t height = 0;
-	double s_scale = 0.0;
-	double t_scale = 0.0;
-	SUTextureGetDimensions(texture, &width, &height, &s_scale, &t_scale);
-	return ULL2NUM(height);
-}
-
-static VALUE Sketchup_Texture_height(VALUE self)
-{
-	SUTextureRef texture = {DATA_PTR(self)};
-	size_t width = 0;
-	size_t height = 0;
-	double s_scale = 0.0;
-	double t_scale = 0.0;
-	SUTextureGetDimensions(texture, &width, &height, &s_scale, &t_scale);
-	return DBL2NUM(1.0 / t_scale);
-}
-
-static VALUE Sketchup_Texture_width(VALUE self)
-{
-	SUTextureRef texture = {DATA_PTR(self)};
-	size_t width = 0;
-	size_t height = 0;
-	double s_scale = 0.0;
-	double t_scale = 0.0;
-	SUTextureGetDimensions(texture, &width, &height, &s_scale, &t_scale);
-	return DBL2NUM(1.0 / s_scale);
-}
-
-static VALUE Sketchup_Texture_image_width(VALUE self)
-{
-	SUTextureRef texture = {DATA_PTR(self)};
-	size_t width = 0;
-	size_t height = 0;
-	double s_scale = 0.0;
-	double t_scale = 0.0;
-	SUTextureGetDimensions(texture, &width, &height, &s_scale, &t_scale);
-	return ULL2NUM(width);
-}
-
-static VALUE Sketchup_Texture_image_rep(VALUE self)
-{
-	SUTextureRef texture = {DATA_PTR(self)};
+	VALUE colorized;
+	rb_scan_args(argc, argv, "01", &colorized);
 	SUImageRepRef image = SU_INVALID;
-	SUTextureGetImageRep(texture, &image);
-	return Data_Wrap_Struct(rb_path2class(SKETCHUP_IMAGEREP), 0, 0, image.ptr);
+	SUImageRepCreate(&image);
+	SUTextureRef texture = SU_REF(SUTextureRef, self);
+	enum SUResult result = RTEST(colorized) ? SUTextureGetColorizedImageRep(texture, &image) : SUTextureGetImageRep(texture, &image);
+	if (result != SU_ERROR_NONE)
+	{
+		SUImageRepRelease(&image);
+		return Qnil;
+	}
+	return Data_Wrap_Struct(cImageRep, 0, image_rep_free, image.ptr);
 }
 
-static VALUE Sketchup_Texture_Get_valid(VALUE self)
+static VALUE texture_average_color(VALUE self)
 {
-	SUTextureRef texture = {DATA_PTR(self)};
-	return SUIsValid(texture) ? Qtrue : Qfalse;
+	SUColor color = {0, 0, 0, 255};
+	if (SUTextureGetAverageColor(SU_REF(SUTextureRef, self), &color) != SU_ERROR_NONE)
+		return Qnil;
+	return su_color_new(color);
 }
 
-static VALUE Sketchup_Texture_write(VALUE self, VALUE path, VALUE colorize)
+static VALUE texture_image_width(VALUE self) { return SIZET2NUM(texture_dimensions(self).width); }
+static VALUE texture_image_height(VALUE self) { return SIZET2NUM(texture_dimensions(self).height); }
+static VALUE texture_width(VALUE self) { return DBL2NUM(1.0 / texture_dimensions(self).s_scale); }
+static VALUE texture_height(VALUE self) { return DBL2NUM(1.0 / texture_dimensions(self).t_scale); }
+
+static VALUE texture_valid_p(VALUE self)
 {
-	SUTextureRef texture = {DATA_PTR(self)};
-	const char* path_ptr = StringValuePtr(path);
-	enum SUResult result = SU_ERROR_UNSUPPORTED;
-	if (RTEST(colorize))
-		result = SUTextureWriteToFile(texture, path_ptr);
-	else
-		result = SUTextureWriteOriginalToFile(texture, path_ptr);
-	return result != SU_ERROR_NONE ? Qfalse : Qtrue;
+	return BOOL2RB(DATA_PTR(self) != NULL);
 }
 
-void Texture_Init(VALUE Sketchup, VALUE Sketchup_Entity)
+static VALUE texture_write(VALUE self, VALUE path, VALUE colorize)
 {
-	VALUE Sketchup_Texture = rb_define_class_under(Sketchup, TEXTURE, Sketchup_Entity);
-	rb_undef_alloc_func(Sketchup_Texture);
-	rb_define_method(Sketchup_Texture, "average_color", Sketchup_Texture_average_color, 0);
-	rb_define_method(Sketchup_Texture, "filename", Sketchup_Texture_filename, 0);
-	rb_define_method(Sketchup_Texture, "image_height", Sketchup_Texture_image_height, 0);
-	rb_define_method(Sketchup_Texture, "height", Sketchup_Texture_height, 0);
-	rb_define_method(Sketchup_Texture, "image_width", Sketchup_Texture_image_width, 0);
-	rb_define_method(Sketchup_Texture, "width", Sketchup_Texture_width, 0);
-	rb_define_method(Sketchup_Texture, "image_rep", Sketchup_Texture_image_rep, 0);
-	rb_define_method(Sketchup_Texture, "valid?", Sketchup_Texture_Get_valid, 0);
-	rb_define_method(Sketchup_Texture, "write", Sketchup_Texture_write, 2);
+	SUTextureRef texture = SU_REF(SUTextureRef, self);
+	const char* file = StringValueCStr(path);
+	enum SUResult result = RTEST(colorize) ? SUTextureWriteToFile(texture, file) : SUTextureWriteOriginalToFile(texture, file);
+	return BOOL2RB(result == SU_ERROR_NONE);
+}
+
+void Init_texture(void)
+{
+	rb_define_method(cTexture, "average_color", texture_average_color, 0);
+	rb_define_method(cTexture, "filename", texture_filename, 0);
+	rb_define_method(cTexture, "image_height", texture_image_height, 0);
+	rb_define_method(cTexture, "height", texture_height, 0);
+	rb_define_method(cTexture, "image_width", texture_image_width, 0);
+	rb_define_method(cTexture, "width", texture_width, 0);
+	rb_define_method(cTexture, "image_rep", texture_image_rep, -1);
+	rb_define_method(cTexture, "valid?", texture_valid_p, 0);
+	rb_define_method(cTexture, "write", texture_write, 2);
 }

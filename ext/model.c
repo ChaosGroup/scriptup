@@ -1,43 +1,35 @@
-#include <stdbool.h>
-#include <model.h>
-#include <utils.h>
-#include <SketchUpAPI/sketchup.h>
-#include <sketchup.h>
+#include <scriptup.h>
 
-static VALUE Sketchup_Model_close(VALUE self)
+static VALUE model_close(int argc, VALUE* argv, VALUE self)
 {
+	rb_check_arity(argc, 0, 1);
 	SUModelRef model = Sketchup_get_active_model();
 	enum SUResult result = SUModelRelease(&model);
 	Sketchup_set_active_model(model);
-	if(result != SU_ERROR_NONE)
-		return false;
-	return Qnil;
+	return result == SU_ERROR_NONE ? Qnil : Qfalse;
 }
 
-static VALUE Sketchup_Model_materials(VALUE self)
+static VALUE model_materials(VALUE self)
 {
-	return Data_Wrap_Struct(rb_path2class(SKETCHUP_MATERIALS), 0, 0, DATA_PTR(self));
+	return su_wrap(cMaterials, DATA_PTR(self));
 }
 
-static VALUE Sketchup_Model_definitions(VALUE self)
+static VALUE model_definitions(VALUE self)
 {
-	return Data_Wrap_Struct(rb_path2class(SKETCHUP_DEFINITIONLIST), 0, 0, DATA_PTR(self));
+	return su_wrap(cDefinitionList, DATA_PTR(self));
 }
 
-static VALUE Sketchup_Model_attribute_dictionaries(VALUE self)
+static VALUE model_attribute_dictionaries(VALUE self)
 {
-	return Data_Wrap_Struct(rb_path2class(SKETCHUP_ATTRIBUTEDICTIONARIES), 0, 0, DATA_PTR(self));
+	return su_model_attribute_dictionaries(SU_REF(SUModelRef, self));
 }
 
-VALUE Model_Init(VALUE Sketchup, VALUE rb_cObject)
+void Init_model(void)
 {
-	VALUE Sketchup_Model = rb_define_class_under(Sketchup, MODEL, rb_cObject);
-	rb_undef_alloc_func(Sketchup_Model);
-	rb_define_const(Sketchup_Model, "LOAD_STATUS_SUCCESS", INT2FIX(0));
-	rb_define_const(Sketchup_Model, "LOAD_STATUS_SUCCESS_MORE_RECENT", INT2FIX(1));
-	rb_define_method(Sketchup_Model, "close", Sketchup_Model_close, 0);
-	rb_define_method(Sketchup_Model, "materials", Sketchup_Model_materials, 0);
-	rb_define_method(Sketchup_Model, "definitions", Sketchup_Model_definitions, 0);
-	rb_define_method(Sketchup_Model, "attribute_dictionaries", Sketchup_Model_attribute_dictionaries, 0);
-	return Sketchup_Model;
+	rb_define_const(cModel, "LOAD_STATUS_SUCCESS", INT2FIX(SUModelLoadStatus_Success));
+	rb_define_const(cModel, "LOAD_STATUS_SUCCESS_MORE_RECENT", INT2FIX(SUModelLoadStatus_Success_MoreRecent));
+	rb_define_method(cModel, "close", model_close, -1);
+	rb_define_method(cModel, "materials", model_materials, 0);
+	rb_define_method(cModel, "definitions", model_definitions, 0);
+	rb_define_method(cModel, "attribute_dictionaries", model_attribute_dictionaries, 0);
 }

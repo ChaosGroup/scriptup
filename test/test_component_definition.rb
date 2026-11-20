@@ -9,7 +9,7 @@ class TestComponentDefinition < Minitest::Test
   end
 
   def test_object
-    assert_kind_of(Sketchup::DrawingElement, @definition)
+    assert_kind_of(Sketchup::Drawingelement, @definition)
   end
 
   def test_spaceship_operator

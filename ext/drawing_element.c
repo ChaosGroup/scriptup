@@ -1,146 +1,66 @@
-#include <stdbool.h>
-#include <drawing_element.h>
-#include <not_implemented.h>
-#include <utils.h>
-#include <SketchUpAPI/sketchup.h>
+#include <scriptup.h>
 
-static VALUE Sketchup_DrawingElement_bounds(VALUE self)
+static bool not_rtest(VALUE value)
 {
-	SUDrawingElementRef drawing_element = {DATA_PTR(self)};
-	struct SUBoundingBox3D* bbox = 0;
-	SUDrawingElementGetBoundingBox(drawing_element, bbox);
-	return Data_Make_Struct(rb_path2class(GEOM_BOUNDINGBOX), struct SUBoundingBox3D, 0, RUBY_DEFAULT_FREE, bbox);
+	return !RTEST(value);
 }
 
-static VALUE Sketchup_DrawingElement_Get_casts_shadows(VALUE self)
+DEFINE_BOOL_GETTER(drawingelement_casts_shadows_p, SUDrawingElementRef, SUDrawingElementGetCastsShadows)
+DEFINE_BOOL_SETTER(drawingelement_set_casts_shadows, SUDrawingElementRef, SUDrawingElementSetCastsShadows)
+DEFINE_BOOL_GETTER(drawingelement_receives_shadows_p, SUDrawingElementRef, SUDrawingElementGetReceivesShadows)
+DEFINE_BOOL_SETTER(drawingelement_set_receives_shadows, SUDrawingElementRef, SUDrawingElementSetReceivesShadows)
+DEFINE_BOOL_GETTER(drawingelement_hidden_p, SUDrawingElementRef, SUDrawingElementGetHidden)
+DEFINE_BOOL_SETTER(drawingelement_set_hidden, SUDrawingElementRef, SUDrawingElementSetHidden)
+DEFINE_SETTER(drawingelement_set_visible, SUDrawingElementRef, SUDrawingElementSetHidden, not_rtest)
+DEFINE_REF_GETTER(drawingelement_material, SUDrawingElementRef, SUDrawingElementGetMaterial, SUMaterialRef, cMaterial)
+DEFINE_REF_GETTER(drawingelement_layer, SUDrawingElementRef, SUDrawingElementGetLayer, SULayerRef, cLayer)
+
+static VALUE drawingelement_visible_p(VALUE self)
 {
-	SUDrawingElementRef drawing_element = {DATA_PTR(self)};
-	bool casts_shadows_flag = false;
-	SUDrawingElementGetCastsShadows(drawing_element, &casts_shadows_flag);
-	return casts_shadows_flag ? Qtrue : Qfalse;
+	return RTEST(drawingelement_hidden_p(self)) ? Qfalse : Qtrue;
 }
 
-static VALUE Sketchup_DrawingElement_Set_casts_shadows(VALUE self, VALUE casts_shadows_flag)
+static VALUE drawingelement_bounds(VALUE self)
 {
-	SUDrawingElementRef drawing_element = {DATA_PTR(self)};
-	SUDrawingElementSetCastsShadows(drawing_element, RTEST(casts_shadows_flag));
-	return casts_shadows_flag;
+	struct SUBoundingBox3D* bbox;
+	VALUE obj = Data_Make_Struct(cBoundingBox, struct SUBoundingBox3D, 0, RUBY_DEFAULT_FREE, bbox);
+	SUDrawingElementGetBoundingBox(SU_REF(SUDrawingElementRef, self), bbox);
+	return obj;
 }
 
-static VALUE Sketchup_DrawingElement_Get_receives_shadows(VALUE self)
+static VALUE drawingelement_set_material(VALUE self, VALUE material)
 {
-	SUDrawingElementRef drawing_element = {DATA_PTR(self)};
-	bool receives_shadows_flag = false;
-	SUDrawingElementGetReceivesShadows(drawing_element, &receives_shadows_flag);
-	return receives_shadows_flag ? Qtrue : Qfalse;
-}
-
-static VALUE Sketchup_DrawingElement_Set_receives_shadows(VALUE self, VALUE receives_shadows_flag)
-{
-	SUDrawingElementRef drawing_element = {DATA_PTR(self)};
-	SUDrawingElementSetReceivesShadows(drawing_element, RTEST(receives_shadows_flag));
-	return receives_shadows_flag;
-}
-
-static VALUE Sketchup_DrawingElement_Get_hidden(VALUE self)
-{
-	SUDrawingElementRef drawing_element = {DATA_PTR(self)};
-	bool hide_flag = false;
-	SUDrawingElementGetHidden(drawing_element, &hide_flag);
-	return hide_flag ? Qtrue : Qfalse;
-}
-
-static VALUE Sketchup_DrawingElement_Set_hidden(VALUE self, VALUE hide_flag)
-{
-	SUDrawingElementRef drawing_element = {DATA_PTR(self)};
-	SUDrawingElementSetHidden(drawing_element, RTEST(hide_flag));
-	return hide_flag;
-}
-
-static VALUE Sketchup_DrawingElement_Get_visible(VALUE self)
-{
-	SUDrawingElementRef drawing_element = {DATA_PTR(self)};
-	bool hide_flag = false;
-	SUDrawingElementGetHidden(drawing_element, &hide_flag);
-	return hide_flag ? Qfalse : Qtrue;
-}
-
-static VALUE Sketchup_DrawingElement_Set_visible(VALUE self, VALUE visible_flag)
-{
-	SUDrawingElementRef drawing_element = {DATA_PTR(self)};
-	SUDrawingElementSetHidden(drawing_element, RTEST(visible_flag));
-	return visible_flag;
-}
-
-static VALUE Sketchup_DrawingElement_Get_material(VALUE self)
-{
-	SUDrawingElementRef drawing_element = {DATA_PTR(self)};
-	SUMaterialRef material = SU_INVALID;
-	SUDrawingElementGetMaterial(drawing_element, &material);
-	if (SUIsInvalid(material))
-		return Qnil;
-	return Data_Wrap_Struct(rb_path2class(SKETCHUP_MATERIAL), 0, 0, material.ptr);
-}
-
-static VALUE Sketchup_DrawingElement_Set_material(VALUE self, VALUE material)
-{
-	SUDrawingElementRef drawing_element = {DATA_PTR(self)};
-	if (rb_type(material) == T_NIL)
-	{
-		SUMaterialRef empty_material = SU_INVALID;
-		SUDrawingElementSetMaterial(drawing_element, empty_material);
-		return Qnil;
-	}
-	if (!rb_obj_is_kind_of(material, rb_path2class(SKETCHUP_MATERIAL)))
-		rb_raise(rb_eTypeError, "Wrong type of object given");
-
-	SUMaterialRef drawing_element_material = {DATA_PTR(material)};
-	SUDrawingElementSetMaterial(drawing_element, drawing_element_material);
+	SUMaterialRef ref = SU_INVALID;
+	if (!NIL_P(material))
+		ref.ptr = su_unwrap(material, cMaterial);
+	SUDrawingElementSetMaterial(SU_REF(SUDrawingElementRef, self), ref);
 	return material;
 }
 
-static VALUE Sketchup_DrawingElement_Get_layer(VALUE self)
+static VALUE drawingelement_set_layer(VALUE self, VALUE layer)
 {
-	SUDrawingElementRef drawing_element = {DATA_PTR(self)};
-	SULayerRef layer = SU_INVALID;
-	SUDrawingElementGetLayer(drawing_element, &layer);
-	return Data_Wrap_Struct(rb_path2class(SKETCHUP_LAYER), 0, 0, layer.ptr);
-}
-
-static VALUE Sketchup_DrawingElement_Set_layer(VALUE self, VALUE layer)
-{
-	if (rb_type(layer) == T_NIL)
-	{
-		SUDrawingElementRef drawing_element = {DATA_PTR(self)};	
-		SULayerRef drawing_element_layer = SU_INVALID;
-		SUDrawingElementSetLayer(drawing_element, drawing_element_layer);
-		return Qnil;
-	}
-	if (!rb_obj_is_kind_of(layer, rb_path2class(SKETCHUP_LAYER)))
+	if (!NIL_P(layer) && !rb_obj_is_kind_of(layer, cLayer))
 		rb_raise(rb_eArgError, "Wrong type of object given");
-
-	SUDrawingElementRef drawing_element = {DATA_PTR(self)};	
-	SULayerRef drawing_element_layer = {DATA_PTR(layer)};
-	SUDrawingElementSetLayer(drawing_element, drawing_element_layer);
+	SULayerRef ref = SU_INVALID;
+	if (!NIL_P(layer))
+		ref.ptr = DATA_PTR(layer);
+	SUDrawingElementSetLayer(SU_REF(SUDrawingElementRef, self), ref);
 	return layer;
 }
 
-VALUE DrawingElement_Init(VALUE Sketchup, VALUE Sketchup_Entity)
+void Init_drawing_element(void)
 {
-	VALUE Sketchup_DrawingElement = rb_define_class_under(Sketchup, DRAWINGELEMENT, Sketchup_Entity);
-	rb_undef_alloc_func(Sketchup_DrawingElement);
-	rb_define_method(Sketchup_DrawingElement, "bounds", Sketchup_DrawingElement_bounds, 0);
-	rb_define_method(Sketchup_DrawingElement, "casts_shadows?", Sketchup_DrawingElement_Get_casts_shadows, 0);
-	rb_define_method(Sketchup_DrawingElement, "casts_shadows=", Sketchup_DrawingElement_Set_casts_shadows, 1);
-	rb_define_method(Sketchup_DrawingElement, "receives_shadows?", Sketchup_DrawingElement_Get_receives_shadows, 0);
-	rb_define_method(Sketchup_DrawingElement, "receives_shadows=", Sketchup_DrawingElement_Set_receives_shadows, 1);
-	rb_define_method(Sketchup_DrawingElement, "hidden?", Sketchup_DrawingElement_Get_hidden, 0);
-	rb_define_method(Sketchup_DrawingElement, "hidden=", Sketchup_DrawingElement_Set_hidden, 1);
-	rb_define_method(Sketchup_DrawingElement, "visible?", Sketchup_DrawingElement_Get_visible, 0);
-	rb_define_method(Sketchup_DrawingElement, "visible=", Sketchup_DrawingElement_Set_visible, 1);
-	rb_define_method(Sketchup_DrawingElement, "material", Sketchup_DrawingElement_Get_material, 0);
-	rb_define_method(Sketchup_DrawingElement, "material=", Sketchup_DrawingElement_Set_material, 1);
-	rb_define_method(Sketchup_DrawingElement, "layer", Sketchup_DrawingElement_Get_layer, 0);
-	rb_define_method(Sketchup_DrawingElement, "layer=", Sketchup_DrawingElement_Set_layer, 1);
-	return Sketchup_DrawingElement;
+	rb_define_method(cDrawingelement, "bounds", drawingelement_bounds, 0);
+	rb_define_method(cDrawingelement, "casts_shadows?", drawingelement_casts_shadows_p, 0);
+	rb_define_method(cDrawingelement, "casts_shadows=", drawingelement_set_casts_shadows, 1);
+	rb_define_method(cDrawingelement, "receives_shadows?", drawingelement_receives_shadows_p, 0);
+	rb_define_method(cDrawingelement, "receives_shadows=", drawingelement_set_receives_shadows, 1);
+	rb_define_method(cDrawingelement, "hidden?", drawingelement_hidden_p, 0);
+	rb_define_method(cDrawingelement, "hidden=", drawingelement_set_hidden, 1);
+	rb_define_method(cDrawingelement, "visible?", drawingelement_visible_p, 0);
+	rb_define_method(cDrawingelement, "visible=", drawingelement_set_visible, 1);
+	rb_define_method(cDrawingelement, "material", drawingelement_material, 0);
+	rb_define_method(cDrawingelement, "material=", drawingelement_set_material, 1);
+	rb_define_method(cDrawingelement, "layer", drawingelement_layer, 0);
+	rb_define_method(cDrawingelement, "layer=", drawingelement_set_layer, 1);
 }

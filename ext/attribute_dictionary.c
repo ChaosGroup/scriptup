@@ -1,158 +1,83 @@
-#include <stdbool.h>
-#include <attribute_dictionary.h>
-#include <typed_value.h>
-#include <utils.h>
-#include <SketchUpAPI/sketchup.h>
+#include <scriptup.h>
 
-static VALUE Sketchup_AttributeDictionary_get(VALUE self, VALUE key)
+DEFINE_STRING_GETTER(attributedictionary_name, SUAttributeDictionaryRef, SUAttributeDictionaryGetName)
+DEFINE_SIZE_GETTER(attributedictionary_length, SUAttributeDictionaryRef, SUAttributeDictionaryGetNumKeys)
+DEFINE_STRING_LIST(attributedictionary_key_list, SUAttributeDictionaryRef, SUAttributeDictionaryGetNumKeys,
+	SUAttributeDictionaryGetKeys)
+
+static VALUE attributedictionary_value(SUAttributeDictionaryRef dictionary, VALUE key)
 {
-	SUAttributeDictionaryRef dictionary = {DATA_PTR(self)};
-	SUTypedValueRef typedValue = SU_INVALID;
-	SUTypedValueCreate(&typedValue);
-	enum SUResult result = SUAttributeDictionaryGetValue(dictionary, StringValuePtr(key), &typedValue);
-	if (result != SU_ERROR_NONE)
-	{
-		SUTypedValueRelease(&typedValue);
-		return Qnil;
-	}
-	VALUE output = TypedValue_get_value_type(&typedValue);
-	SUTypedValueRelease(&typedValue);
+	SUTypedValueRef value = SU_INVALID;
+	SUTypedValueCreate(&value);
+	VALUE output = Qnil;
+	if (SUAttributeDictionaryGetValue(dictionary, StringValueCStr(key), &value) == SU_ERROR_NONE)
+		output = su_ruby_from_typed_value(value);
+	SUTypedValueRelease(&value);
 	return output;
 }
 
-static VALUE Sketchup_AttributeDictionary_set(VALUE self, VALUE key, VALUE value)
+static VALUE attributedictionary_keys(VALUE self)
 {
-	SUAttributeDictionaryRef dictionary = {DATA_PTR(self)};
-	SUTypedValueRef typedValue = SU_INVALID;
-	SUTypedValueCreate(&typedValue);
-	TypedValue_set_value_type(&typedValue, value);
-	enum SUResult result = SUAttributeDictionarySetValue(dictionary, StringValuePtr(key), typedValue);
-	SUTypedValueRelease(&typedValue);
-	if (result != SU_ERROR_NONE)
-		return Qnil;
-	return TypedValue_get_value_type(&typedValue);
+	return attributedictionary_key_list(SU_REF(SUAttributeDictionaryRef, self));
 }
 
-void Sketchup_AttributeDictionary_Iterator(SUStringRef dictionary_key, SUAttributeDictionaryRef dictionary)
+static VALUE attributedictionary_values(VALUE self)
 {
-	VALUE key;
-	GETUTF8FROMSTRING(dictionary_key, key);
-	SUTypedValueRef value = SU_INVALID;
-	SUTypedValueCreate(&value);
-	SUAttributeDictionaryGetValue(dictionary, StringValuePtr(key), &value);
-	VALUE output = TypedValue_get_value_type(&value);
-	SUTypedValueRelease(&value);
-	rb_yield_values(2, key, output);
+	SUAttributeDictionaryRef dictionary = SU_REF(SUAttributeDictionaryRef, self);
+	VALUE keys = attributedictionary_key_list(dictionary);
+	VALUE values = rb_ary_new_capa(RARRAY_LEN(keys));
+	for (long i = 0; i < RARRAY_LEN(keys); i++)
+		rb_ary_push(values, attributedictionary_value(dictionary, RARRAY_AREF(keys, i)));
+	return values;
 }
 
-static VALUE Sketchup_AttributeDictionary_each(VALUE self)
+static VALUE attributedictionary_aref(VALUE self, VALUE key)
 {
+	return attributedictionary_value(SU_REF(SUAttributeDictionaryRef, self), key);
+}
 
-	SUAttributeDictionaryRef dictionary = {DATA_PTR(self)};
-	FOREACHSTRING(SUAttributeDictionaryGetNumKeys, SUAttributeDictionaryGetKeys, SUStringRef, dictionary, Sketchup_AttributeDictionary_Iterator, dictionary);
+static VALUE attributedictionary_aset(VALUE self, VALUE key, VALUE value)
+{
+	SUTypedValueRef typed_value = SU_INVALID;
+	SUTypedValueCreate(&typed_value);
+	su_typed_value_from_ruby(typed_value, value);
+	enum SUResult result = SUAttributeDictionarySetValue(SU_REF(SUAttributeDictionaryRef, self), StringValueCStr(key), typed_value);
+	SUTypedValueRelease(&typed_value);
+	return result == SU_ERROR_NONE ? value : Qnil;
+}
+
+static VALUE attributedictionary_each(VALUE self)
+{
+	VALUE keys = attributedictionary_keys(self);
+	VALUE values = attributedictionary_values(self);
+	for (long i = 0; i < RARRAY_LEN(keys); i++)
+		rb_yield_values(2, RARRAY_AREF(keys, i), RARRAY_AREF(values, i));
 	return self;
 }
 
-void Sketchup_AttributeDictionary_each_key_Iterator(SUStringRef dictionary_key, void* _)
+static VALUE attributedictionary_each_key(VALUE self)
 {
-	VALUE key;
-	GETUTF8FROMSTRING(dictionary_key, key);
-	rb_yield(key);
+	return su_yield_each(self, attributedictionary_keys(self));
 }
 
-static VALUE Sketchup_AttributeDictionary_each_key(VALUE self)
+static VALUE attributedictionary_delete_key(VALUE self, VALUE key)
 {
-	SUAttributeDictionaryRef dictionary = {DATA_PTR(self)};
-	FOREACHSTRING(SUAttributeDictionaryGetNumKeys, SUAttributeDictionaryGetKeys, SUStringRef, dictionary, Sketchup_AttributeDictionary_each_key_Iterator, 0);
-	return self;
+	return attributedictionary_aref(self, key); // ToDo: delete the key once the C API supports it
 }
 
-static VALUE Sketchup_AttributeDictionary_name(VALUE self)
+void Init_attribute_dictionary(void)
 {
-	VALUE output;
-	SUAttributeDictionaryRef dictionary = {DATA_PTR(self)};
-	GETSTRING(SUAttributeDictionaryGetName, dictionary, output)
-	return output;
-}
-
-static VALUE Sketchup_AttributeDictionary_length(VALUE self)
-{
-	SUAttributeDictionaryRef dictionary = {DATA_PTR(self)};
-	size_t count;
-	SUAttributeDictionaryGetNumKeys(dictionary, &count);	
-	return INT2FIX(count);
-}
-
-void Sketchup_AttributeDictionary_keys_Iterator(SUStringRef dictionary_key, VALUE ary)
-{
-	VALUE key;
-	GETUTF8FROMSTRING(dictionary_key, key);
-	rb_ary_push(ary, key);
-}
-
-static VALUE Sketchup_AttributeDictionary_keys(VALUE self)
-{
-	SUAttributeDictionaryRef dictionary = {DATA_PTR(self)};
-	VALUE ary = rb_ary_new();
-	FOREACHSTRING(SUAttributeDictionaryGetNumKeys, SUAttributeDictionaryGetKeys, SUStringRef, dictionary, Sketchup_AttributeDictionary_keys_Iterator, ary);
-	return ary;
-}
-
-struct AttributeDictionary_Struct
-{
-	VALUE ary;
-	SUAttributeDictionaryRef dictionary;
-};
-
-void Sketchup_AttributeDictionary_values_Iterator(SUStringRef dictionary_key, struct AttributeDictionary_Struct attributeDictionary_struct)
-{
-	VALUE key;
-	GETUTF8FROMSTRING(dictionary_key, key);
-	SUTypedValueRef value = SU_INVALID;
-	SUTypedValueCreate(&value);
-	SUAttributeDictionaryGetValue(attributeDictionary_struct.dictionary, StringValuePtr(key), &value);
-	VALUE output = TypedValue_get_value_type(&value);
-	SUTypedValueRelease(&value);
-	rb_ary_push(attributeDictionary_struct.ary, output);
-}
-
-static VALUE Sketchup_AttributeDictionary_values(VALUE self)
-{
-	SUAttributeDictionaryRef dictionary = {DATA_PTR(self)};
-	VALUE ary = rb_ary_new();
-	struct AttributeDictionary_Struct values_struct = {ary, dictionary};
-	FOREACHSTRING(SUAttributeDictionaryGetNumKeys, SUAttributeDictionaryGetKeys, SUStringRef, dictionary, Sketchup_AttributeDictionary_values_Iterator, values_struct);
-	return ary;
-}
-
-static VALUE Sketchup_AttributeDictionary_delete_key(VALUE self, VALUE key)
-{
-	SUAttributeDictionaryRef dictionary = {DATA_PTR(self)};
-	SUTypedValueRef value = SU_INVALID;
-	SUTypedValueCreate(&value);
-	SUAttributeDictionaryGetValue(dictionary, StringValuePtr(key), &value);
-	VALUE output = TypedValue_get_value_type(&value);
-	SUTypedValueRelease(&value);
-	// ToDo:: delete the key and its value from the attribute dictionary
-	return output;
-}
-
-VALUE AttributeDictionary_Init(VALUE Sketchup, VALUE Sketchup_Entity)
-{
-	VALUE Sketchup_AttributeDictionary = rb_define_class_under(Sketchup, ATTRIBUTEDICTIONARY, Sketchup_Entity);
-	rb_undef_alloc_func(Sketchup_AttributeDictionary);
-	rb_include_module(Sketchup_AttributeDictionary, rb_mEnumerable);
-	rb_define_method(Sketchup_AttributeDictionary, "[]", Sketchup_AttributeDictionary_get, 1);
-	rb_define_method(Sketchup_AttributeDictionary, "[]=", Sketchup_AttributeDictionary_set, 2);
-	rb_define_method(Sketchup_AttributeDictionary, "each", Sketchup_AttributeDictionary_each, 0);
-	rb_define_method(Sketchup_AttributeDictionary, "each_pair", Sketchup_AttributeDictionary_each, 0);
-	rb_define_method(Sketchup_AttributeDictionary, "each_key", Sketchup_AttributeDictionary_each_key, 0);
-	rb_define_method(Sketchup_AttributeDictionary, "name", Sketchup_AttributeDictionary_name, 0);
-	rb_define_method(Sketchup_AttributeDictionary, "length", Sketchup_AttributeDictionary_length, 0);
-	rb_define_method(Sketchup_AttributeDictionary, "size", Sketchup_AttributeDictionary_length, 0);
-	rb_define_method(Sketchup_AttributeDictionary, "keys", Sketchup_AttributeDictionary_keys, 0);
-	rb_define_method(Sketchup_AttributeDictionary, "values", Sketchup_AttributeDictionary_values, 0);
-	rb_define_method(Sketchup_AttributeDictionary, "delete_key", Sketchup_AttributeDictionary_delete_key, 1);
-	rb_define_alias(Sketchup_AttributeDictionary, "count", "size");
-	return Sketchup_AttributeDictionary;
+	rb_include_module(cAttributeDictionary, rb_mEnumerable);
+	rb_define_method(cAttributeDictionary, "[]", attributedictionary_aref, 1);
+	rb_define_method(cAttributeDictionary, "[]=", attributedictionary_aset, 2);
+	rb_define_method(cAttributeDictionary, "each", attributedictionary_each, 0);
+	rb_define_method(cAttributeDictionary, "each_pair", attributedictionary_each, 0);
+	rb_define_method(cAttributeDictionary, "each_key", attributedictionary_each_key, 0);
+	rb_define_method(cAttributeDictionary, "name", attributedictionary_name, 0);
+	rb_define_method(cAttributeDictionary, "length", attributedictionary_length, 0);
+	rb_define_method(cAttributeDictionary, "size", attributedictionary_length, 0);
+	rb_define_method(cAttributeDictionary, "keys", attributedictionary_keys, 0);
+	rb_define_method(cAttributeDictionary, "values", attributedictionary_values, 0);
+	rb_define_method(cAttributeDictionary, "delete_key", attributedictionary_delete_key, 1);
+	rb_define_alias(cAttributeDictionary, "count", "size");
 }
