@@ -19,6 +19,7 @@
 	X(cEntities, mSketchup, "Entities", rb_cObject) \
 	X(cBoundingBox, mGeom, "BoundingBox", rb_cObject) \
 	X(cVector3d, mGeom, "Vector3d", rb_cObject) \
+	X(cPoint3d, mGeom, "Point3d", rb_cObject) \
 	X(cEntity, mSketchup, "Entity", rb_cObject) \
 	X(cMaterials, mSketchup, "Materials", cEntity) \
 	X(cMaterial, mSketchup, "Material", cEntity) \
@@ -59,6 +60,7 @@ void Init_length(void);
 void Init_material(void);
 void Init_materials(void);
 void Init_model(void);
+void Init_point3d(void);
 void Init_texture(void);
 void Init_vector3d(void);
 
@@ -79,6 +81,10 @@ VALUE su_length_new(double inches);
 VALUE su_model_attribute_dictionaries(SUModelRef model);
 VALUE su_color_new(SUColor value);
 VALUE su_color_coerce(VALUE obj);
+VALUE su_point3d_new(struct SUPoint3D value);
+struct SUPoint3D su_to_point3d(VALUE obj);
+struct SURay3D su_to_ray3d(VALUE line);
+struct SUPlane3D su_to_plane3d(VALUE plane);
 VALUE su_vector3d_new(struct SUVector3D value);
 struct SUVector3D su_to_vector3d(VALUE obj);
 void su_array_to_xyz(VALUE ary, double xyz[3]);
