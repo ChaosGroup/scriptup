@@ -71,6 +71,7 @@ void Init_sketchup(void)
 	Init_drawing_element();
 	Init_entities();
 	Init_edge();
+	Init_edge_use();
 	Init_entity();
 	Init_face();
 	Init_geom();

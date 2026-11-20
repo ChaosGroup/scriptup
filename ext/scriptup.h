@@ -68,6 +68,7 @@ void Init_definition_list(void);
 void Init_drawing_element(void);
 void Init_entities(void);
 void Init_edge(void);
+void Init_edge_use(void);
 void Init_entity(void);
 void Init_face(void);
 void Init_lat_long(void);
