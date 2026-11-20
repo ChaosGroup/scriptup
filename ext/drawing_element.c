@@ -35,12 +35,12 @@ static VALUE drawingelement_model(VALUE self)
 }
 
 // Material, material name or Color (a new material is added to the model).
-static VALUE drawingelement_set_material(VALUE self, VALUE material)
+SUMaterialRef su_material_from_arg(VALUE entity, VALUE material)
 {
 	SUMaterialRef ref = SU_INVALID;
 	if (RB_TYPE_P(material, T_STRING))
 	{
-		VALUE found = rb_funcall(rb_funcall(drawingelement_model(self), (rb_intern)("materials"), 0), (rb_intern)("[]"), 1, material);
+		VALUE found = rb_funcall(rb_funcall(drawingelement_model(entity), (rb_intern)("materials"), 0), (rb_intern)("[]"), 1, material);
 		if (NIL_P(found))
 			rb_raise(rb_eArgError, "material not found: %"PRIsVALUE, material);
 		ref.ptr = DATA_PTR(found);
@@ -49,12 +49,17 @@ static VALUE drawingelement_set_material(VALUE self, VALUE material)
 	{
 		SUMaterialCreate(&ref);
 		SUMaterialSetColor(ref, DATA_PTR(material));
-		SUModelRef model = SU_REF(SUModelRef, drawingelement_model(self));
+		SUModelRef model = SU_REF(SUModelRef, drawingelement_model(entity));
 		SUModelAddMaterials(model, 1, &ref);
 	}
 	else if (!NIL_P(material))
 		ref.ptr = su_unwrap(material, cMaterial);
-	SUDrawingElementSetMaterial(SU_REF(SUDrawingElementRef, self), ref);
+	return ref;
+}
+
+static VALUE drawingelement_set_material(VALUE self, VALUE material)
+{
+	SUDrawingElementSetMaterial(SU_REF(SUDrawingElementRef, self), su_material_from_arg(self, material));
 	return material;
 }
 
