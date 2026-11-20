@@ -187,9 +187,23 @@ static VALUE vector2d_reverse(VALUE self)
 	return vector2d_reverse_bang(su_vector2d_new(*VEC(self)));
 }
 
+static VALUE vector2d_transform_bang(VALUE self, VALUE transformation)
+{
+	struct SUTransformation2D t = su_to_transformation2d(transformation);
+	SUVector2DTransform(&t, VEC(self));
+	return self;
+}
+
+static VALUE vector2d_transform(VALUE self, VALUE transformation)
+{
+	return vector2d_transform_bang(su_vector2d_new(*VEC(self)), transformation);
+}
+
 void Init_vector2d(void)
 {
 	rb_define_alloc_func(cVector2d, vector2d_alloc);
+	rb_define_method(cVector2d, "transform", vector2d_transform, 1);
+	rb_define_method(cVector2d, "transform!", vector2d_transform_bang, 1);
 	rb_define_method(cVector2d, "initialize", vector2d_initialize, -1);
 	rb_define_method(cVector2d, "initialize_copy", vector2d_initialize_copy, 1);
 	rb_define_method(cVector2d, "set!", vector2d_set_bang, -1);

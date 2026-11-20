@@ -156,9 +156,23 @@ static VALUE point2d_offset(int argc, VALUE* argv, VALUE self)
 	return point2d_offset_bang(argc, argv, su_point2d_new(*PT(self)));
 }
 
+static VALUE point2d_transform_bang(VALUE self, VALUE transformation)
+{
+	struct SUTransformation2D t = su_to_transformation2d(transformation);
+	SUPoint2DTransform(&t, PT(self));
+	return self;
+}
+
+static VALUE point2d_transform(VALUE self, VALUE transformation)
+{
+	return point2d_transform_bang(su_point2d_new(*PT(self)), transformation);
+}
+
 void Init_point2d(void)
 {
 	rb_define_alloc_func(cPoint2d, point2d_alloc);
+	rb_define_method(cPoint2d, "transform", point2d_transform, 1);
+	rb_define_method(cPoint2d, "transform!", point2d_transform_bang, 1);
 	rb_define_method(cPoint2d, "initialize", point2d_initialize, -1);
 	rb_define_method(cPoint2d, "initialize_copy", point2d_initialize_copy, 1);
 	rb_define_method(cPoint2d, "set!", point2d_set_bang, -1);
