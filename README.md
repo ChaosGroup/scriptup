@@ -12,6 +12,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Class | Methods |
 |---|---|
 | Sketchup::Color | 15/15 |
+| Length (plus the Numeric and String#to_l extensions) | 9/9 |
 
 ## Mostly implemented
 | Class | Methods | Missing / incomplete |

@@ -4,9 +4,15 @@
 #include <ruby.h>
 #include <stdbool.h>
 #include <SketchUpAPI/sketchup.h>
+#include <math.h>
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 // X(var, namespace, "Name", parent) in definition order (parents first).
 #define SCRIPTUP_CLASSES(X) \
+	X(cLength, rb_cObject, "Length", rb_cNumeric) \
 	X(cModel, mSketchup, "Model", rb_cObject) \
 	X(cColor, mSketchup, "Color", rb_cObject) \
 	X(cImageRep, mSketchup, "ImageRep", rb_cObject) \
@@ -48,6 +54,7 @@ void Init_definition_list(void);
 void Init_drawing_element(void);
 void Init_entities(void);
 void Init_entity(void);
+void Init_length(void);
 void Init_material(void);
 void Init_materials(void);
 void Init_model(void);
@@ -66,6 +73,7 @@ double su_clamp_double(VALUE value, double min, double max);
 VALUE su_yield_each(VALUE self, VALUE ary);
 VALUE su_find_by(VALUE ary, const char* method, VALUE key);
 VALUE su_fetch(VALUE ary, VALUE index);
+VALUE su_length_new(double inches);
 VALUE su_model_attribute_dictionaries(SUModelRef model);
 VALUE su_color_new(SUColor value);
 VALUE su_color_coerce(VALUE obj);
