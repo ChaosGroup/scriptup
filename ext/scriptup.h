@@ -35,6 +35,11 @@
 	X(cTexture, mSketchup, "Texture", cEntity) \
 	X(cBehavior, mSketchup, "Behavior", cEntity) \
 	X(cLayer, mSketchup, "Layer", cEntity) \
+	X(cVertex, mSketchup, "Vertex", cEntity) \
+	X(cLoop, mSketchup, "Loop", cEntity) \
+	X(cEdgeUse, mSketchup, "EdgeUse", cEntity) \
+	X(cCurve, mSketchup, "Curve", cEntity) \
+	X(cArcCurve, mSketchup, "ArcCurve", cCurve) \
 	X(cDrawingelement, mSketchup, "Drawingelement", cEntity) \
 	X(cComponentDefinition, mSketchup, "ComponentDefinition", cDrawingelement) \
 	X(cComponentInstance, mSketchup, "ComponentInstance", cDrawingelement) \
@@ -98,6 +103,8 @@ VALUE su_color_new(SUColor value);
 VALUE su_color_coerce(VALUE obj);
 VALUE su_point3d_new(struct SUPoint3D value);
 struct SUPoint3D su_to_point3d(VALUE obj);
+struct SUPoint3D su_to_point3d_like(VALUE obj);
+VALUE su_entities_new(SUEntitiesRef entities);
 struct SURay3D su_to_ray3d(VALUE line);
 struct SUPlane3D su_to_plane3d(VALUE plane);
 VALUE su_vector3d_new(struct SUVector3D value);

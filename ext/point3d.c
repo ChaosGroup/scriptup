@@ -27,6 +27,18 @@ struct SUPoint3D su_to_point3d(VALUE obj)
 	return (struct SUPoint3D){xyz[0], xyz[1], xyz[2]};
 }
 
+// Geom::point3d_like: also accepts a Vertex.
+struct SUPoint3D su_to_point3d_like(VALUE obj)
+{
+	if (rb_obj_is_kind_of(obj, cVertex))
+	{
+		struct SUPoint3D p = {0, 0, 0};
+		SUVertexGetPosition(SU_REF(SUVertexRef, obj), &p);
+		return p;
+	}
+	return su_to_point3d(obj);
+}
+
 // A line is [point, vector] or [point, point].
 struct SURay3D su_to_ray3d(VALUE line)
 {

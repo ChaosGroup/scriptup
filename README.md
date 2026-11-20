@@ -40,8 +40,8 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::DefinitionList | 10/15 |
 | Sketchup::Material | 17/46 (no PBR properties) |
 | Sketchup::Materials | 5/15 |
-| Sketchup::Model | 4/73 |
-| Sketchup::Entities | 2/39 (`each` yields faces only) |
+| Sketchup::Model | 5/73 |
+| Sketchup::Entities | 31/39 (`build` with EntitiesBuilder; no 3D text, intersect, dimensions, snaps or observers in the C API) |
 | Sketchup (module) | 2/61 (`open_file`, `active_model`) |
 
 ## Defined, no methods of their own yet
