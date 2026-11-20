@@ -21,6 +21,7 @@
 	X(cVector3d, mGeom, "Vector3d", rb_cObject) \
 	X(cPoint3d, mGeom, "Point3d", rb_cObject) \
 	X(cVector2d, mGeom, "Vector2d", rb_cObject) \
+	X(cPoint2d, mGeom, "Point2d", rb_cObject) \
 	X(cEntity, mSketchup, "Entity", rb_cObject) \
 	X(cMaterials, mSketchup, "Materials", cEntity) \
 	X(cMaterial, mSketchup, "Material", cEntity) \
@@ -61,6 +62,7 @@ void Init_length(void);
 void Init_material(void);
 void Init_materials(void);
 void Init_model(void);
+void Init_point2d(void);
 void Init_point3d(void);
 void Init_texture(void);
 void Init_vector2d(void);
@@ -91,6 +93,8 @@ VALUE su_vector3d_new(struct SUVector3D value);
 struct SUVector3D su_to_vector3d(VALUE obj);
 void su_array_to_xyz(VALUE ary, double xyz[3]);
 void su_array_to_xy(VALUE ary, double xy[2]);
+VALUE su_point2d_new(struct SUPoint2D value);
+struct SUPoint2D su_to_point2d(VALUE obj);
 VALUE su_vector2d_new(struct SUVector2D value);
 struct SUVector2D su_to_vector2d(VALUE obj);
 VALUE su_format_number(double value);

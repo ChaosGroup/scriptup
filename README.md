@@ -23,7 +23,8 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::Texture | 9/10 | `size=` |
 | Sketchup::AttributeDictionaries | 5/6 | `delete` |
 | Geom::Point3d | 29/31 | `transform`, `transform!` (with Geom::Transformation); no InputPoint constructor |
-| Geom::Vector2d | 30/32 | `transform`, `transform!` (with Geom::Transformation2d) |
+| Geom::Point2d | 19/21 | `transform`, `transform!` (with Geom::Transformation2d) |
+| Geom::Vector2d | 31/33 | `transform`, `transform!` (with Geom::Transformation2d) |
 | Geom::Vector3d | 36/38 | `transform`, `transform!` (with Geom::Transformation) |
 
 ## Partially implemented
