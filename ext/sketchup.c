@@ -76,5 +76,6 @@ void Init_sketchup(void)
 	Init_model();
 	Init_point3d();
 	Init_texture();
+	Init_vector2d();
 	Init_vector3d();
 }

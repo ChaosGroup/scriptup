@@ -20,6 +20,7 @@
 	X(cBoundingBox, mGeom, "BoundingBox", rb_cObject) \
 	X(cVector3d, mGeom, "Vector3d", rb_cObject) \
 	X(cPoint3d, mGeom, "Point3d", rb_cObject) \
+	X(cVector2d, mGeom, "Vector2d", rb_cObject) \
 	X(cEntity, mSketchup, "Entity", rb_cObject) \
 	X(cMaterials, mSketchup, "Materials", cEntity) \
 	X(cMaterial, mSketchup, "Material", cEntity) \
@@ -62,6 +63,7 @@ void Init_materials(void);
 void Init_model(void);
 void Init_point3d(void);
 void Init_texture(void);
+void Init_vector2d(void);
 void Init_vector3d(void);
 
 SUModelRef Sketchup_get_active_model(void);
@@ -88,6 +90,9 @@ struct SUPlane3D su_to_plane3d(VALUE plane);
 VALUE su_vector3d_new(struct SUVector3D value);
 struct SUVector3D su_to_vector3d(VALUE obj);
 void su_array_to_xyz(VALUE ary, double xyz[3]);
+void su_array_to_xy(VALUE ary, double xy[2]);
+VALUE su_vector2d_new(struct SUVector2D value);
+struct SUVector2D su_to_vector2d(VALUE obj);
 VALUE su_format_number(double value);
 VALUE su_ruby_from_typed_value(SUTypedValueRef value);
 void su_typed_value_from_ruby(SUTypedValueRef value, VALUE object);

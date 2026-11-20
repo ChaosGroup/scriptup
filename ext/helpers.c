@@ -171,3 +171,13 @@ VALUE su_format_number(double value)
 		return rb_sprintf("%lld", (long long)value);
 	return rb_funcall(DBL2NUM(value), (rb_intern)("to_s"), 0);
 }
+
+void su_array_to_xy(VALUE ary, double xy[2])
+{
+	if (!RB_TYPE_P(ary, T_ARRAY))
+		rb_raise(rb_eTypeError, "wrong argument type %"PRIsVALUE" (expected Array)", rb_obj_class(ary));
+	if (RARRAY_LEN(ary) != 2)
+		rb_raise(rb_eArgError, "expected an array of 2 numbers, got %ld", RARRAY_LEN(ary));
+	xy[0] = NUM2DBL(RARRAY_AREF(ary, 0));
+	xy[1] = NUM2DBL(RARRAY_AREF(ary, 1));
+}
