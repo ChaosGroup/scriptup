@@ -67,6 +67,7 @@ void Init_component_definition(void);
 void Init_definition_list(void);
 void Init_drawing_element(void);
 void Init_entities(void);
+void Init_edge(void);
 void Init_entity(void);
 void Init_lat_long(void);
 void Init_geom(void);
@@ -82,6 +83,7 @@ void Init_transformation(void);
 void Init_transformation2d(void);
 void Init_vector2d(void);
 void Init_vector3d(void);
+void Init_vertex(void);
 
 SUModelRef Sketchup_get_active_model(void);
 void Sketchup_set_active_model(SUModelRef model);

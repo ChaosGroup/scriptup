@@ -70,6 +70,7 @@ void Init_sketchup(void)
 	Init_definition_list();
 	Init_drawing_element();
 	Init_entities();
+	Init_edge();
 	Init_entity();
 	Init_geom();
 	Init_lat_long();
@@ -85,4 +86,5 @@ void Init_sketchup(void)
 	Init_transformation2d();
 	Init_vector2d();
 	Init_vector3d();
+	Init_vertex();
 }

@@ -13,6 +13,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 |---|---|
 | Sketchup::Color | 15/15 |
 | Sketchup::Drawingelement | 14/14 |
+| Sketchup::Vertex | 7/7 |
 | Geom (module) | 7/8 (no `tesselate`: no C API) |
 | Geom::BoundingBox | 15/15 |
 | Geom::LatLong | 5/6 (no `to_utm`: no C API) |
@@ -41,11 +42,12 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::Material | 17/46 (no PBR properties) |
 | Sketchup::Materials | 5/15 |
 | Sketchup::Model | 5/73 |
+| Sketchup::Edge | 16/19 (no `explode_curve`, `find_faces`, `split`: no C API) |
 | Sketchup::Entities | 31/39 (`build` with EntitiesBuilder; no 3D text, intersect, dimensions, snaps or observers in the C API) |
 | Sketchup (module) | 2/61 (`open_file`, `active_model`) |
 
 ## Defined, no methods of their own yet
-Sketchup::Behavior, Sketchup::ComponentInstance, Sketchup::ConstructionLine, Sketchup::ConstructionPoint, Sketchup::Dimension, Sketchup::Edge, Sketchup::Face, Sketchup::Group, Sketchup::Image, Sketchup::ImageRep, Sketchup::Layer, Sketchup::SectionPlane, Sketchup::Text
+Sketchup::Behavior, Sketchup::ComponentInstance, Sketchup::ConstructionLine, Sketchup::ConstructionPoint, Sketchup::Dimension, Sketchup::Face, Sketchup::Group, Sketchup::Image, Sketchup::ImageRep, Sketchup::Layer, Sketchup::SectionPlane, Sketchup::Text
 
 # Supportable through the C API
 
