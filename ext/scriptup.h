@@ -54,6 +54,7 @@ SCRIPTUP_CLASSES(SCRIPTUP_DECLARE_CLASS)
 // Per-file method definitions, called after all classes exist.
 void Init_attribute_dictionaries(void);
 void Init_attribute_dictionary(void);
+void Init_bounding_box(void);
 void Init_color(void);
 void Init_component_definition(void);
 void Init_definition_list(void);
@@ -97,6 +98,7 @@ VALUE su_vector3d_new(struct SUVector3D value);
 struct SUVector3D su_to_vector3d(VALUE obj);
 void su_array_to_xyz(VALUE ary, double xyz[3]);
 void su_array_to_xy(VALUE ary, double xy[2]);
+VALUE su_bounding_box_new(struct SUBoundingBox3D value);
 VALUE su_transformation_new(struct SUTransformation value);
 struct SUTransformation su_to_transformation(VALUE obj);
 struct SUTransformation2D su_to_transformation2d(VALUE obj);

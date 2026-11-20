@@ -64,6 +64,7 @@ void Init_sketchup(void)
 
 	Init_attribute_dictionaries();
 	Init_attribute_dictionary();
+	Init_bounding_box();
 	Init_color();
 	Init_component_definition();
 	Init_definition_list();

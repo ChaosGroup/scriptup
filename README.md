@@ -12,6 +12,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Class | Methods |
 |---|---|
 | Sketchup::Color | 15/15 |
+| Geom::BoundingBox | 15/15 |
 | Geom::Point2d | 21/21 |
 | Geom::Point3d | 31/31 |
 | Geom::Transformation | 17/17 |
@@ -41,7 +42,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup (module) | 2/61 (`open_file`, `active_model`) |
 
 ## Defined, no methods of their own yet
-Geom::BoundingBox, Sketchup::Behavior, Sketchup::ComponentInstance, Sketchup::ConstructionLine, Sketchup::ConstructionPoint, Sketchup::Dimension, Sketchup::Edge, Sketchup::Face, Sketchup::Group, Sketchup::Image, Sketchup::ImageRep, Sketchup::Layer, Sketchup::SectionPlane, Sketchup::Text
+Sketchup::Behavior, Sketchup::ComponentInstance, Sketchup::ConstructionLine, Sketchup::ConstructionPoint, Sketchup::Dimension, Sketchup::Edge, Sketchup::Face, Sketchup::Group, Sketchup::Image, Sketchup::ImageRep, Sketchup::Layer, Sketchup::SectionPlane, Sketchup::Text
 
 # Supportable through the C API
 

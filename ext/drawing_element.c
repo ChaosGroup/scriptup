@@ -22,10 +22,9 @@ static VALUE drawingelement_visible_p(VALUE self)
 
 static VALUE drawingelement_bounds(VALUE self)
 {
-	struct SUBoundingBox3D* bbox;
-	VALUE obj = Data_Make_Struct(cBoundingBox, struct SUBoundingBox3D, 0, RUBY_DEFAULT_FREE, bbox);
-	SUDrawingElementGetBoundingBox(SU_REF(SUDrawingElementRef, self), bbox);
-	return obj;
+	struct SUBoundingBox3D bbox;
+	SUDrawingElementGetBoundingBox(SU_REF(SUDrawingElementRef, self), &bbox);
+	return su_bounding_box_new(bbox);
 }
 
 static VALUE drawingelement_set_material(VALUE self, VALUE material)
