@@ -20,7 +20,7 @@ end
 core = [Object, Kernel, BasicObject, Module]
 implemented = lambda do |mod|
   instance = mod.instance_methods.select do |m|
-    !core.include?(mod.instance_method(m).owner) || %i[inspect to_s == hash eql?].include?(m)
+    !core.include?(mod.instance_method(m).owner) || %i[inspect to_s == hash eql? clone dup].include?(m)
   end
   instance << :initialize if mod.is_a?(Class) && mod.private_instance_methods.include?(:initialize) &&
                              mod.instance_method(:initialize).owner == mod

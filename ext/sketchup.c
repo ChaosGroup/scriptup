@@ -75,4 +75,5 @@ void Init_sketchup(void)
 	Init_materials();
 	Init_model();
 	Init_texture();
+	Init_vector3d();
 }

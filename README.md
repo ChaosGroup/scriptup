@@ -22,6 +22,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::AttributeDictionary | 12/13 | `empty?`; `delete_key` doesn't delete |
 | Sketchup::Texture | 9/10 | `size=` |
 | Sketchup::AttributeDictionaries | 5/6 | `delete` |
+| Geom::Vector3d | 36/38 | `transform`, `transform!` (with Geom::Transformation) |
 
 ## Partially implemented
 | Class | Methods |

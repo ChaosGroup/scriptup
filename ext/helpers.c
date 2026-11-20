@@ -150,3 +150,24 @@ void su_typed_value_from_ruby(SUTypedValueRef value, VALUE object)
 			rb_raise(rb_eNotImpError, "unsupported attribute value type %"PRIsVALUE, rb_obj_class(object));
 	}
 }
+
+// Accepts a 2 or 3 element numeric array; z defaults to 0.
+void su_array_to_xyz(VALUE ary, double xyz[3])
+{
+	if (!RB_TYPE_P(ary, T_ARRAY))
+		rb_raise(rb_eTypeError, "wrong argument type %"PRIsVALUE" (expected Array)", rb_obj_class(ary));
+	long length = RARRAY_LEN(ary);
+	if (length != 2 && length != 3)
+		rb_raise(rb_eArgError, "expected an array of 2 or 3 numbers, got %ld", length);
+	xyz[0] = NUM2DBL(RARRAY_AREF(ary, 0));
+	xyz[1] = NUM2DBL(RARRAY_AREF(ary, 1));
+	xyz[2] = length == 3 ? NUM2DBL(RARRAY_AREF(ary, 2)) : 0.0;
+}
+
+// Formats like SketchUp: whole numbers without a decimal part.
+VALUE su_format_number(double value)
+{
+	if (value == floor(value) && fabs(value) < 1e15)
+		return rb_sprintf("%lld", (long long)value);
+	return rb_funcall(DBL2NUM(value), (rb_intern)("to_s"), 0);
+}
