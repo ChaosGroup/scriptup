@@ -12,6 +12,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Class | Methods |
 |---|---|
 | Sketchup::Color | 15/15 |
+| Sketchup::Drawingelement | 14/14 |
 | Geom (module) | 7/8 (no `tesselate`: no C API) |
 | Geom::BoundingBox | 15/15 |
 | Geom::LatLong | 5/6 (no `to_utm`: no C API) |
@@ -28,7 +29,6 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Class | Methods | Missing / incomplete |
 |---|---|---|
 | Sketchup::Entity | 14/16 | no observers (no C API); `delete_attribute` can't delete a single key |
-| Sketchup::Drawingelement | 13/14 | `erase!` |
 | Sketchup::AttributeDictionary | 12/13 | `empty?`; `delete_key` doesn't delete |
 | Sketchup::Texture | 9/10 | `size=` |
 | Sketchup::AttributeDictionaries | 5/6 | `delete` |
