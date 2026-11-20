@@ -39,3 +39,34 @@ Rake::TestTask.new do |t|
 end
 
 task default: [:download, :compile, :test]
+
+namespace :rbs do
+  rbs_bundle = lambda do |cmd|
+    Bundler.with_unbundled_env do
+      sh({ 'BUNDLE_GEMFILE' => "#{__dir__}/scripts/rbs/Gemfile" }, "bundle exec #{cmd}", chdir: __dir__)
+    end
+  end
+
+  desc 'Install the RBS tooling bundle (scripts/rbs/Gemfile)'
+  task :setup do
+    Bundler.with_unbundled_env { sh({ 'BUNDLE_GEMFILE' => "#{__dir__}/scripts/rbs/Gemfile" }, 'bundle install') }
+  end
+
+  desc 'Generate the Ruby API RBS into sig/ (reports in workspace/rbs/reports)'
+  task :generate do
+    rbs_bundle.call('ruby scripts/rbs/bin/generate')
+  end
+
+  desc 'Validate the generated RBS'
+  task validate: :generate do
+    rbs_bundle.call('rbs -I sig validate')
+  end
+
+  desc 'Run the RBS generator tests'
+  task :test do
+    rbs_bundle.call(%q(ruby -e 'Dir["scripts/rbs/test/test_*.rb"].each { |f| require File.expand_path(f) }'))
+  end
+end
+
+desc 'Generate, validate and test RBS'
+task rbs: %w[rbs:generate rbs:validate rbs:test]

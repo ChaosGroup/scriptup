@@ -12,6 +12,7 @@ Gem::Specification.new do |spec|
     'README.md',
     'LICENSE.txt',
     'lib/sketchup.rb',
+    'sig/**/*.rbs',
     'ext/*',
     'sketchup-sdk-win/binaries/**/*',
     'sketchup-sdk-win/headers/**/*',
