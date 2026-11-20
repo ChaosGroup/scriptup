@@ -27,7 +27,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 ## Mostly implemented
 | Class | Methods | Missing / incomplete |
 |---|---|---|
-| Sketchup::Entity | 16/16 | `get_attribute` and `set_attribute` are stubs; `delete_attribute` ignores a key |
+| Sketchup::Entity | 14/16 | no observers (no C API); `delete_attribute` can't delete a single key |
 | Sketchup::Drawingelement | 13/14 | `erase!` |
 | Sketchup::AttributeDictionary | 12/13 | `empty?`; `delete_key` doesn't delete |
 | Sketchup::Texture | 9/10 | `size=` |

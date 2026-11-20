@@ -28,9 +28,6 @@ class TestComponentDefinition < Minitest::Test
     refute(@definition == Object.new)
   end
 
-  def test_add_observer
-    assert(@definition.add_observer(nil))
-  end
 
   def test_behavior
     assert_instance_of(Sketchup::Behavior, @definition.behavior)
@@ -97,9 +94,6 @@ class TestComponentDefinition < Minitest::Test
     assert_instance_of(String, @definition.path)
   end
 
-  def test_remove_observer
-    assert(@definition.remove_observer(42) == false)
-  end
 
   def test_save_as
     Dir.mktmpdir { |dir|

@@ -36,9 +36,6 @@ class TestDefinitionList < Minitest::Test
     }
   end
 
-  def test_add_observer
-    assert(@definitions.add_observer(nil))
-  end
 
   def test_count
     assert_equal(2, @definitions.count)
@@ -74,9 +71,6 @@ class TestDefinitionList < Minitest::Test
     assert(1, @definitions.count)
   end
 
-  def test_remove_observer
-    assert(@definitions.remove_observer(42) == false)
-  end
 
   def test_size
     assert(2, @definitions.size)

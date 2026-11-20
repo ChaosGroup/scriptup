@@ -31,34 +31,64 @@ static VALUE entity_typename(VALUE self)
 	return rb_str_new_cstr(ref_type_name(SUEntityGetType(SU_REF(SUEntityRef, self))));
 }
 
+static const struct { enum SURefType type; VALUE* klass; } entity_classes[] = {
+	{SURefType_AttributeDictionary, &cAttributeDictionary},
+	{SURefType_ComponentDefinition, &cComponentDefinition},
+	{SURefType_ComponentInstance, &cComponentInstance},
+	{SURefType_Dimension, &cDimension},
+	{SURefType_DimensionLinear, &cDimension},
+	{SURefType_DimensionRadial, &cDimension},
+	{SURefType_Edge, &cEdge},
+	{SURefType_Face, &cFace},
+	{SURefType_Group, &cGroup},
+	{SURefType_GuideLine, &cConstructionLine},
+	{SURefType_GuidePoint, &cConstructionPoint},
+	{SURefType_Image, &cImage},
+	{SURefType_Layer, &cLayer},
+	{SURefType_Material, &cMaterial},
+	{SURefType_SectionPlane, &cSectionPlane},
+	{SURefType_Text, &cText},
+	{SURefType_Texture, &cTexture},
+};
+
+// Wraps an entity as the Ruby class matching its runtime type.
+VALUE su_wrap_entity(SUEntityRef entity)
+{
+	if (SUIsInvalid(entity))
+		return Qnil;
+	enum SURefType type = SUEntityGetType(entity);
+	for (size_t i = 0; i < sizeof(entity_classes) / sizeof(entity_classes[0]); i++)
+		if (entity_classes[i].type == type)
+			return su_wrap(*entity_classes[i].klass, entity.ptr);
+	return su_wrap(cEntity, entity.ptr);
+}
+
 static VALUE entity_parent(VALUE self)
 {
-	SUEntitiesRef entities = SU_INVALID;
-	SUEntityGetParentEntities(SU_REF(SUEntityRef, self), &entities);
-	return su_wrap(cDefinitionList, entities.ptr);
-}
-
-static VALUE entity_observers(VALUE self)
-{
-	ID id = (rb_intern)("@observers");
-	VALUE observers = rb_attr_get(self, id);
-	if (NIL_P(observers))
+	SUEntityRef entity = SU_REF(SUEntityRef, self);
+	if (SUEntityGetType(entity) == SURefType_ComponentDefinition)
 	{
-		observers = rb_hash_new();
-		rb_ivar_set(self, id, observers);
+		SUModelRef model = SU_INVALID;
+		SUEntityGetModel(entity, &model);
+		return su_wrap_or_nil(cDefinitionList, model.ptr);
 	}
-	return observers;
+	SUEntitiesRef entities = SU_INVALID;
+	struct SUEntitiesParent parent = {SU_INVALID, SU_INVALID};
+	if (SUEntityGetParentEntities(entity, &entities) != SU_ERROR_NONE || SUEntitiesGetParent(entities, &parent) != SU_ERROR_NONE)
+		return Qnil;
+	if (SUIsValid(parent.definition))
+		return su_wrap(cComponentDefinition, parent.definition.ptr);
+	return su_wrap_or_nil(cModel, parent.model.ptr);
 }
 
-static VALUE entity_add_observer(VALUE self, VALUE observer)
+static VALUE entity_eq(VALUE self, VALUE other)
 {
-	rb_hash_aset(entity_observers(self), observer, observer);
-	return Qtrue;
+	return BOOL2RB(rb_obj_is_kind_of(other, cEntity) && DATA_PTR(self) == DATA_PTR(other));
 }
 
-static VALUE entity_remove_observer(VALUE self, VALUE observer)
+static VALUE entity_hash(VALUE self)
 {
-	return BOOL2RB(rb_hash_delete(entity_observers(self), observer) != Qnil);
+	return rb_funcall(ULL2NUM((unsigned long long)(uintptr_t)DATA_PTR(self)), (rb_intern)("hash"), 0);
 }
 
 static VALUE entity_attribute_dictionaries(VALUE self)
@@ -76,6 +106,7 @@ static VALUE entity_attribute_dictionary(int argc, VALUE* argv, VALUE self)
 	VALUE name;
 	VALUE create;
 	rb_scan_args(argc, argv, "11", &name, &create);
+	StringValue(name);
 	if (rb_obj_is_kind_of(self, cMaterials) || rb_obj_is_kind_of(self, cDefinitionList))
 		return Qnil;
 
@@ -99,7 +130,7 @@ static VALUE entity_delete_attribute(int argc, VALUE* argv, VALUE self)
 	if (strcmp(name_ptr, "SU_InstanceSet") == 0 || strcmp(name_ptr, "SU_DefinitionSet") == 0)
 		rb_raise(rb_eArgError, "Cannot delete internal");
 	if (!NIL_P(key))
-		return Qfalse; // ToDo: delete a single key
+		rb_raise(rb_eNotImpError, "the C API cannot delete a single attribute key");
 
 	VALUE dictionary = entity_find_dictionary(self, name);
 	if (NIL_P(dictionary))
@@ -125,12 +156,20 @@ static VALUE entity_get_attribute(int argc, VALUE* argv, VALUE self)
 	VALUE key;
 	VALUE default_value;
 	rb_scan_args(argc, argv, "21", &name, &key, &default_value);
-	return Qnil; // ToDo: use AttributeDictionary#[]
+	StringValue(key);
+	VALUE dictionary = entity_find_dictionary(self, name);
+	VALUE value = NIL_P(dictionary) ? Qnil : rb_funcall(dictionary, (rb_intern)("[]"), 1, key);
+	return NIL_P(value) ? default_value : value;
 }
 
 static VALUE entity_set_attribute(VALUE self, VALUE name, VALUE key, VALUE value)
 {
-	return Qnil; // ToDo: use AttributeDictionary#[]=
+	VALUE args[2] = {name, Qtrue};
+	VALUE dictionary = entity_attribute_dictionary(2, args, self);
+	if (NIL_P(dictionary))
+		rb_raise(rb_eArgError, "cannot set attributes on %"PRIsVALUE, rb_obj_class(self));
+	rb_funcall(dictionary, (rb_intern)("[]="), 2, key, value);
+	return value;
 }
 
 void Init_entity(void)
@@ -140,8 +179,9 @@ void Init_entity(void)
 	rb_define_method(cEntity, "typename", entity_typename, 0);
 	rb_define_method(cEntity, "parent", entity_parent, 0);
 	rb_define_method(cEntity, "model", entity_model, 0);
-	rb_define_method(cEntity, "add_observer", entity_add_observer, 1);
-	rb_define_method(cEntity, "remove_observer", entity_remove_observer, 1);
+	rb_define_method(cEntity, "==", entity_eq, 1);
+	rb_define_method(cEntity, "eql?", entity_eq, 1);
+	rb_define_method(cEntity, "hash", entity_hash, 0);
 	rb_define_method(cEntity, "attribute_dictionaries", entity_attribute_dictionaries, 0);
 	rb_define_method(cEntity, "attribute_dictionary", entity_attribute_dictionary, -1);
 	rb_define_method(cEntity, "delete_attribute", entity_delete_attribute, -1);

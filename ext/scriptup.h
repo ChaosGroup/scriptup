@@ -84,6 +84,7 @@ void Sketchup_set_active_model(SUModelRef model);
 // helpers.c
 VALUE su_wrap(VALUE klass, void* ptr);
 VALUE su_wrap_or_nil(VALUE klass, void* ptr);
+VALUE su_wrap_entity(SUEntityRef entity);
 void* su_unwrap(VALUE obj, VALUE klass);
 VALUE su_string_to_rb(SUStringRef string);
 int su_clamp_int(VALUE value, int min, int max);
