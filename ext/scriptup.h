@@ -27,6 +27,7 @@
 	X(cLatLong, mGeom, "LatLong", rb_cObject) \
 	X(cPolygonMesh, mGeom, "PolygonMesh", rb_cObject) \
 	X(cInstancePath, mSketchup, "InstancePath", rb_cObject) \
+	X(cEntitiesBuilder, mSketchup, "EntitiesBuilder", rb_cObject) \
 	X(cEntity, mSketchup, "Entity", rb_cObject) \
 	X(cMaterials, mSketchup, "Materials", cEntity) \
 	X(cMaterial, mSketchup, "Material", cEntity) \
@@ -72,6 +73,7 @@ void Init_curve(void);
 void Init_definition_list(void);
 void Init_drawing_element(void);
 void Init_entities(void);
+void Init_entities_builder(void);
 void Init_edge(void);
 void Init_edge_use(void);
 void Init_entity(void);

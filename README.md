@@ -17,6 +17,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::Curve | 9/9 |
 | Sketchup::Drawingelement | 14/14 |
 | Sketchup::EdgeUse | 9/9 |
+| Sketchup::EntitiesBuilder | 6/6 (geometry is added immediately, not merged) |
 | Sketchup::InstancePath | 14/14 |
 | Sketchup::Loop | 6/6 |
 | Sketchup::Vertex | 7/7 |
@@ -52,7 +53,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::Face | 24/28 (`get_UVHelper` with UVHelper; no `pushpull`, `followme`, `set_texture_projection`: no C API) |
 | Sketchup::ComponentInstance | 13/27 (no `definition=`, booleans, `explode`, `make_unique`, `glued_to=` or observers: no C API) |
 | Sketchup::Group | 17/32 (no booleans, `copy`, `explode`, `make_unique`, `to_component`, `glued_to=` or observers: no C API) |
-| Sketchup::Entities | 31/39 (`build` with EntitiesBuilder; no 3D text, intersect, dimensions, snaps or observers in the C API) |
+| Sketchup::Entities | 32/39 (no 3D text, intersect, dimensions, snaps or observers in the C API) |
 | Sketchup (module) | 2/61 (`open_file`, `active_model`) |
 
 ## Defined, no methods of their own yet
