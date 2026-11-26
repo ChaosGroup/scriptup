@@ -1,17 +1,28 @@
 #include <scriptup.h>
 
-// A Behavior wraps its component definition; every change is written back.
+// A Behavior wraps its component definition (or model, flagged with a hidden ivar); changes are written back.
+static bool owner_is_model(VALUE self)
+{
+	return RTEST(rb_attr_get(self, (rb_intern)("__owner_is_model")));
+}
+
 static struct SUComponentBehavior behavior_get(VALUE self)
 {
 	struct SUComponentBehavior behavior;
 	memset(&behavior, 0, sizeof(behavior));
-	SUComponentDefinitionGetBehavior(SU_REF(SUComponentDefinitionRef, self), &behavior);
+	if (owner_is_model(self))
+		SUModelGetBehavior(SU_REF(SUModelRef, self), &behavior);
+	else
+		SUComponentDefinitionGetBehavior(SU_REF(SUComponentDefinitionRef, self), &behavior);
 	return behavior;
 }
 
 static void behavior_set(VALUE self, struct SUComponentBehavior behavior)
 {
-	SUComponentDefinitionSetBehavior(SU_REF(SUComponentDefinitionRef, self), &behavior);
+	if (owner_is_model(self))
+		SUModelSetBehavior(SU_REF(SUModelRef, self), &behavior);
+	else
+		SUComponentDefinitionSetBehavior(SU_REF(SUComponentDefinitionRef, self), &behavior);
 }
 
 #define DEFINE_FLAG(name, field) \
