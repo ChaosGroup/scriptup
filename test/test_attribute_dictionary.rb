@@ -1,5 +1,4 @@
-require 'minitest/autorun'
-require 'sketchup'
+require_relative 'helper'
 
 class TestAttributeDictionary < Minitest::Test
 
@@ -25,8 +24,29 @@ class TestAttributeDictionary < Minitest::Test
     assert_equal(7, @attribute_dictionary.count)
   end
 
-  def test_delete_key
-    assert_equal('Manual', @attribute_dictionary.delete_key('LocationSource'))
+  def test_unsupported
+    assert_unsupported(@attribute_dictionary, %i[delete_key]) # no C API to remove a key
+  end
+
+  def test_empty?
+    refute(@attribute_dictionary.empty?)
+    assert(Sketchup.active_model.definitions['Heather'].attribute_dictionary('Fresh', true).empty?)
+  end
+
+  def test_value_types
+    dictionary = Sketchup.active_model.definitions['Heather'].attribute_dictionary('Types', true)
+    color = Sketchup::Color.new(1, 2, 3)
+    vector = Geom::Vector3d.new(1, 2, 3)
+    time = Time.at(1_700_000_000)
+    dictionary['color'] = color
+    dictionary['vector'] = vector
+    dictionary['time'] = time
+    dictionary['list'] = [1, 'two', 3.0]
+    assert_equal(color, dictionary['color'])
+    assert_equal(vector.to_a, dictionary['vector'].to_a)
+    assert_equal(time.to_i, dictionary['time'].to_i)
+    assert_equal([1, 'two', 3.0], dictionary['list'])
+    assert_raises(NotImplementedError) { dictionary['nil'] = nil }
   end
 
   def test_each

@@ -22,9 +22,24 @@ static VALUE attributedictionaries_to_a(VALUE self)
 	return entity_dictionaries(SU_REF(SUEntityRef, self));
 }
 
-static VALUE attributedictionaries_aref(VALUE self, VALUE name)
+// Accepts a dictionary name or a dictionary.
+static VALUE attributedictionaries_aref(VALUE self, VALUE key)
 {
-	return su_find_by(attributedictionaries_to_a(self), "name", name);
+	VALUE dictionaries = attributedictionaries_to_a(self);
+	if (rb_obj_is_kind_of(key, cAttributeDictionary))
+		return RTEST(rb_ary_includes(dictionaries, key)) ? key : Qnil;
+	return su_find_by(dictionaries, "name", StringValue(key));
+}
+
+// Releasing a dictionary removes it from its owner.
+static VALUE attributedictionaries_delete(VALUE self, VALUE key)
+{
+	VALUE dictionary = attributedictionaries_aref(self, key);
+	if (NIL_P(dictionary))
+		return Qnil;
+	SUAttributeDictionaryRef ref = SU_REF(SUAttributeDictionaryRef, dictionary);
+	SUAttributeDictionaryRelease(&ref);
+	return dictionary;
 }
 
 static VALUE attributedictionaries_each(VALUE self)
@@ -41,6 +56,7 @@ void Init_attribute_dictionaries(void)
 {
 	rb_include_module(cAttributeDictionaries, rb_mEnumerable);
 	rb_define_method(cAttributeDictionaries, "[]", attributedictionaries_aref, 1);
+	rb_define_method(cAttributeDictionaries, "delete", attributedictionaries_delete, 1);
 	rb_define_method(cAttributeDictionaries, "each", attributedictionaries_each, 0);
 	rb_define_method(cAttributeDictionaries, "length", attributedictionaries_length, 0);
 	rb_define_method(cAttributeDictionaries, "size", attributedictionaries_length, 0);

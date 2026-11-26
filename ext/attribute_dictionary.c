@@ -60,9 +60,11 @@ static VALUE attributedictionary_each_key(VALUE self)
 	return su_yield_each(self, attributedictionary_keys(self));
 }
 
-static VALUE attributedictionary_delete_key(VALUE self, VALUE key)
+static VALUE attributedictionary_empty_p(VALUE self)
 {
-	return attributedictionary_aref(self, key); // ToDo: delete the key once the C API supports it
+	size_t count = 0;
+	SUAttributeDictionaryGetNumKeys(SU_REF(SUAttributeDictionaryRef, self), &count);
+	return BOOL2RB(count == 0);
 }
 
 void Init_attribute_dictionary(void)
@@ -78,6 +80,6 @@ void Init_attribute_dictionary(void)
 	rb_define_method(cAttributeDictionary, "size", attributedictionary_length, 0);
 	rb_define_method(cAttributeDictionary, "keys", attributedictionary_keys, 0);
 	rb_define_method(cAttributeDictionary, "values", attributedictionary_values, 0);
-	rb_define_method(cAttributeDictionary, "delete_key", attributedictionary_delete_key, 1);
+	rb_define_method(cAttributeDictionary, "empty?", attributedictionary_empty_p, 0);
 	rb_define_alias(cAttributeDictionary, "count", "size");
 }

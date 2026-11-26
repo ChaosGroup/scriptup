@@ -12,6 +12,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Class | Methods |
 |---|---|
 | Sketchup::ArcCurve | 9/9 |
+| Sketchup::AttributeDictionaries | 6/6 |
 | Sketchup::Axes | 9/9 |
 | Sketchup::Behavior | 12/12 |
 | Sketchup::Camera | 27/27 |
@@ -66,8 +67,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::Environments | 6/10 | no `current=`, `purge_unused` or observers (no C API) |
 | Sketchup::Layers | 19/21 | no observers (no C API); `remove` can't remove a tag's geometry |
 | Sketchup::Entity | 14/16 | no observers (no C API); `delete_attribute` can't delete a single key |
-| Sketchup::AttributeDictionary | 12/13 | `empty?`; `delete_key` doesn't delete |
-| Sketchup::AttributeDictionaries | 5/6 | `delete` |
+| Sketchup::AttributeDictionary | 12/13 | no `delete_key` (no C API) |
 
 ## Partially implemented
 | Class | Methods |

@@ -142,18 +142,11 @@ VALUE su_ruby_from_typed_value(SUTypedValueRef value)
 			VALUE ary = rb_ary_new_capa((long)count);
 			if (count == 0)
 				return ary;
+			// The items stay owned by the array.
 			SUTypedValueRef* items = ALLOC_N(SUTypedValueRef, count);
-			for (size_t i = 0; i < count; i++)
-			{
-				items[i].ptr = NULL;
-				SUTypedValueCreate(&items[i]);
-			}
 			SUTypedValueGetArrayItems(value, count, items, &count);
 			for (size_t i = 0; i < count; i++)
-			{
 				rb_ary_push(ary, su_ruby_from_typed_value(items[i]));
-				SUTypedValueRelease(&items[i]);
-			}
 			xfree(items);
 			return ary;
 		}
