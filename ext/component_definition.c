@@ -62,8 +62,28 @@ static VALUE componentdefinition_save_as(int argc, VALUE* argv, VALUE self)
 	return result == SU_ERROR_NONE ? Qtrue : Qnil;
 }
 
+// Always the origin since SketchUp 2020; there is no working setter in the C API.
+static VALUE componentdefinition_insertion_point(VALUE self)
+{
+	struct SUPoint3D point = {0, 0, 0};
+	SUComponentDefinitionGetInsertPoint(SU_REF(SUComponentDefinitionRef, self), &point);
+	return su_point3d_new(point);
+}
+
+// The time the definition was loaded from file; the epoch if it wasn't.
+static VALUE componentdefinition_load_time(VALUE self)
+{
+	struct tm time;
+	memset(&time, 0, sizeof(time));
+	if (SUComponentDefinitionGetLoadTime(SU_REF(SUComponentDefinitionRef, self), &time) != SU_ERROR_NONE)
+		return rb_time_new(0, 0);
+	return rb_funcall(rb_cTime, (rb_intern)("local"), 6, INT2FIX(time.tm_year + 1900), INT2FIX(time.tm_mon + 1),
+		INT2FIX(time.tm_mday), INT2FIX(time.tm_hour), INT2FIX(time.tm_min), INT2FIX(time.tm_sec));
+}
+
 void Init_component_definition(void)
 {
+	rb_include_module(cComponentDefinition, rb_mComparable);
 	rb_define_method(cComponentDefinition, "name", componentdefinition_name, 0);
 	rb_define_method(cComponentDefinition, "name=", componentdefinition_set_name, 1);
 	rb_define_method(cComponentDefinition, "==", componentdefinition_eq, 1);
@@ -82,4 +102,7 @@ void Init_component_definition(void)
 	rb_define_method(cComponentDefinition, "image?", componentdefinition_image_p, 0);
 	rb_define_method(cComponentDefinition, "behavior", componentdefinition_behavior, 0);
 	rb_define_method(cComponentDefinition, "save_as", componentdefinition_save_as, -1);
+	rb_define_method(cComponentDefinition, "save_copy", componentdefinition_save_as, -1);
+	rb_define_method(cComponentDefinition, "insertion_point", componentdefinition_insertion_point, 0);
+	rb_define_method(cComponentDefinition, "load_time", componentdefinition_load_time, 0);
 }

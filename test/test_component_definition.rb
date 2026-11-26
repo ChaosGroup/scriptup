@@ -1,7 +1,11 @@
-require 'minitest/autorun'
-require 'sketchup'
+require_relative 'helper'
 
 class TestComponentDefinition < Minitest::Test
+  # No C API: thumbnails, bounds invalidation, per-definition classification values and observers.
+  # add_classification arrives with Sketchup::Classifications.
+  UNSUPPORTED = %i[refresh_thumbnail save_thumbnail thumbnail_camera thumbnail_camera= invalidate_bounds insertion_point=
+                   get_classification_value set_classification_value remove_classification
+                   add_observer remove_observer].freeze
 
   def setup
     Sketchup.open_file("#{ENV['TEST_RESOURCES']}/Untitled.skp")
@@ -120,4 +124,27 @@ class TestComponentDefinition < Minitest::Test
     }
   end
 
+  def test_unsupported
+    assert_unsupported(@definition, UNSUPPORTED)
+  end
+
+  def test_comparable
+    assert_kind_of(Comparable, @definition)
+  end
+
+  def test_insertion_point
+    assert_equal(Geom::Point3d.new(0, 0, 0), @definition.insertion_point)
+  end
+
+  def test_load_time
+    assert_instance_of(Time, @definition.load_time)
+  end
+
+  def test_save_copy
+    Dir.mktmpdir { |dir|
+      path = "#{dir}/copy.skp"
+      assert(@definition.save_copy(path))
+      assert(File.exist?(path))
+    }
+  end
 end
