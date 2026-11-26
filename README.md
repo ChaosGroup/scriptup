@@ -14,6 +14,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::ArcCurve | 9/9 |
 | Sketchup::Behavior | 12/12 |
 | Sketchup::Color | 15/15 |
+| Sketchup::ConstructionPoint | 1/1 |
 | Sketchup::Curve | 9/9 |
 | Sketchup::Drawingelement | 14/14 |
 | Sketchup::EdgeUse | 9/9 |
@@ -61,12 +62,13 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::Edge | 16/19 (no `explode_curve`, `find_faces`, `split`: no C API) |
 | Sketchup::Face | 25/28 (no `pushpull`, `followme`, `set_texture_projection`: no C API) |
 | Sketchup::ComponentInstance | 13/27 (no `definition=`, booleans, `explode`, `make_unique`, `glued_to=` or observers: no C API) |
+| Sketchup::ConstructionLine | 4/11 (read-only: no setters, `reverse!` or stipple in the C API) |
 | Sketchup::Group | 17/32 (no booleans, `copy`, `explode`, `make_unique`, `to_component`, `glued_to=` or observers: no C API) |
 | Sketchup::Entities | 32/39 (no 3D text, intersect, dimensions, snaps or observers in the C API) |
 | Sketchup (module) | 2/61 (`open_file`, `active_model`) |
 
 ## Defined, no methods of their own yet
-Sketchup::ConstructionLine, Sketchup::ConstructionPoint, Sketchup::Dimension, Sketchup::SectionPlane, Sketchup::Text
+Sketchup::Dimension, Sketchup::SectionPlane, Sketchup::Text
 
 # Supportable through the C API
 
