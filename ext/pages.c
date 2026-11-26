@@ -52,9 +52,10 @@ static VALUE pages_add(int argc, VALUE* argv, VALUE self)
 		SUSceneRelease(&scene);
 		rb_raise(rb_eArgError, "cannot add the page (error %d)", result);
 	}
-	// Return the model's scene: on Windows the model may hold a different ref than the one added.
-	VALUE added = rb_ary_entry(pages_to_a(self), out_index);
-	return NIL_P(added) ? su_wrap(cPage, scene.ptr) : added;
+	// Return the model's own scene: on Windows it isn't the ref that was added.
+	SUSceneRef added = SU_INVALID;
+	SUModelGetSceneWithName(MODEL(self), StringValueCStr(unique), &added);
+	return su_wrap(cPage, SUIsValid(added) ? added.ptr : scene.ptr);
 }
 
 static VALUE pages_add_matchphoto_page(int argc, VALUE* argv, VALUE self)

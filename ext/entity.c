@@ -96,14 +96,29 @@ static VALUE entity_parent(VALUE self)
 	return su_wrap_or_nil(cModel, parent.model.ptr);
 }
 
+// Entities are equal when they wrap the same ref or share an entity ID (refs aren't unique on every platform).
+static int32_t entity_id(VALUE self)
+{
+	int32_t id = 0;
+	SUEntityGetID(SU_REF(SUEntityRef, self), &id);
+	return id;
+}
+
 static VALUE entity_eq(VALUE self, VALUE other)
 {
-	return BOOL2RB(rb_obj_is_kind_of(other, cEntity) && DATA_PTR(self) == DATA_PTR(other));
+	if (!rb_obj_is_kind_of(other, cEntity))
+		return Qfalse;
+	if (DATA_PTR(self) == DATA_PTR(other))
+		return Qtrue;
+	int32_t id = entity_id(self);
+	return BOOL2RB(id != 0 && id == entity_id(other) && rb_obj_class(self) == rb_obj_class(other));
 }
 
 static VALUE entity_hash(VALUE self)
 {
-	return rb_funcall(ULL2NUM((unsigned long long)(uintptr_t)DATA_PTR(self)), (rb_intern)("hash"), 0);
+	int32_t id = entity_id(self);
+	VALUE key = id != 0 ? INT2NUM(id) : ULL2NUM((unsigned long long)(uintptr_t)DATA_PTR(self));
+	return rb_funcall(key, (rb_intern)("hash"), 0);
 }
 
 static VALUE entity_attribute_dictionaries(VALUE self)
