@@ -40,6 +40,14 @@
 	X(cTexture, mSketchup, "Texture", cEntity) \
 	X(cBehavior, mSketchup, "Behavior", cEntity) \
 	X(cAxes, mSketchup, "Axes", cEntity) \
+	X(cPage, mSketchup, "Page", cEntity) \
+	X(cPages, mSketchup, "Pages", cEntity) \
+	X(cRenderingOptions, mSketchup, "RenderingOptions", cEntity) \
+	X(cShadowInfo, mSketchup, "ShadowInfo", cEntity) \
+	X(cStyle, mSketchup, "Style", cEntity) \
+	X(cStyles, mSketchup, "Styles", cEntity) \
+	X(cEnvironment, mSketchup, "Environment", cEntity) \
+	X(cEnvironments, mSketchup, "Environments", cEntity) \
 	X(cLayer, mSketchup, "Layer", cEntity) \
 	X(cLayers, mSketchup, "Layers", cEntity) \
 	X(cLayerFolder, mSketchup, "LayerFolder", cEntity) \
@@ -104,6 +112,8 @@ void Init_loop(void);
 void Init_material(void);
 void Init_materials(void);
 void Init_model(void);
+void Init_page(void);
+void Init_pages(void);
 void Init_point2d(void);
 void Init_polygon_mesh(void);
 void Init_point3d(void);

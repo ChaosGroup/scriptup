@@ -43,8 +43,21 @@ static VALUE model_attribute_dictionaries(VALUE self)
 	return su_model_attribute_dictionaries(SU_REF(SUModelRef, self));
 }
 
+static VALUE model_eq(VALUE self, VALUE other)
+{
+	return BOOL2RB(rb_obj_is_kind_of(other, cModel) && DATA_PTR(self) == DATA_PTR(other));
+}
+
+static VALUE model_hash(VALUE self)
+{
+	return rb_funcall(ULL2NUM((unsigned long long)(uintptr_t)DATA_PTR(self)), (rb_intern)("hash"), 0);
+}
+
 void Init_model(void)
 {
+	rb_define_method(cModel, "==", model_eq, 1);
+	rb_define_method(cModel, "eql?", model_eq, 1);
+	rb_define_method(cModel, "hash", model_hash, 0);
 	rb_define_const(cModel, "LOAD_STATUS_SUCCESS", INT2FIX(SUModelLoadStatus_Success));
 	rb_define_const(cModel, "LOAD_STATUS_SUCCESS_MORE_RECENT", INT2FIX(SUModelLoadStatus_Success_MoreRecent));
 	rb_define_method(cModel, "close", model_close, -1);

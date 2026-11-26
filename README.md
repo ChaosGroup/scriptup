@@ -52,6 +52,8 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::Material | 45/46 | no `write_thumbnail` (no C API) |
 | Sketchup::Materials | 10/15 | no `current`, `purge_unused` or observers (no C API) |
 | Sketchup::Text | 16/18 | no `line_weight` (no C API) |
+| Sketchup::Page | 42/48 | no `delay_time`, `transition_time` or `use_style` (no C API) |
+| Sketchup::Pages | 13/19 | no `show_frame_at`, `slideshow_time` or observers (no C API) |
 | Sketchup::Layers | 19/21 | no observers (no C API); `remove` can't remove a tag's geometry |
 | Sketchup::Entity | 14/16 | no observers (no C API); `delete_attribute` can't delete a single key |
 | Sketchup::AttributeDictionary | 12/13 | `empty?`; `delete_key` doesn't delete |
@@ -62,7 +64,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 |---|---|
 | Sketchup::ComponentDefinition | 22/34 (`add_classification` with Classifications; no thumbnails, `insertion_point=`, `invalidate_bounds`, classification values or observers: no C API) |
 | Sketchup::DefinitionList | 12/15 (no `load_from_url` or observers: no C API; `import` handles .skp only) |
-| Sketchup::Model | 9/73 |
+| Sketchup::Model | 10/73 |
 | Sketchup::Edge | 16/19 (no `explode_curve`, `find_faces`, `split`: no C API) |
 | Sketchup::Face | 25/28 (no `pushpull`, `followme`, `set_texture_projection`: no C API) |
 | Sketchup::ComponentInstance | 13/27 (no `definition=`, booleans, `explode`, `make_unique`, `glued_to=` or observers: no C API) |
