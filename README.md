@@ -81,7 +81,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::ConstructionLine | 4/11 (read-only: no setters, `reverse!` or stipple in the C API) |
 | Sketchup::Group | 17/32 (no booleans, `copy`, `explode`, `make_unique`, `to_component`, `glued_to=` or observers: no C API) |
 | Sketchup::Entities | 32/39 (no 3D text, intersect, dimensions, snaps or observers in the C API) |
-| Sketchup (module) | 2/61 (`open_file`, `active_model`) |
+| Sketchup (module) | 8/61 (`open_file`, `active_model`, `file_new`, `create_texture_writer`, length/area/volume formatting and `parse_length`; the rest needs the SketchUp app) |
 
 ## Defined, no methods of their own yet
 Sketchup::Dimension

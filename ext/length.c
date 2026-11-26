@@ -150,8 +150,59 @@ static VALUE string_to_l(VALUE self)
 	return su_length_new(value);
 }
 
+typedef enum SUResult (*format_fn)(SULengthFormatterRef, double, SUStringRef*);
+
+static enum SUResult format_length_string(SULengthFormatterRef f, double v, SUStringRef* s) { return SULengthFormatterGetLengthString(f, v, false, s); }
+
+static VALUE format_with(double value, format_fn fn, VALUE precision)
+{
+	SULengthFormatterRef formatter = length_formatter();
+	if (!NIL_P(precision))
+		SULengthFormatterSetPrecision(formatter, NUM2SIZET(precision));
+	SUStringRef string = SU_INVALID;
+	SUStringCreate(&string);
+	fn(formatter, value, &string);
+	VALUE output = su_string_to_rb(string);
+	SUStringRelease(&string);
+	SULengthFormatterRelease(&formatter);
+	return output;
+}
+
+static VALUE sketchup_format_length(int argc, VALUE* argv, VALUE self)
+{
+	VALUE number, precision;
+	rb_scan_args(argc, argv, "11", &number, &precision);
+	return format_with(NUM2DBL(number), format_length_string, precision);
+}
+
+static VALUE sketchup_format_area(VALUE self, VALUE number)
+{
+	return format_with(NUM2DBL(number), SULengthFormatterGetAreaString, Qnil);
+}
+
+static VALUE sketchup_format_volume(VALUE self, VALUE number)
+{
+	return format_with(NUM2DBL(number), SULengthFormatterGetVolumeString, Qnil);
+}
+
+static VALUE sketchup_parse_length(VALUE self, VALUE string)
+{
+	SULengthFormatterRef formatter = length_formatter();
+	SUStringRef input = SU_INVALID;
+	SUStringCreateFromUTF8(&input, StringValueCStr(string));
+	double value = 0.0;
+	enum SUResult result = SULengthFormatterParseString(formatter, input, &value);
+	SUStringRelease(&input);
+	SULengthFormatterRelease(&formatter);
+	return result == SU_ERROR_NONE ? DBL2NUM(value) : Qnil;
+}
+
 void Init_length(void)
 {
+	rb_define_singleton_method(mSketchup, "format_length", sketchup_format_length, -1);
+	rb_define_singleton_method(mSketchup, "format_area", sketchup_format_area, 1);
+	rb_define_singleton_method(mSketchup, "format_volume", sketchup_format_volume, 1);
+	rb_define_singleton_method(mSketchup, "parse_length", sketchup_parse_length, 1);
 	static const struct { const char* name; int value; } constants[] = {
 		{"Architectural", 0}, {"Decimal", 1}, {"Engineering", 2}, {"Fractional", 3},
 		{"Inches", 0}, {"Feet", 1}, {"Millimeter", 2}, {"Centimeter", 3}, {"Meter", 4}, {"Yard", 5},

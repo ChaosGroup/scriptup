@@ -43,6 +43,16 @@ static VALUE sketchup_open_file(int argc, VALUE* argv, VALUE self)
 	return with_status ? INT2FIX(status) : Qtrue;
 }
 
+// Creates an empty model and makes it the active one.
+static VALUE sketchup_file_new(VALUE self)
+{
+	SUModelRef model = SU_INVALID;
+	if (SUModelCreate(&model) != SU_ERROR_NONE)
+		rb_raise(rb_eRuntimeError, "cannot create a model");
+	Sketchup_set_active_model(model);
+	return self;
+}
+
 static VALUE sketchup_active_model(VALUE self)
 {
 	return su_wrap_or_nil(cModel, active_model.ptr);
@@ -61,6 +71,7 @@ void Init_sketchup(void)
 
 	rb_define_singleton_method(mSketchup, "open_file", sketchup_open_file, -1);
 	rb_define_singleton_method(mSketchup, "active_model", sketchup_active_model, 0);
+	rb_define_singleton_method(mSketchup, "file_new", sketchup_file_new, 0);
 
 	Init_arc_curve();
 	Init_attribute_dictionaries();
