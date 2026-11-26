@@ -48,6 +48,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::LayerFolder | 18/20 | no `visible_on_new_pages` (no C API); `folder = nil` can't move a folder to the top level |
 | Sketchup::Material | 45/46 | no `write_thumbnail` (no C API) |
 | Sketchup::Materials | 10/15 | no `current`, `purge_unused` or observers (no C API) |
+| Sketchup::Text | 16/18 | no `line_weight` (no C API) |
 | Sketchup::Layers | 19/21 | no observers (no C API); `remove` can't remove a tag's geometry |
 | Sketchup::Entity | 14/16 | no observers (no C API); `delete_attribute` can't delete a single key |
 | Sketchup::AttributeDictionary | 12/13 | `empty?`; `delete_key` doesn't delete |
@@ -68,7 +69,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup (module) | 2/61 (`open_file`, `active_model`) |
 
 ## Defined, no methods of their own yet
-Sketchup::Dimension, Sketchup::SectionPlane, Sketchup::Text
+Sketchup::Dimension, Sketchup::SectionPlane
 
 # Supportable through the C API
 

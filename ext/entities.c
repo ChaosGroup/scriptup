@@ -354,6 +354,9 @@ static VALUE entities_add_text(VALUE self, VALUE string, VALUE point, VALUE vect
 	SUTextSetString(text, StringValueCStr(string));
 	SUInstancePathRef no_path = SU_INVALID;
 	SUTextSetPoint(text, &p, no_path);
+	bool has_leader = v.x != 0 || v.y != 0 || v.z != 0;
+	if (has_leader)
+		SUTextSetLeaderType(text, SUTextLeaderType_ViewBased);
 	SUTextSetLeaderVector(text, &v);
 	SUEntitiesAddTexts(ENTITIES(self), 1, &text);
 	return su_wrap(cText, text.ptr);

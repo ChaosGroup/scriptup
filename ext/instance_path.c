@@ -14,6 +14,15 @@ static VALUE instancepath_alloc(VALUE klass)
 	return Data_Wrap_Struct(klass, 0, instancepath_free, NULL);
 }
 
+// Wraps a copy of a path the C API owns.
+VALUE su_instance_path_copy(SUInstancePathRef source)
+{
+	SUInstancePathRef copy = SU_INVALID;
+	if (SUInstancePathCreateCopy(&copy, source) != SU_ERROR_NONE)
+		return Qnil;
+	return Data_Wrap_Struct(cInstancePath, 0, instancepath_free, copy.ptr);
+}
+
 // Accepts an InstancePath or an array of entities: instances, optionally ending in a leaf.
 SUInstancePathRef su_to_instance_path(VALUE obj)
 {
