@@ -23,6 +23,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::LineStyle | 1/1 |
 | Sketchup::LineStyles | 6/6 |
 | Sketchup::Loop | 6/6 |
+| Sketchup::Texture | 10/10 |
 | Sketchup::Vertex | 7/7 |
 | Geom (module) | 7/8 (no `tesselate`: no C API) |
 | Geom::BoundingBox | 15/15 |
@@ -45,7 +46,6 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::Layers | 19/21 | no observers (no C API); `remove` can't remove a tag's geometry |
 | Sketchup::Entity | 14/16 | no observers (no C API); `delete_attribute` can't delete a single key |
 | Sketchup::AttributeDictionary | 12/13 | `empty?`; `delete_key` doesn't delete |
-| Sketchup::Texture | 9/10 | `size=` |
 | Sketchup::AttributeDictionaries | 5/6 | `delete` |
 
 ## Partially implemented

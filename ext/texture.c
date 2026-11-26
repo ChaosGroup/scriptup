@@ -66,8 +66,34 @@ static VALUE texture_write(VALUE self, VALUE path, VALUE colorize)
 	return BOOL2RB(result == SU_ERROR_NONE);
 }
 
+// A single size keeps the image's aspect ratio; [width, height] sets both (in inches).
+static VALUE texture_set_size(VALUE self, VALUE size)
+{
+	struct texture_dimensions d = texture_dimensions(self);
+	double width;
+	double height;
+	if (RB_TYPE_P(size, T_ARRAY))
+	{
+		double wh[2];
+		su_array_to_xy(size, wh);
+		width = wh[0];
+		height = wh[1];
+	}
+	else
+	{
+		width = NUM2DBL(size);
+		height = d.width > 0 ? width * (double)d.height / (double)d.width : width;
+	}
+	if (width <= 0 || height <= 0)
+		rb_raise(rb_eArgError, "texture size must be positive");
+	// Set takes the size in inches while Get reports its reciprocal as the scale.
+	SUTextureSetDimensions(SU_REF(SUTextureRef, self), width, height);
+	return size;
+}
+
 void Init_texture(void)
 {
+	rb_define_method(cTexture, "size=", texture_set_size, 1);
 	rb_define_method(cTexture, "average_color", texture_average_color, 0);
 	rb_define_method(cTexture, "filename", texture_filename, 0);
 	rb_define_method(cTexture, "image_height", texture_image_height, 0);
