@@ -101,6 +101,7 @@ void Init_sketchup(void)
 	Init_texture_writer();
 	Init_transformation();
 	Init_transformation2d();
+	Init_uv_helper();
 	Init_vector2d();
 	Init_vector3d();
 	Init_vertex();

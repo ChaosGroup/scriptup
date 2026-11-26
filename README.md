@@ -26,6 +26,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::Loop | 6/6 |
 | Sketchup::Texture | 10/10 |
 | Sketchup::TextureWriter | 7/7 |
+| Sketchup::UVHelper | 2/2 |
 | Sketchup::Vertex | 7/7 |
 | Geom (module) | 7/8 (no `tesselate`: no C API) |
 | Geom::BoundingBox | 15/15 |
@@ -58,7 +59,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::DefinitionList | 12/15 (no `load_from_url` or observers: no C API; `import` handles .skp only) |
 | Sketchup::Model | 8/73 |
 | Sketchup::Edge | 16/19 (no `explode_curve`, `find_faces`, `split`: no C API) |
-| Sketchup::Face | 24/28 (`get_UVHelper` with UVHelper; no `pushpull`, `followme`, `set_texture_projection`: no C API) |
+| Sketchup::Face | 25/28 (no `pushpull`, `followme`, `set_texture_projection`: no C API) |
 | Sketchup::ComponentInstance | 13/27 (no `definition=`, booleans, `explode`, `make_unique`, `glued_to=` or observers: no C API) |
 | Sketchup::Group | 17/32 (no booleans, `copy`, `explode`, `make_unique`, `to_component`, `glued_to=` or observers: no C API) |
 | Sketchup::Entities | 32/39 (no 3D text, intersect, dimensions, snaps or observers in the C API) |

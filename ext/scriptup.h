@@ -106,6 +106,7 @@ void Init_texture(void);
 void Init_texture_writer(void);
 void Init_transformation(void);
 void Init_transformation2d(void);
+void Init_uv_helper(void);
 void Init_vector2d(void);
 void Init_vector3d(void);
 void Init_vertex(void);
