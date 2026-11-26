@@ -84,6 +84,7 @@ void Init_sketchup(void)
 	Init_instance_path();
 	Init_lat_long();
 	Init_layer();
+	Init_layer_folder();
 	Init_layers();
 	Init_length();
 	Init_loop();

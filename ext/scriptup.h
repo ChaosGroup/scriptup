@@ -86,6 +86,7 @@ void Init_lat_long(void);
 void Init_geom(void);
 void Init_group(void);
 void Init_layer(void);
+void Init_layer_folder(void);
 void Init_layers(void);
 void Init_length(void);
 void Init_loop(void);
