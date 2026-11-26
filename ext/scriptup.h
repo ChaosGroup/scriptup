@@ -101,6 +101,7 @@ void Init_entities_builder(void);
 void Init_edge(void);
 void Init_edge_use(void);
 void Init_entity(void);
+void Init_environments(void);
 void Init_face(void);
 void Init_image(void);
 void Init_image_rep(void);

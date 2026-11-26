@@ -20,6 +20,13 @@ module ScriptupTestHelper
     expected.to_a.zip(actual.to_a).each { |e, a| assert_in_delta(e, a, delta) }
   end
 
+  # A tiny uncompressed Radiance HDR image (widths below 8 aren't run-length encoded).
+  def write_hdr(path, width = 4, height = 2)
+    header = "#?RADIANCE\nFORMAT=32-bit_rle_rgbe\n\n-Y #{height} +X #{width}\n"
+    File.binwrite(path, header + ([128, 128, 128, 129] * width * height).pack('C*'))
+    path
+  end
+
   def add_square_face(entities, size = 10, z = 0)
     entities.add_face([0, 0, z], [size, 0, z], [size, size, z], [0, size, z])
   end
