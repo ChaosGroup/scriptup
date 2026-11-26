@@ -25,6 +25,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::LineStyle | 1/1 |
 | Sketchup::LineStyles | 6/6 |
 | Sketchup::Loop | 6/6 |
+| Sketchup::SectionPlane | 8/8 |
 | Sketchup::Texture | 10/10 |
 | Sketchup::TextureWriter | 7/7 |
 | Sketchup::UVHelper | 2/2 |
@@ -69,7 +70,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup (module) | 2/61 (`open_file`, `active_model`) |
 
 ## Defined, no methods of their own yet
-Sketchup::Dimension, Sketchup::SectionPlane
+Sketchup::Dimension
 
 # Supportable through the C API
 
