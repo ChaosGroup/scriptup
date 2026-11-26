@@ -97,6 +97,7 @@ void Init_sketchup(void)
 	Init_material();
 	Init_materials();
 	Init_model();
+	Init_options_store();
 	Init_page();
 	Init_pages();
 	Init_point2d();

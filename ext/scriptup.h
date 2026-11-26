@@ -112,6 +112,7 @@ void Init_loop(void);
 void Init_material(void);
 void Init_materials(void);
 void Init_model(void);
+void Init_options_store(void);
 void Init_page(void);
 void Init_pages(void);
 void Init_point2d(void);

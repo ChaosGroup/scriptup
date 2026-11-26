@@ -118,10 +118,45 @@ VALUE su_ruby_from_typed_value(SUTypedValueRef value)
 			return output;
 		}
 		case SUTypedValueType_Color:
+		{
+			SUColor color = {0, 0, 0, 255};
+			SUTypedValueGetColor(value, &color);
+			return su_color_new(color);
+		}
 		case SUTypedValueType_Time:
+		{
+			int64_t time = 0;
+			SUTypedValueGetTime(value, &time);
+			return rb_time_new((time_t)time, 0);
+		}
 		case SUTypedValueType_Vector3D:
+		{
+			double v[3] = {0, 0, 0};
+			SUTypedValueGetVector3d(value, v);
+			return su_vector3d_new((struct SUVector3D){v[0], v[1], v[2]});
+		}
 		case SUTypedValueType_Array:
-			rb_raise(rb_eNotImpError, "typed value type %d is not implemented", type);
+		{
+			size_t count = 0;
+			SUTypedValueGetNumArrayItems(value, &count);
+			VALUE ary = rb_ary_new_capa((long)count);
+			if (count == 0)
+				return ary;
+			SUTypedValueRef* items = ALLOC_N(SUTypedValueRef, count);
+			for (size_t i = 0; i < count; i++)
+			{
+				items[i].ptr = NULL;
+				SUTypedValueCreate(&items[i]);
+			}
+			SUTypedValueGetArrayItems(value, count, items, &count);
+			for (size_t i = 0; i < count; i++)
+			{
+				rb_ary_push(ary, su_ruby_from_typed_value(items[i]));
+				SUTypedValueRelease(&items[i]);
+			}
+			xfree(items);
+			return ary;
+		}
 		case SUTypedValueType_Empty:
 		default:
 			return Qnil;
@@ -146,7 +181,40 @@ void su_typed_value_from_ruby(SUTypedValueRef value, VALUE object)
 		case T_STRING:
 			SUTypedValueSetString(value, StringValueCStr(object));
 			break;
+		case T_ARRAY:
+		{
+			long count = RARRAY_LEN(object);
+			SUTypedValueRef* items = ALLOC_N(SUTypedValueRef, count > 0 ? count : 1);
+			for (long i = 0; i < count; i++)
+			{
+				items[i].ptr = NULL;
+				SUTypedValueCreate(&items[i]);
+				su_typed_value_from_ruby(items[i], RARRAY_AREF(object, i));
+			}
+			SUTypedValueSetArrayItems(value, (size_t)count, items);
+			for (long i = 0; i < count; i++)
+				SUTypedValueRelease(&items[i]);
+			xfree(items);
+			break;
+		}
 		default:
+			if (rb_obj_is_kind_of(object, cColor))
+			{
+				SUTypedValueSetColor(value, DATA_PTR(object));
+				break;
+			}
+			if (rb_obj_is_kind_of(object, cVector3d))
+			{
+				struct SUVector3D v = su_to_vector3d(object);
+				double xyz[3] = {v.x, v.y, v.z};
+				SUTypedValueSetVector3d(value, xyz);
+				break;
+			}
+			if (rb_obj_is_kind_of(object, rb_cTime))
+			{
+				SUTypedValueSetTime(value, NUM2LL(rb_funcall(object, (rb_intern)("to_i"), 0)));
+				break;
+			}
 			rb_raise(rb_eNotImpError, "unsupported attribute value type %"PRIsVALUE, rb_obj_class(object));
 	}
 }
