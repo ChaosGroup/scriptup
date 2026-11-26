@@ -35,13 +35,60 @@ static VALUE definitionlist_aref(VALUE self, VALUE key)
 	return NIL_P(found) ? su_find_by(definitions, "guid", key) : found;
 }
 
-static VALUE definitionlist_load(VALUE self, VALUE path)
+static VALUE definitionlist_load(int argc, VALUE* argv, VALUE self)
 {
+	VALUE path;
+	VALUE options;
+	rb_scan_args(argc, argv, "1:", &path, &options);
+	bool allow_newer = false;
+	if (!NIL_P(options))
+	{
+		ID ids[1] = {(rb_intern)("allow_newer")};
+		VALUE values[1];
+		rb_get_kwargs(options, ids, 0, 1, values);
+		allow_newer = values[0] != Qundef && RTEST(values[0]);
+	}
 	SUComponentDefinitionRef definition = SU_INVALID;
-	enum SUModelLoadStatus status;
+	enum SUModelLoadStatus status = SUModelLoadStatus_Success;
 	if (SUModelLoadDefinitionWithStatus(SU_REF(SUModelRef, self), StringValueCStr(path), &definition, &status) != SU_ERROR_NONE)
 		rb_raise(rb_eStandardError, "Unsuccessful loading of the definition!");
+	if (status == SUModelLoadStatus_Success_MoreRecent && !allow_newer)
+		rb_raise(rb_eStandardError, "The file was saved with a newer version of SketchUp");
 	return su_wrap(cComponentDefinition, definition.ptr);
+}
+
+// Only SketchUp files can be imported through the C API.
+static VALUE definitionlist_import(int argc, VALUE* argv, VALUE self)
+{
+	rb_check_arity(argc, 1, 2);
+	VALUE extension = rb_funcall(rb_funcall(rb_cFile, (rb_intern)("extname"), 1, argv[0]), (rb_intern)("downcase"), 0);
+	if (!RTEST(rb_str_equal(extension, rb_str_new_cstr(".skp"))))
+		rb_raise(rb_eNotImpError, "the C API can only import .skp files");
+	return definitionlist_load(1, argv, self);
+}
+
+static VALUE definitionlist_purge_unused(VALUE self)
+{
+	VALUE definitions = component_definitions(SU_REF(SUModelRef, self));
+	for (long i = 0; i < RARRAY_LEN(definitions); i++)
+	{
+		SUComponentDefinitionRef definition = SU_REF(SUComponentDefinitionRef, RARRAY_AREF(definitions, i));
+		size_t count = 0;
+		SUComponentDefinitionGetNumInstances(definition, &count);
+		if (count == 0)
+			SUModelRemoveComponentDefinitions(SU_REF(SUModelRef, self), 1, &definition);
+	}
+	return self;
+}
+
+static VALUE definitionlist_unique_name(VALUE self, VALUE base)
+{
+	StringValue(base);
+	VALUE definitions = definitionlist_to_a(self);
+	VALUE candidate = base;
+	for (long n = 1; !NIL_P(su_find_by(definitions, "name", candidate)); n++)
+		candidate = rb_sprintf("%"PRIsVALUE"#%ld", base, n);
+	return candidate;
 }
 
 static VALUE definitionlist_add(VALUE self, VALUE name)
@@ -68,8 +115,12 @@ void Init_definition_list(void)
 	rb_define_method(cDefinitionList, "count", definitionlist_length, 0);
 	rb_define_method(cDefinitionList, "size", definitionlist_length, 0);
 	rb_define_method(cDefinitionList, "length", definitionlist_length, 0);
-	rb_define_method(cDefinitionList, "load", definitionlist_load, 1);
+	rb_define_method(cDefinitionList, "load", definitionlist_load, -1);
+	rb_define_method(cDefinitionList, "import", definitionlist_import, -1);
+	rb_define_method(cDefinitionList, "purge_unused", definitionlist_purge_unused, 0);
+	rb_define_method(cDefinitionList, "unique_name", definitionlist_unique_name, 1);
 	rb_define_method(cDefinitionList, "[]", definitionlist_aref, 1);
+	rb_define_method(cDefinitionList, "at", definitionlist_aref, 1);
 	rb_define_method(cDefinitionList, "add", definitionlist_add, 1);
 	rb_define_method(cDefinitionList, "remove", definitionlist_remove, 1);
 }

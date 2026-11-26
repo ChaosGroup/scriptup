@@ -42,7 +42,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Class | Methods |
 |---|---|
 | Sketchup::ComponentDefinition | 22/34 (`add_classification` with Classifications; no thumbnails, `insertion_point=`, `invalidate_bounds`, classification values or observers: no C API) |
-| Sketchup::DefinitionList | 10/15 |
+| Sketchup::DefinitionList | 12/15 (no `load_from_url` or observers: no C API; `import` handles .skp only) |
 | Sketchup::Material | 17/46 (no PBR properties) |
 | Sketchup::Materials | 5/15 |
 | Sketchup::Model | 5/73 |
