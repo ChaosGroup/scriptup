@@ -42,7 +42,7 @@ static VALUE color_names(VALUE self)
 {
 	size_t count = 0;
 	SUColorGetNumNames(&count);
-	SUStringRef* names = ALLOC_N(SUStringRef, count);
+	SUStringRef* names = ZALLOC_N(SUStringRef, count);
 	for (size_t i = 0; i < count; i++)
 	{
 		names[i].ptr = NULL;

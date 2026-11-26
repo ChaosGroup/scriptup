@@ -29,7 +29,7 @@ VALUE su_instance_glued_to(VALUE self)
 	SUComponentInstanceGetNumAttachedToDrawingElements(INSTANCE(self), &count);
 	if (count == 0)
 		return Qnil;
-	SUDrawingElementRef* elements = ALLOC_N(SUDrawingElementRef, count);
+	SUDrawingElementRef* elements = ZALLOC_N(SUDrawingElementRef, count);
 	SUComponentInstanceGetAttachedToDrawingElements(INSTANCE(self), count, elements, &count);
 	VALUE glued = su_wrap_entity((SUEntityRef){elements[0].ptr});
 	xfree(elements);

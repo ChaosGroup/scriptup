@@ -25,7 +25,7 @@ static VALUE entities_edges(SUEntitiesRef entities)
 	VALUE ary = rb_ary_new_capa((long)count);
 	if (count == 0)
 		return ary;
-	SUEdgeRef* edges = ALLOC_N(SUEdgeRef, count);
+	SUEdgeRef* edges = ZALLOC_N(SUEdgeRef, count);
 	SUEntitiesGetEdges(entities, false, count, edges, &count);
 	for (size_t i = 0; i < count; i++)
 		rb_ary_push(ary, su_wrap(cEdge, edges[i].ptr));
@@ -149,7 +149,7 @@ static VALUE entities_add_face(int argc, VALUE* argv, VALUE self)
 	long count = RARRAY_LEN(items);
 	if (count < 3)
 		rb_raise(rb_eArgError, "at least 3 points or edges are required");
-	struct SUPoint3D* points = ALLOC_N(struct SUPoint3D, count);
+	struct SUPoint3D* points = ZALLOC_N(struct SUPoint3D, count);
 	for (long i = 0; i < count; i++)
 	{
 		VALUE item = RARRAY_AREF(items, i);
@@ -247,7 +247,7 @@ static VALUE entities_add_curve(int argc, VALUE* argv, VALUE self)
 {
 	VALUE edges = entities_add_edges(argc, argv, self);
 	long count = RARRAY_LEN(edges);
-	SUEdgeRef* refs = ALLOC_N(SUEdgeRef, count);
+	SUEdgeRef* refs = ZALLOC_N(SUEdgeRef, count);
 	for (long i = 0; i < count; i++)
 		refs[i].ptr = DATA_PTR(RARRAY_AREF(edges, i));
 	SUCurveRef curve = SU_INVALID;
@@ -448,7 +448,7 @@ static VALUE entities_fill_from_mesh(int argc, VALUE* argv, VALUE self)
 static SUEntityRef* entity_refs(VALUE entities, long* count)
 {
 	*count = RARRAY_LEN(entities);
-	SUEntityRef* refs = ALLOC_N(SUEntityRef, *count > 0 ? *count : 1);
+	SUEntityRef* refs = ZALLOC_N(SUEntityRef, *count > 0 ? *count : 1);
 	for (long i = 0; i < *count; i++)
 		refs[i].ptr = su_unwrap(RARRAY_AREF(entities, i), cEntity);
 	return refs;
@@ -491,7 +491,7 @@ static VALUE entities_transform_by_vectors(VALUE self, VALUE entities, VALUE vec
 		xfree(refs);
 		rb_raise(rb_eArgError, "expected one vector per entity");
 	}
-	struct SUTransformation* transforms = ALLOC_N(struct SUTransformation, count > 0 ? count : 1);
+	struct SUTransformation* transforms = ZALLOC_N(struct SUTransformation, count > 0 ? count : 1);
 	for (long i = 0; i < count; i++)
 		transforms[i] = su_to_transformation(rb_class_new_instance(1, &RARRAY_CONST_PTR(vectors)[i], cTransformation));
 	SUEntitiesTransformMultiple(ENTITIES(self), (size_t)count, refs, transforms);
@@ -504,7 +504,7 @@ static VALUE entities_weld(VALUE self, VALUE edges)
 {
 	Check_Type(edges, T_ARRAY);
 	long count = RARRAY_LEN(edges);
-	SUEdgeRef* refs = ALLOC_N(SUEdgeRef, count > 0 ? count : 1);
+	SUEdgeRef* refs = ZALLOC_N(SUEdgeRef, count > 0 ? count : 1);
 	for (long i = 0; i < count; i++)
 		refs[i].ptr = su_unwrap(RARRAY_AREF(edges, i), cEdge);
 	SUEntityListRef list = SU_INVALID;

@@ -46,7 +46,7 @@ static VALUE page_hidden_entities(VALUE self)
 	SUSceneGetNumHiddenEntities(SCENE(self), &count);
 	if (count == 0)
 		return Qnil;
-	SUEntityRef* entities = ALLOC_N(SUEntityRef, count);
+	SUEntityRef* entities = ZALLOC_N(SUEntityRef, count);
 	SUSceneGetHiddenEntities(SCENE(self), count, entities, &count);
 	VALUE ary = rb_ary_new_capa((long)count);
 	for (size_t i = 0; i < count; i++)

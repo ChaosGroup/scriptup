@@ -106,7 +106,7 @@ static VALUE imagerep_colors(VALUE self)
 	dimensions(self, &width, &height);
 	if (width == 0 || height == 0)
 		return Qnil;
-	SUColor* colors = ALLOC_N(SUColor, width * height);
+	SUColor* colors = ZALLOC_N(SUColor, width * height);
 	SUImageRepGetDataAsColors(IMAGE(self), colors);
 	VALUE ary = rb_ary_new_capa((long)(width * height));
 	for (size_t i = 0; i < width * height; i++)

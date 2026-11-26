@@ -143,7 +143,7 @@ VALUE su_ruby_from_typed_value(SUTypedValueRef value)
 			if (count == 0)
 				return ary;
 			// The items stay owned by the array.
-			SUTypedValueRef* items = ALLOC_N(SUTypedValueRef, count);
+			SUTypedValueRef* items = ZALLOC_N(SUTypedValueRef, count);
 			SUTypedValueGetArrayItems(value, count, items, &count);
 			for (size_t i = 0; i < count; i++)
 				rb_ary_push(ary, su_ruby_from_typed_value(items[i]));
@@ -177,7 +177,7 @@ void su_typed_value_from_ruby(SUTypedValueRef value, VALUE object)
 		case T_ARRAY:
 		{
 			long count = RARRAY_LEN(object);
-			SUTypedValueRef* items = ALLOC_N(SUTypedValueRef, count > 0 ? count : 1);
+			SUTypedValueRef* items = ZALLOC_N(SUTypedValueRef, count > 0 ? count : 1);
 			for (long i = 0; i < count; i++)
 			{
 				items[i].ptr = NULL;

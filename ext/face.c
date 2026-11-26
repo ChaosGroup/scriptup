@@ -99,7 +99,7 @@ static VALUE face_get_glued_instances(VALUE self)
 	VALUE ary = rb_ary_new_capa((long)count);
 	if (count == 0)
 		return ary;
-	SUDrawingElementRef* elements = ALLOC_N(SUDrawingElementRef, count);
+	SUDrawingElementRef* elements = ZALLOC_N(SUDrawingElementRef, count);
 	SUFaceGetAttachedDrawingElements(FACE(self), count, elements, &count);
 	for (size_t i = 0; i < count; i++)
 		rb_ary_push(ary, su_wrap_entity((SUEntityRef){elements[i].ptr}));
@@ -187,11 +187,11 @@ static VALUE face_mesh(int argc, VALUE* argv, VALUE self)
 	size_t triangle_count = 0;
 	SUMeshHelperGetNumVertices(helper, &vertex_count);
 	SUMeshHelperGetNumTriangles(helper, &triangle_count);
-	struct SUPoint3D* vertices = ALLOC_N(struct SUPoint3D, vertex_count + 1);
-	struct SUPoint3D* front = ALLOC_N(struct SUPoint3D, vertex_count + 1);
-	struct SUPoint3D* back = ALLOC_N(struct SUPoint3D, vertex_count + 1);
-	struct SUVector3D* normals = ALLOC_N(struct SUVector3D, vertex_count + 1);
-	size_t* indices = ALLOC_N(size_t, triangle_count * 3 + 1);
+	struct SUPoint3D* vertices = ZALLOC_N(struct SUPoint3D, vertex_count + 1);
+	struct SUPoint3D* front = ZALLOC_N(struct SUPoint3D, vertex_count + 1);
+	struct SUPoint3D* back = ZALLOC_N(struct SUPoint3D, vertex_count + 1);
+	struct SUVector3D* normals = ZALLOC_N(struct SUVector3D, vertex_count + 1);
+	size_t* indices = ZALLOC_N(size_t, triangle_count * 3 + 1);
 	size_t n = 0;
 	SUMeshHelperGetVertices(helper, vertex_count, vertices, &n);
 	SUMeshHelperGetFrontSTQCoords(helper, vertex_count, front, &n);

@@ -143,8 +143,8 @@ static VALUE model_find_entity_by_persistent_id(int argc, VALUE* argv, VALUE sel
 	long count = RARRAY_LEN(ids);
 	if (count == 0)
 		rb_raise(rb_eArgError, "at least one persistent id is required");
-	int64_t* pids = ALLOC_N(int64_t, count);
-	SUEntityRef* entities = ALLOC_N(SUEntityRef, count);
+	int64_t* pids = ZALLOC_N(int64_t, count);
+	SUEntityRef* entities = ZALLOC_N(SUEntityRef, count);
 	for (long i = 0; i < count; i++)
 	{
 		pids[i] = NUM2LL(RARRAY_AREF(ids, i));

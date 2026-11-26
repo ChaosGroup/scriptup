@@ -243,7 +243,7 @@ void su_typed_value_from_ruby(SUTypedValueRef value, VALUE object);
 		VALUE ary = rb_ary_new_capa((long)count); \
 		if (count == 0) \
 			return ary; \
-		ItemType* items = ALLOC_N(ItemType, count); \
+		ItemType* items = ZALLOC_N(ItemType, count); \
 		GetFn(ref, count, items, &count); \
 		for (size_t i = 0; i < count; i++) \
 			rb_ary_push(ary, su_wrap(klass, items[i].ptr)); \
@@ -260,7 +260,7 @@ void su_typed_value_from_ruby(SUTypedValueRef value, VALUE object);
 		VALUE ary = rb_ary_new_capa((long)count); \
 		if (count == 0) \
 			return ary; \
-		SUStringRef* strings = ALLOC_N(SUStringRef, count); \
+		SUStringRef* strings = ZALLOC_N(SUStringRef, count); \
 		for (size_t i = 0; i < count; i++) \
 		{ \
 			strings[i].ptr = NULL; \

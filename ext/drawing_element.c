@@ -72,7 +72,7 @@ static VALUE drawingelement_set_layer(VALUE self, VALUE layer)
 		SUModelRef model = SU_REF(SUModelRef, drawingelement_model(self));
 		size_t count = 0;
 		SUModelGetNumLayers(model, &count);
-		SULayerRef* layers = ALLOC_N(SULayerRef, count > 0 ? count : 1);
+		SULayerRef* layers = ZALLOC_N(SULayerRef, count > 0 ? count : 1);
 		SUModelGetLayers(model, count, layers, &count);
 		for (size_t i = 0; i < count && SUIsInvalid(ref); i++)
 		{
