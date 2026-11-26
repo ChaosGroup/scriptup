@@ -25,6 +25,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::LineStyles | 6/6 |
 | Sketchup::Loop | 6/6 |
 | Sketchup::Texture | 10/10 |
+| Sketchup::TextureWriter | 7/7 |
 | Sketchup::Vertex | 7/7 |
 | Geom (module) | 7/8 (no `tesselate`: no C API) |
 | Geom::BoundingBox | 15/15 |

@@ -98,6 +98,7 @@ void Init_sketchup(void)
 	Init_point3d();
 	Init_polygon_mesh();
 	Init_texture();
+	Init_texture_writer();
 	Init_transformation();
 	Init_transformation2d();
 	Init_vector2d();

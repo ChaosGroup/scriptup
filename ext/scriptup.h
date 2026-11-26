@@ -28,6 +28,8 @@
 	X(cPolygonMesh, mGeom, "PolygonMesh", rb_cObject) \
 	X(cInstancePath, mSketchup, "InstancePath", rb_cObject) \
 	X(cEntitiesBuilder, mSketchup, "EntitiesBuilder", rb_cObject) \
+	X(cTextureWriter, mSketchup, "TextureWriter", rb_cObject) \
+	X(cUVHelper, mSketchup, "UVHelper", rb_cObject) \
 	X(cEntity, mSketchup, "Entity", rb_cObject) \
 	X(cMaterials, mSketchup, "Materials", cEntity) \
 	X(cMaterial, mSketchup, "Material", cEntity) \
@@ -101,6 +103,7 @@ void Init_point2d(void);
 void Init_polygon_mesh(void);
 void Init_point3d(void);
 void Init_texture(void);
+void Init_texture_writer(void);
 void Init_transformation(void);
 void Init_transformation2d(void);
 void Init_vector2d(void);
