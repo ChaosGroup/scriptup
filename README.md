@@ -18,6 +18,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::Drawingelement | 14/14 |
 | Sketchup::EdgeUse | 9/9 |
 | Sketchup::EntitiesBuilder | 6/6 (geometry is added immediately, not merged) |
+| Sketchup::ImageRep | 12/12 |
 | Sketchup::InstancePath | 14/14 |
 | Sketchup::Layer | 15/15 |
 | Sketchup::LineStyle | 1/1 |
@@ -62,7 +63,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup (module) | 2/61 (`open_file`, `active_model`) |
 
 ## Defined, no methods of their own yet
-Sketchup::ConstructionLine, Sketchup::ConstructionPoint, Sketchup::Dimension, Sketchup::Image, Sketchup::ImageRep, Sketchup::SectionPlane, Sketchup::Text
+Sketchup::ConstructionLine, Sketchup::ConstructionPoint, Sketchup::Dimension, Sketchup::Image, Sketchup::SectionPlane, Sketchup::Text
 
 # Supportable through the C API
 

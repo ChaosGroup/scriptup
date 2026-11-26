@@ -81,6 +81,7 @@ void Init_sketchup(void)
 	Init_face();
 	Init_geom();
 	Init_group();
+	Init_image_rep();
 	Init_instance_path();
 	Init_lat_long();
 	Init_layer();

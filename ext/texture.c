@@ -17,12 +17,6 @@ static struct texture_dimensions texture_dimensions(VALUE self)
 
 DEFINE_STRING_GETTER(texture_filename, SUTextureRef, SUTextureGetFileName)
 
-static void image_rep_free(void* ptr)
-{
-	SUImageRepRef image = {ptr};
-	SUImageRepRelease(&image);
-}
-
 // The caller owns the image rep, so it is released when the Ruby object is collected.
 static VALUE texture_image_rep(int argc, VALUE* argv, VALUE self)
 {
@@ -37,7 +31,7 @@ static VALUE texture_image_rep(int argc, VALUE* argv, VALUE self)
 		SUImageRepRelease(&image);
 		return Qnil;
 	}
-	return Data_Wrap_Struct(cImageRep, 0, image_rep_free, image.ptr);
+	return su_image_rep_new(image);
 }
 
 static VALUE texture_average_color(VALUE self)
