@@ -68,6 +68,7 @@ void Init_sketchup(void)
 	Init_bounding_box();
 	Init_color();
 	Init_component_definition();
+	Init_component_instance();
 	Init_curve();
 	Init_definition_list();
 	Init_drawing_element();
