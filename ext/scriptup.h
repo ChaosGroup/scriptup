@@ -75,6 +75,7 @@ void Init_entity(void);
 void Init_face(void);
 void Init_lat_long(void);
 void Init_geom(void);
+void Init_group(void);
 void Init_length(void);
 void Init_loop(void);
 void Init_material(void);
