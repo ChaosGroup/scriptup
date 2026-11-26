@@ -103,6 +103,7 @@ void Init_sketchup(void)
 	Init_point3d();
 	Init_polygon_mesh();
 	Init_section_plane();
+	Init_styles();
 	Init_text();
 	Init_texture();
 	Init_texture_writer();

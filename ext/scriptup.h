@@ -118,6 +118,7 @@ void Init_point2d(void);
 void Init_polygon_mesh(void);
 void Init_point3d(void);
 void Init_section_plane(void);
+void Init_styles(void);
 void Init_text(void);
 void Init_texture(void);
 void Init_texture_writer(void);
