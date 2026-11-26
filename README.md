@@ -60,6 +60,8 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::RenderingOptions | 11/13 | no observers (no C API) |
 | Sketchup::ShadowInfo | 11/13 | no observers (no C API) |
 | Sketchup::OptionsProvider | 13/15 | no observers (no C API) |
+| Sketchup::Classifications | 6/7 | no `unload_schema` (no C API) |
+| Sketchup::ClassificationSchema | 2/3 | no `namespace` (no C API) |
 | Sketchup::Layers | 19/21 | no observers (no C API); `remove` can't remove a tag's geometry |
 | Sketchup::Entity | 14/16 | no observers (no C API); `delete_attribute` can't delete a single key |
 | Sketchup::AttributeDictionary | 12/13 | `empty?`; `delete_key` doesn't delete |
@@ -68,7 +70,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 ## Partially implemented
 | Class | Methods |
 |---|---|
-| Sketchup::ComponentDefinition | 22/34 (`add_classification` with Classifications; no thumbnails, `insertion_point=`, `invalidate_bounds`, classification values or observers: no C API) |
+| Sketchup::ComponentDefinition | 23/34 (no thumbnails, `insertion_point=`, `invalidate_bounds`, classification values or observers: no C API) |
 | Sketchup::DefinitionList | 12/15 (no `load_from_url` or observers: no C API; `import` handles .skp only) |
 | Sketchup::Model | 14/73 |
 | Sketchup::Edge | 16/19 (no `explode_curve`, `find_faces`, `split`: no C API) |
@@ -87,11 +89,11 @@ Sketchup::Dimension
 These ruby api classes have a C API counterpart, so they can be implemented (at least partially):
 
 * **Geom:** BoundingBox, LatLong, Point2d, Point3d, PolygonMesh, Transformation, Transformation2d, Vector2d, Vector3d
-* **Model and collections:** Model, Entities, EntitiesBuilder, DefinitionList, Materials, Layers, Pages, Styles, Environments, LineStyles, Selection, Classifications, OptionsManager, OptionsProvider, RenderingOptions, ShadowInfo
+* **Model and collections:** Model, Entities, EntitiesBuilder, DefinitionList, Materials, Layers, Pages, Styles, Environments, LineStyles, Classifications, OptionsManager, OptionsProvider, RenderingOptions, ShadowInfo
 * **Entities:** Entity, Drawingelement, ArcCurve, Axes, ComponentDefinition, ComponentInstance, ConstructionLine, ConstructionPoint, Curve, Dimension, DimensionLinear, DimensionRadial, Edge, EdgeUse, Environment, Face, Group, Image, Layer, LayerFolder, Loop, Material, Page, SectionPlane, Text, Texture, Vertex
 * **Other:** AttributeDictionary, AttributeDictionaries, Behavior, Camera, ClassificationSchema, Color, ImageRep, InstancePath, LineStyle, Snap, Style, TextureWriter, UVHelper, Licensing::ExtensionLicense, Length
 
-Not supportable (no C API): UI, View, Tool/Tools, InputPoint, PickHelper, Animation, observers, Console, Menu, Http, ExtensionsManager, Overlay/OverlaysManager, Importer, and the LayOut api.
+Not supportable (no C API, or only inside SketchUp): Selection, UI, View, Tool/Tools, InputPoint, PickHelper, Animation, observers, Console, Menu, Http, ExtensionsManager, Overlay/OverlaysManager, Importer, and the LayOut api.
 
 # Type signatures
 `bundle exec rake rbs` generates RBS for the SketchUp 2026.0 ruby api into `sig/` from [sketchup-api-stubs](https://github.com/SketchUp/sketchup-api-stubs); the gem ships them. See `scripts/rbs/`.

@@ -33,6 +33,8 @@
 	X(cCamera, mSketchup, "Camera", rb_cObject) \
 	X(cOptionsManager, mSketchup, "OptionsManager", rb_cObject) \
 	X(cOptionsProvider, mSketchup, "OptionsProvider", rb_cObject) \
+	X(cClassifications, mSketchup, "Classifications", rb_cObject) \
+	X(cClassificationSchema, mSketchup, "ClassificationSchema", rb_cObject) \
 	X(cEntity, mSketchup, "Entity", rb_cObject) \
 	X(cMaterials, mSketchup, "Materials", cEntity) \
 	X(cMaterial, mSketchup, "Material", cEntity) \
@@ -86,6 +88,7 @@ void Init_attribute_dictionary(void);
 void Init_behavior(void);
 void Init_bounding_box(void);
 void Init_camera(void);
+void Init_classifications(void);
 void Init_color(void);
 void Init_component_definition(void);
 void Init_component_instance(void);
