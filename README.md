@@ -83,8 +83,8 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::Entities | 32/39 (no 3D text, intersect, dimensions, snaps or observers in the C API) |
 | Sketchup (module) | 8/61 (`open_file`, `active_model`, `file_new`, `create_texture_writer`, length/area/volume formatting and `parse_length`; the rest needs the SketchUp app) |
 
-## Defined, no methods of their own yet
-Sketchup::Dimension
+## Blocked: no way to create them in tests
+Sketchup::Dimension, Sketchup::DimensionLinear, Sketchup::DimensionRadial and Sketchup::Snap have C API getters and setters, but the C API can't add them to a model and the test models contain none. Implementing them needs a test model that has some.
 
 # Supportable through the C API
 
