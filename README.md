@@ -41,6 +41,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 ## Mostly implemented
 | Class | Methods | Missing / incomplete |
 |---|---|---|
+| Sketchup::Image | 16/19 | no `explode` or `glued_to` (no C API for images) |
 | Sketchup::LayerFolder | 18/20 | no `visible_on_new_pages` (no C API); `folder = nil` can't move a folder to the top level |
 | Sketchup::Material | 45/46 | no `write_thumbnail` (no C API) |
 | Sketchup::Materials | 10/15 | no `current`, `purge_unused` or observers (no C API) |
@@ -63,7 +64,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup (module) | 2/61 (`open_file`, `active_model`) |
 
 ## Defined, no methods of their own yet
-Sketchup::ConstructionLine, Sketchup::ConstructionPoint, Sketchup::Dimension, Sketchup::Image, Sketchup::SectionPlane, Sketchup::Text
+Sketchup::ConstructionLine, Sketchup::ConstructionPoint, Sketchup::Dimension, Sketchup::SectionPlane, Sketchup::Text
 
 # Supportable through the C API
 

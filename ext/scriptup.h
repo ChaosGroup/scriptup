@@ -82,6 +82,7 @@ void Init_edge(void);
 void Init_edge_use(void);
 void Init_entity(void);
 void Init_face(void);
+void Init_image(void);
 void Init_image_rep(void);
 void Init_instance_path(void);
 void Init_lat_long(void);
