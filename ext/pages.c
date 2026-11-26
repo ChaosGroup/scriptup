@@ -46,12 +46,15 @@ static VALUE pages_add(int argc, VALUE* argv, VALUE self)
 	if (!NIL_P(flags))
 		SUSceneSetFlags(scene, NUM2UINT(flags));
 	int out_index = 0;
-	if (SUModelAddScene(MODEL(self), NIL_P(index) ? -1 : NUM2INT(index), scene, &out_index) != SU_ERROR_NONE)
+	enum SUResult result = SUModelAddScene(MODEL(self), NIL_P(index) ? -1 : NUM2INT(index), scene, &out_index);
+	if (result != SU_ERROR_NONE)
 	{
 		SUSceneRelease(&scene);
-		rb_raise(rb_eArgError, "cannot add the page");
+		rb_raise(rb_eArgError, "cannot add the page (error %d)", result);
 	}
-	return su_wrap(cPage, scene.ptr);
+	// Return the model's scene: on Windows the model may hold a different ref than the one added.
+	VALUE added = rb_ary_entry(pages_to_a(self), out_index);
+	return NIL_P(added) ? su_wrap(cPage, scene.ptr) : added;
 }
 
 static VALUE pages_add_matchphoto_page(int argc, VALUE* argv, VALUE self)

@@ -39,7 +39,9 @@ class TestImageRep < Minitest::Test
   end
 
   def test_set_data
-    pixels = ([255, 0, 0, 255] * 4).pack('C*')
+    # Pixel bytes are BGRA on Windows and RGBA on macOS.
+    red = Gem.win_platform? ? [0, 0, 255, 255] : [255, 0, 0, 255]
+    pixels = (red * 4).pack('C*')
     image = Sketchup::ImageRep.new
     assert_same(image, image.set_data(2, 2, 32, 0, pixels))
     assert_equal(2, image.width)
