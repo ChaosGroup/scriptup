@@ -1,8 +1,7 @@
-require 'minitest/autorun'
-require 'sketchup'
-require 'tmpdir'
+require_relative 'helper'
 
 class TestMaterial < Minitest::Test
+  UNSUPPORTED = %i[write_thumbnail].freeze # no C API
 
   def setup
     Sketchup.open_file("#{ENV['TEST_RESOURCES']}/Untitled.skp")
@@ -50,7 +49,6 @@ class TestMaterial < Minitest::Test
     assert_raises(TypeError) {
       @material.color = [255, 50, Object.new]
     }
-    skip
     color = Sketchup::Color.new(42, 43, 44)
     assert_equal(@material.color = color, color)
     assert_equal(@material.color, color)
@@ -120,4 +118,68 @@ class TestMaterial < Minitest::Test
     refute(@material.use_alpha?)
   end
 
+  def test_unsupported
+    assert_unsupported(@material, UNSUPPORTED)
+  end
+
+  def test_constants
+    assert_equal(0, Sketchup::Material::COLORIZE_SHIFT)
+    assert_equal(1, Sketchup::Material::COLORIZE_TINT)
+    assert_equal([0, 1, 2], [Sketchup::Material::MATERIAL_SOLID, Sketchup::Material::MATERIAL_TEXTURED, Sketchup::Material::MATERIAL_COLORIZED_TEXTURED])
+    assert_equal([0, 1, 2], [Sketchup::Material::OWNER_MANAGER, Sketchup::Material::OWNER_IMAGE, Sketchup::Material::OWNER_LAYER])
+    assert_equal([0, 1], [Sketchup::Material::NORMAL_STYLE_OPENGL, Sketchup::Material::NORMAL_STYLE_DIRECTX])
+    assert_equal([0, 1], [Sketchup::Material::WORKFLOW_CLASSIC, Sketchup::Material::WORKFLOW_PBR_METALLIC_ROUGHNESS])
+  end
+
+  def test_workflow
+    assert_equal(Sketchup::Material::WORKFLOW_CLASSIC, @material.workflow)
+    @material.metalness_enabled = true
+    assert_equal(Sketchup::Material::WORKFLOW_PBR_METALLIC_ROUGHNESS, @material.workflow)
+  end
+
+  def test_metalness
+    refute(@material.metalness_enabled?)
+    assert_equal(true, @material.metalness_enabled = true)
+    assert(@material.metalness_enabled?)
+    assert_equal(0.5, @material.metallic_factor = 0.5)
+    assert_in_delta(0.5, @material.metallic_factor)
+  end
+
+  def test_roughness
+    @material.roughness_enabled = true
+    assert(@material.roughness_enabled?)
+    @material.roughness_factor = 0.25
+    assert_in_delta(0.25, @material.roughness_factor)
+  end
+
+  def test_normal
+    @material.normal_texture = "#{ENV['TEST_RESOURCES']}/texture_map.png" # enabling needs a texture
+    @material.normal_enabled = true
+    assert(@material.normal_enabled?)
+    @material.normal_scale = 2.0
+    assert_in_delta(2.0, @material.normal_scale)
+    assert_equal(Sketchup::Material::NORMAL_STYLE_DIRECTX, @material.normal_style = Sketchup::Material::NORMAL_STYLE_DIRECTX)
+    assert_equal(Sketchup::Material::NORMAL_STYLE_DIRECTX, @material.normal_style)
+    assert_raises(ArgumentError) { @material.normal_style = 9 }
+  end
+
+  def test_ambient_occlusion
+    @material.ao_texture = "#{ENV['TEST_RESOURCES']}/texture_map.png" # enabling needs a texture
+    @material.ao_enabled = true
+    assert(@material.ao_enabled?)
+    @material.ao_strength = 0.75
+    assert_in_delta(0.75, @material.ao_strength)
+  end
+
+  def test_pbr_textures
+    path = "#{ENV['TEST_RESOURCES']}/texture_map.png"
+    %i[metallic_texture roughness_texture normal_texture ao_texture].each do |name|
+      assert_nil(@material.public_send(name), name)
+      assert_equal(path, @material.public_send("#{name}=", path))
+      assert_instance_of(Sketchup::Texture, @material.public_send(name), name)
+      assert_nil(@material.public_send("#{name}=", nil))
+      assert_nil(@material.public_send(name), name)
+    end
+    assert_raises(ArgumentError) { @material.metallic_texture = '/does/not/exist.png' }
+  end
 end

@@ -40,6 +40,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Class | Methods | Missing / incomplete |
 |---|---|---|
 | Sketchup::LayerFolder | 18/20 | no `visible_on_new_pages` (no C API); `folder = nil` can't move a folder to the top level |
+| Sketchup::Material | 45/46 | no `write_thumbnail` (no C API) |
 | Sketchup::Layers | 19/21 | no observers (no C API); `remove` can't remove a tag's geometry |
 | Sketchup::Entity | 14/16 | no observers (no C API); `delete_attribute` can't delete a single key |
 | Sketchup::AttributeDictionary | 12/13 | `empty?`; `delete_key` doesn't delete |
@@ -51,7 +52,6 @@ Method counts are against the SketchUp 2026.0 ruby api.
 |---|---|
 | Sketchup::ComponentDefinition | 22/34 (`add_classification` with Classifications; no thumbnails, `insertion_point=`, `invalidate_bounds`, classification values or observers: no C API) |
 | Sketchup::DefinitionList | 12/15 (no `load_from_url` or observers: no C API; `import` handles .skp only) |
-| Sketchup::Material | 17/46 (no PBR properties) |
 | Sketchup::Materials | 5/15 |
 | Sketchup::Model | 8/73 |
 | Sketchup::Edge | 16/19 (no `explode_curve`, `find_faces`, `split`: no C API) |
