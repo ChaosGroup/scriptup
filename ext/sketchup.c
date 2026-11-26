@@ -83,6 +83,8 @@ void Init_sketchup(void)
 	Init_group();
 	Init_instance_path();
 	Init_lat_long();
+	Init_layer();
+	Init_layers();
 	Init_length();
 	Init_loop();
 	Init_material();

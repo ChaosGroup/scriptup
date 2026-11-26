@@ -50,6 +50,8 @@ static const struct { enum SURefType type; VALUE* klass; } entity_classes[] = {
 	{SURefType_GuidePoint, &cConstructionPoint},
 	{SURefType_Image, &cImage},
 	{SURefType_Layer, &cLayer},
+	{SURefType_LayerFolder, &cLayerFolder},
+	{SURefType_LineStyle, &cLineStyle},
 	{SURefType_Material, &cMaterial},
 	{SURefType_SectionPlane, &cSectionPlane},
 	{SURefType_Text, &cText},

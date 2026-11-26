@@ -16,6 +16,11 @@ static VALUE model_entities(VALUE self)
 	return su_entities_new(entities);
 }
 
+static VALUE model_layers(VALUE self)
+{
+	return su_wrap(cLayers, DATA_PTR(self));
+}
+
 static VALUE model_materials(VALUE self)
 {
 	return su_wrap(cMaterials, DATA_PTR(self));
@@ -37,6 +42,8 @@ void Init_model(void)
 	rb_define_const(cModel, "LOAD_STATUS_SUCCESS_MORE_RECENT", INT2FIX(SUModelLoadStatus_Success_MoreRecent));
 	rb_define_method(cModel, "close", model_close, -1);
 	rb_define_method(cModel, "entities", model_entities, 0);
+	rb_define_method(cModel, "layers", model_layers, 0);
+	rb_define_method(cModel, "tags", model_layers, 0);
 	rb_define_method(cModel, "materials", model_materials, 0);
 	rb_define_method(cModel, "definitions", model_definitions, 0);
 	rb_define_method(cModel, "attribute_dictionaries", model_attribute_dictionaries, 0);

@@ -37,6 +37,9 @@
 	X(cTexture, mSketchup, "Texture", cEntity) \
 	X(cBehavior, mSketchup, "Behavior", cEntity) \
 	X(cLayer, mSketchup, "Layer", cEntity) \
+	X(cLayers, mSketchup, "Layers", cEntity) \
+	X(cLayerFolder, mSketchup, "LayerFolder", cEntity) \
+	X(cLineStyle, mSketchup, "LineStyle", cEntity) \
 	X(cVertex, mSketchup, "Vertex", cEntity) \
 	X(cLoop, mSketchup, "Loop", cEntity) \
 	X(cEdgeUse, mSketchup, "EdgeUse", cEntity) \
@@ -82,6 +85,8 @@ void Init_instance_path(void);
 void Init_lat_long(void);
 void Init_geom(void);
 void Init_group(void);
+void Init_layer(void);
+void Init_layers(void);
 void Init_length(void);
 void Init_loop(void);
 void Init_material(void);

@@ -19,6 +19,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::EdgeUse | 9/9 |
 | Sketchup::EntitiesBuilder | 6/6 (geometry is added immediately, not merged) |
 | Sketchup::InstancePath | 14/14 |
+| Sketchup::Layer | 15/15 |
 | Sketchup::Loop | 6/6 |
 | Sketchup::Vertex | 7/7 |
 | Geom (module) | 7/8 (no `tesselate`: no C API) |
@@ -36,6 +37,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 ## Mostly implemented
 | Class | Methods | Missing / incomplete |
 |---|---|---|
+| Sketchup::Layers | 19/21 | no observers (no C API); `remove` can't remove a tag's geometry |
 | Sketchup::Entity | 14/16 | no observers (no C API); `delete_attribute` can't delete a single key |
 | Sketchup::AttributeDictionary | 12/13 | `empty?`; `delete_key` doesn't delete |
 | Sketchup::Texture | 9/10 | `size=` |
@@ -48,7 +50,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::DefinitionList | 12/15 (no `load_from_url` or observers: no C API; `import` handles .skp only) |
 | Sketchup::Material | 17/46 (no PBR properties) |
 | Sketchup::Materials | 5/15 |
-| Sketchup::Model | 5/73 |
+| Sketchup::Model | 7/73 |
 | Sketchup::Edge | 16/19 (no `explode_curve`, `find_faces`, `split`: no C API) |
 | Sketchup::Face | 24/28 (`get_UVHelper` with UVHelper; no `pushpull`, `followme`, `set_texture_projection`: no C API) |
 | Sketchup::ComponentInstance | 13/27 (no `definition=`, booleans, `explode`, `make_unique`, `glued_to=` or observers: no C API) |
@@ -57,7 +59,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup (module) | 2/61 (`open_file`, `active_model`) |
 
 ## Defined, no methods of their own yet
-Sketchup::ConstructionLine, Sketchup::ConstructionPoint, Sketchup::Dimension, Sketchup::Image, Sketchup::ImageRep, Sketchup::Layer, Sketchup::SectionPlane, Sketchup::Text
+Sketchup::ConstructionLine, Sketchup::ConstructionPoint, Sketchup::Dimension, Sketchup::Image, Sketchup::ImageRep, Sketchup::SectionPlane, Sketchup::Text
 
 # Supportable through the C API
 
