@@ -34,6 +34,7 @@ static VALUE entity_typename(VALUE self)
 static const struct { enum SURefType type; VALUE* klass; } entity_classes[] = {
 	{SURefType_ArcCurve, &cArcCurve},
 	{SURefType_AttributeDictionary, &cAttributeDictionary},
+	{SURefType_Axes, &cAxes},
 	{SURefType_Curve, &cCurve},
 	{SURefType_EdgeUse, &cEdgeUse},
 	{SURefType_Loop, &cLoop},

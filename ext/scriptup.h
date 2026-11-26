@@ -38,6 +38,7 @@
 	X(cAttributeDictionaries, mSketchup, "AttributeDictionaries", cEntity) \
 	X(cTexture, mSketchup, "Texture", cEntity) \
 	X(cBehavior, mSketchup, "Behavior", cEntity) \
+	X(cAxes, mSketchup, "Axes", cEntity) \
 	X(cLayer, mSketchup, "Layer", cEntity) \
 	X(cLayers, mSketchup, "Layers", cEntity) \
 	X(cLayerFolder, mSketchup, "LayerFolder", cEntity) \
@@ -69,6 +70,7 @@ SCRIPTUP_CLASSES(SCRIPTUP_DECLARE_CLASS)
 // Per-file method definitions, called after all classes exist.
 void Init_arc_curve(void);
 void Init_attribute_dictionaries(void);
+void Init_axes(void);
 void Init_attribute_dictionary(void);
 void Init_behavior(void);
 void Init_bounding_box(void);

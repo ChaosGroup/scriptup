@@ -12,6 +12,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Class | Methods |
 |---|---|
 | Sketchup::ArcCurve | 9/9 |
+| Sketchup::Axes | 9/9 |
 | Sketchup::Behavior | 12/12 |
 | Sketchup::Color | 15/15 |
 | Sketchup::ConstructionPoint | 1/1 |
@@ -60,7 +61,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 |---|---|
 | Sketchup::ComponentDefinition | 22/34 (`add_classification` with Classifications; no thumbnails, `insertion_point=`, `invalidate_bounds`, classification values or observers: no C API) |
 | Sketchup::DefinitionList | 12/15 (no `load_from_url` or observers: no C API; `import` handles .skp only) |
-| Sketchup::Model | 8/73 |
+| Sketchup::Model | 9/73 |
 | Sketchup::Edge | 16/19 (no `explode_curve`, `find_faces`, `split`: no C API) |
 | Sketchup::Face | 25/28 (no `pushpull`, `followme`, `set_texture_projection`: no C API) |
 | Sketchup::ComponentInstance | 13/27 (no `definition=`, booleans, `explode`, `make_unique`, `glued_to=` or observers: no C API) |

@@ -65,6 +65,7 @@ void Init_sketchup(void)
 	Init_arc_curve();
 	Init_attribute_dictionaries();
 	Init_attribute_dictionary();
+	Init_axes();
 	Init_behavior();
 	Init_bounding_box();
 	Init_color();
