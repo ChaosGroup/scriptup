@@ -21,6 +21,13 @@ static VALUE model_layers(VALUE self)
 	return su_wrap(cLayers, DATA_PTR(self));
 }
 
+static VALUE model_line_styles(VALUE self)
+{
+	SULineStylesRef styles = SU_INVALID;
+	SUModelGetLineStyles(SU_REF(SUModelRef, self), &styles);
+	return su_wrap_or_nil(cLineStyles, styles.ptr);
+}
+
 static VALUE model_materials(VALUE self)
 {
 	return su_wrap(cMaterials, DATA_PTR(self));
@@ -44,6 +51,7 @@ void Init_model(void)
 	rb_define_method(cModel, "entities", model_entities, 0);
 	rb_define_method(cModel, "layers", model_layers, 0);
 	rb_define_method(cModel, "tags", model_layers, 0);
+	rb_define_method(cModel, "line_styles", model_line_styles, 0);
 	rb_define_method(cModel, "materials", model_materials, 0);
 	rb_define_method(cModel, "definitions", model_definitions, 0);
 	rb_define_method(cModel, "attribute_dictionaries", model_attribute_dictionaries, 0);

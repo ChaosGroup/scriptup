@@ -40,6 +40,7 @@
 	X(cLayers, mSketchup, "Layers", cEntity) \
 	X(cLayerFolder, mSketchup, "LayerFolder", cEntity) \
 	X(cLineStyle, mSketchup, "LineStyle", cEntity) \
+	X(cLineStyles, mSketchup, "LineStyles", cEntity) \
 	X(cVertex, mSketchup, "Vertex", cEntity) \
 	X(cLoop, mSketchup, "Loop", cEntity) \
 	X(cEdgeUse, mSketchup, "EdgeUse", cEntity) \
@@ -89,6 +90,7 @@ void Init_layer(void);
 void Init_layer_folder(void);
 void Init_layers(void);
 void Init_length(void);
+void Init_line_styles(void);
 void Init_loop(void);
 void Init_material(void);
 void Init_materials(void);

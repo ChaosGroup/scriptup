@@ -87,6 +87,7 @@ void Init_sketchup(void)
 	Init_layer_folder();
 	Init_layers();
 	Init_length();
+	Init_line_styles();
 	Init_loop();
 	Init_material();
 	Init_materials();
