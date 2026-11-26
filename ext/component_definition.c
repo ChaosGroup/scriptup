@@ -46,10 +46,7 @@ static VALUE componentdefinition_image_p(VALUE self)
 
 static VALUE componentdefinition_behavior(VALUE self)
 {
-	struct SUComponentBehavior* behavior;
-	VALUE obj = Data_Make_Struct(cBehavior, struct SUComponentBehavior, 0, RUBY_DEFAULT_FREE, behavior);
-	SUComponentDefinitionGetBehavior(SU_REF(SUComponentDefinitionRef, self), behavior);
-	return obj;
+	return su_wrap(cBehavior, DATA_PTR(self));
 }
 
 static VALUE componentdefinition_save_as(int argc, VALUE* argv, VALUE self)

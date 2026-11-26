@@ -63,6 +63,7 @@ SCRIPTUP_CLASSES(SCRIPTUP_DECLARE_CLASS)
 void Init_arc_curve(void);
 void Init_attribute_dictionaries(void);
 void Init_attribute_dictionary(void);
+void Init_behavior(void);
 void Init_bounding_box(void);
 void Init_color(void);
 void Init_component_definition(void);

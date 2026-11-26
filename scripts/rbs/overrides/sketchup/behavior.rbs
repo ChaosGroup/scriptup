@@ -1,0 +1,7 @@
+class Sketchup::Behavior
+  def no_scale_mask?: () -> Integer
+  def no_scale_mask=: (Integer scale_mask) -> Integer
+  def always_face_camera=: (bool setting) -> bool
+  def cuts_opening=: (bool setting) -> bool
+  def shadows_face_sun=: (bool status) -> bool
+end

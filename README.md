@@ -12,6 +12,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Class | Methods |
 |---|---|
 | Sketchup::ArcCurve | 9/9 |
+| Sketchup::Behavior | 12/12 |
 | Sketchup::Color | 15/15 |
 | Sketchup::Curve | 9/9 |
 | Sketchup::Drawingelement | 14/14 |
@@ -55,7 +56,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup (module) | 2/61 (`open_file`, `active_model`) |
 
 ## Defined, no methods of their own yet
-Sketchup::Behavior, Sketchup::ConstructionLine, Sketchup::ConstructionPoint, Sketchup::Dimension, Sketchup::Image, Sketchup::ImageRep, Sketchup::Layer, Sketchup::SectionPlane, Sketchup::Text
+Sketchup::ConstructionLine, Sketchup::ConstructionPoint, Sketchup::Dimension, Sketchup::Image, Sketchup::ImageRep, Sketchup::Layer, Sketchup::SectionPlane, Sketchup::Text
 
 # Supportable through the C API
 
