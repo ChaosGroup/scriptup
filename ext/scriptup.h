@@ -31,6 +31,8 @@
 	X(cTextureWriter, mSketchup, "TextureWriter", rb_cObject) \
 	X(cUVHelper, mSketchup, "UVHelper", rb_cObject) \
 	X(cCamera, mSketchup, "Camera", rb_cObject) \
+	X(cOptionsManager, mSketchup, "OptionsManager", rb_cObject) \
+	X(cOptionsProvider, mSketchup, "OptionsProvider", rb_cObject) \
 	X(cEntity, mSketchup, "Entity", rb_cObject) \
 	X(cMaterials, mSketchup, "Materials", cEntity) \
 	X(cMaterial, mSketchup, "Material", cEntity) \
