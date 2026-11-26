@@ -12,6 +12,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Class | Methods |
 |---|---|
 | Sketchup::Color | 15/15 |
+| Sketchup::Curve | 9/9 |
 | Sketchup::Drawingelement | 14/14 |
 | Sketchup::EdgeUse | 9/9 |
 | Sketchup::Loop | 6/6 |

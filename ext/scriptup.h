@@ -64,6 +64,7 @@ void Init_attribute_dictionary(void);
 void Init_bounding_box(void);
 void Init_color(void);
 void Init_component_definition(void);
+void Init_curve(void);
 void Init_definition_list(void);
 void Init_drawing_element(void);
 void Init_entities(void);
