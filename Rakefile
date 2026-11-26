@@ -38,6 +38,16 @@ Rake::TestTask.new do |t|
   t.test_files = FileList['test/**/test_*.rb']
 end
 
+desc 'Fail if the extension calls SketchUp C API functions the SDK library does not export (macOS)'
+task check_symbols: :compile do
+  library = "#{__dir__}/sketchup-sdk-mac/SketchUpAPI.framework/Versions/A/SketchUpAPI"
+  used = `nm -u #{__dir__}/lib/sketchup.bundle`.split.grep(/\A_SU/)
+  exported = `nm -gU #{library}`.lines.map { |l| l.split.last }
+  missing = used - exported
+  abort "Not exported by the SketchUp SDK (only available inside SketchUp?): #{missing.join(', ')}" unless missing.empty?
+  puts "All #{used.size} SketchUp API functions are exported"
+end
+
 task default: [:download, :compile, :test]
 
 namespace :rbs do

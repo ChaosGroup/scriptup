@@ -93,9 +93,9 @@ These ruby api classes have a C API counterpart, so they can be implemented (at 
 * **Geom:** BoundingBox, LatLong, Point2d, Point3d, PolygonMesh, Transformation, Transformation2d, Vector2d, Vector3d
 * **Model and collections:** Model, Entities, EntitiesBuilder, DefinitionList, Materials, Layers, Pages, Styles, Environments, LineStyles, Classifications, OptionsManager, OptionsProvider, RenderingOptions, ShadowInfo
 * **Entities:** Entity, Drawingelement, ArcCurve, Axes, ComponentDefinition, ComponentInstance, ConstructionLine, ConstructionPoint, Curve, Dimension, DimensionLinear, DimensionRadial, Edge, EdgeUse, Environment, Face, Group, Image, Layer, LayerFolder, Loop, Material, Page, SectionPlane, Text, Texture, Vertex
-* **Other:** AttributeDictionary, AttributeDictionaries, Behavior, Camera, ClassificationSchema, Color, ImageRep, InstancePath, LineStyle, Snap, Style, TextureWriter, UVHelper, Licensing::ExtensionLicense, Length
+* **Other:** AttributeDictionary, AttributeDictionaries, Behavior, Camera, ClassificationSchema, Color, ImageRep, InstancePath, LineStyle, Snap, Style, TextureWriter, UVHelper, Length
 
-Not supportable (no C API, or only inside SketchUp): Selection, UI, View, Tool/Tools, InputPoint, PickHelper, Animation, observers, Console, Menu, Http, ExtensionsManager, Overlay/OverlaysManager, Importer, and the LayOut api.
+Not supportable (no C API, or only inside SketchUp): Selection, Licensing, UI, View, Tool/Tools, InputPoint, PickHelper, Animation, observers, Console, Menu, Http, ExtensionsManager, Overlay/OverlaysManager, Importer, and the LayOut api.
 
 # Type signatures
 `bundle exec rake rbs` generates RBS for the SketchUp 2026.0 ruby api into `sig/` from [sketchup-api-stubs](https://github.com/SketchUp/sketchup-api-stubs); the gem ships them. See `scripts/rbs/`.
