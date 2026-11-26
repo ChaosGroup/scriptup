@@ -14,6 +14,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 | Sketchup::ArcCurve | 9/9 |
 | Sketchup::Axes | 9/9 |
 | Sketchup::Behavior | 12/12 |
+| Sketchup::Camera | 27/27 |
 | Sketchup::Color | 15/15 |
 | Sketchup::ConstructionPoint | 1/1 |
 | Sketchup::Curve | 9/9 |

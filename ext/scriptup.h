@@ -30,6 +30,7 @@
 	X(cEntitiesBuilder, mSketchup, "EntitiesBuilder", rb_cObject) \
 	X(cTextureWriter, mSketchup, "TextureWriter", rb_cObject) \
 	X(cUVHelper, mSketchup, "UVHelper", rb_cObject) \
+	X(cCamera, mSketchup, "Camera", rb_cObject) \
 	X(cEntity, mSketchup, "Entity", rb_cObject) \
 	X(cMaterials, mSketchup, "Materials", cEntity) \
 	X(cMaterial, mSketchup, "Material", cEntity) \
@@ -74,6 +75,7 @@ void Init_axes(void);
 void Init_attribute_dictionary(void);
 void Init_behavior(void);
 void Init_bounding_box(void);
+void Init_camera(void);
 void Init_color(void);
 void Init_component_definition(void);
 void Init_component_instance(void);
@@ -127,6 +129,7 @@ SUMaterialRef su_material_from_arg(VALUE entity, VALUE material);
 SUInstancePathRef su_to_instance_path(VALUE obj);
 VALUE su_instance_path_copy(SUInstancePathRef source);
 VALUE su_image_rep_new(SUImageRepRef image);
+VALUE su_camera_wrap(SUCameraRef camera);
 VALUE su_instance_locked_p(VALUE self);
 VALUE su_instance_set_locked(VALUE self, VALUE lock);
 VALUE su_instance_volume(VALUE self);

@@ -68,6 +68,7 @@ void Init_sketchup(void)
 	Init_axes();
 	Init_behavior();
 	Init_bounding_box();
+	Init_camera();
 	Init_color();
 	Init_component_definition();
 	Init_component_instance();

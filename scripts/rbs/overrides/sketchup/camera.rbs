@@ -1,0 +1,3 @@
+class Sketchup::Camera
+  def focal_length: () -> Float
+end
