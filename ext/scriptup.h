@@ -26,6 +26,7 @@
 	X(cTransformation2d, mGeom, "Transformation2d", rb_cObject) \
 	X(cLatLong, mGeom, "LatLong", rb_cObject) \
 	X(cPolygonMesh, mGeom, "PolygonMesh", rb_cObject) \
+	X(cInstancePath, mSketchup, "InstancePath", rb_cObject) \
 	X(cEntity, mSketchup, "Entity", rb_cObject) \
 	X(cMaterials, mSketchup, "Materials", cEntity) \
 	X(cMaterial, mSketchup, "Material", cEntity) \
@@ -74,6 +75,7 @@ void Init_edge(void);
 void Init_edge_use(void);
 void Init_entity(void);
 void Init_face(void);
+void Init_instance_path(void);
 void Init_lat_long(void);
 void Init_geom(void);
 void Init_group(void);
@@ -100,6 +102,7 @@ VALUE su_wrap(VALUE klass, void* ptr);
 VALUE su_wrap_or_nil(VALUE klass, void* ptr);
 VALUE su_wrap_entity(SUEntityRef entity);
 SUMaterialRef su_material_from_arg(VALUE entity, VALUE material);
+SUInstancePathRef su_to_instance_path(VALUE obj);
 VALUE su_instance_locked_p(VALUE self);
 VALUE su_instance_set_locked(VALUE self, VALUE lock);
 VALUE su_instance_volume(VALUE self);
