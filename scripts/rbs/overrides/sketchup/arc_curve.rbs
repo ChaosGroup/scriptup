@@ -1,0 +1,3 @@
+class Sketchup::ArcCurve
+  def plane: () -> [ Float, Float, Float, Float ]
+end

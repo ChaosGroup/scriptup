@@ -11,6 +11,7 @@ Method counts are against the SketchUp 2026.0 ruby api.
 ## Fully implemented
 | Class | Methods |
 |---|---|
+| Sketchup::ArcCurve | 9/9 |
 | Sketchup::Color | 15/15 |
 | Sketchup::Curve | 9/9 |
 | Sketchup::Drawingelement | 14/14 |

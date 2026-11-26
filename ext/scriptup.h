@@ -59,6 +59,7 @@ extern VALUE mGeom;
 SCRIPTUP_CLASSES(SCRIPTUP_DECLARE_CLASS)
 
 // Per-file method definitions, called after all classes exist.
+void Init_arc_curve(void);
 void Init_attribute_dictionaries(void);
 void Init_attribute_dictionary(void);
 void Init_bounding_box(void);

@@ -62,6 +62,7 @@ void Init_sketchup(void)
 	rb_define_singleton_method(mSketchup, "open_file", sketchup_open_file, -1);
 	rb_define_singleton_method(mSketchup, "active_model", sketchup_active_model, 0);
 
+	Init_arc_curve();
 	Init_attribute_dictionaries();
 	Init_attribute_dictionary();
 	Init_bounding_box();
