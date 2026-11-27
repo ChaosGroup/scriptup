@@ -1,0 +1,30 @@
+# Observers may implement any subset of callbacks, which RBS interfaces can't express.
+module Sketchup
+  def self.add_observer: (untyped observer) -> bool
+  def self.remove_observer: (untyped observer) -> bool
+end
+
+class Sketchup::Layers
+  def add_observer: (untyped observer) -> bool
+  def remove_observer: (untyped observer) -> bool
+end
+
+class Sketchup::Pages
+  def add_observer: (untyped observer) -> bool
+  def remove_observer: (untyped observer) -> bool
+end
+
+class Sketchup::Tools
+  def add_observer: (untyped observer) -> bool
+  def remove_observer: (untyped observer) -> bool
+end
+
+class Sketchup::OptionsProvider
+  def add_observer: (untyped observer) -> bool
+  def remove_observer: (untyped observer) -> bool
+end
+
+class Sketchup::Environments
+  def add_observer: (untyped observer) -> bool
+  def remove_observer: (untyped observer) -> bool
+end

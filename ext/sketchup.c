@@ -1,104 +1,130 @@
-#include <ruby.h>
-#include <stdbool.h>
-#include <sketchup.h>
-#include <entity.h>
-#include <entities.h>
-#include <model.h>
-#include <material.h>
-#include <materials.h>
-#include <texture.h>
-#include <color.h>
-#include <attribute_dictionary.h>
-#include <attribute_dictionaries.h>
-#include <component_definition.h>
-#include <component_instance.h>
-#include <definition_list.h>
-#include <drawing_element.h>
-#include <behavior.h>
-#include <not_implemented.h>
-#include <utils.h>
+#include <scriptup.h>
 
-SUModelRef active_model = SU_INVALID;
+VALUE mSketchup;
+VALUE mGeom;
 
-SUModelRef Sketchup_get_active_model()
+#define SCRIPTUP_DEFINE_CLASS(var, ns, name, parent) VALUE var;
+SCRIPTUP_CLASSES(SCRIPTUP_DEFINE_CLASS)
+
+static SUModelRef active_model = SU_INVALID;
+
+SUModelRef Sketchup_get_active_model(void)
 {
 	return active_model;
 }
+
 void Sketchup_set_active_model(SUModelRef model)
 {
 	active_model = model;
 }
 
-static VALUE Sketchup_open_file(int argc, VALUE *argv, VALUE self)
+static VALUE sketchup_open_file(int argc, VALUE* argv, VALUE self)
 {
 	VALUE path;
-	VALUE kwarg_hash;
-	rb_scan_args(argc, argv, "1:", &path, &kwarg_hash);
+	VALUE options;
+	rb_scan_args(argc, argv, "1:", &path, &options);
 
-	const VALUE kwarg_ids[1] = {
-		rb_intern_const("with_status")
-	};
-	VALUE kwargs[1];
-	rb_get_kwargs(kwarg_hash, kwarg_ids, 0, 1, kwargs);
 	bool with_status = true;
-	if (RDEF(kwargs[0]))
-		with_status = RTEST(kwargs[0]);
+	if (!NIL_P(options))
+	{
+		ID ids[1] = { (rb_intern)("with_status") };
+		VALUE values[1];
+		rb_get_kwargs(options, ids, 0, 1, values);
+		if (values[0] != Qundef)
+			with_status = RTEST(values[0]);
+	}
 
 	enum SUModelLoadStatus status;
 	SUModelRef model = SU_INVALID;
-	enum SUResult result = SUModelCreateFromFileWithStatus(&model, StringValuePtr(path), &status);
-	if (result != SU_ERROR_NONE)
-		return false;
+	if (SUModelCreateFromFileWithStatus(&model, StringValueCStr(path), &status) != SU_ERROR_NONE)
+		return Qfalse;
 
 	Sketchup_set_active_model(model);
-	if (with_status)
-		return INT2FIX(status);
-	else
-		return Qtrue;
+	return with_status ? INT2FIX(status) : Qtrue;
 }
 
-static VALUE Sketchup_active_model(VALUE self)
+// Creates an empty model and makes it the active one.
+static VALUE sketchup_file_new(VALUE self)
 {
-	if (SUIsValid(active_model))
-		return Data_Wrap_Struct(rb_path2class(SKETCHUP_MODEL), 0, 0, active_model.ptr);
-	else
-		return Qnil;
+	SUModelRef model = SU_INVALID;
+	if (SUModelCreate(&model) != SU_ERROR_NONE)
+		rb_raise(rb_eRuntimeError, "cannot create a model");
+	Sketchup_set_active_model(model);
+	return self;
 }
 
-void Init_sketchup() {
+static VALUE sketchup_active_model(VALUE self)
+{
+	return su_wrap_or_nil(cModel, active_model.ptr);
+}
+
+void Init_sketchup(void)
+{
 	SUInitialize();
-	VALUE Sketchup = rb_define_module(SKETCHUP);
-	rb_define_singleton_method(Sketchup, "open_file", Sketchup_open_file, -1);
-	rb_define_singleton_method(Sketchup, "active_model", Sketchup_active_model, 0);
+	mSketchup = rb_define_module("Sketchup");
+	mGeom = rb_define_module("Geom");
 
-	Model_Init(Sketchup, rb_cObject);
-	Color_Init(Sketchup, rb_cObject);
-	ImageRep_Init(Sketchup, rb_cObject);
+#define SCRIPTUP_CREATE_CLASS(var, ns, name, parent) \
+	var = rb_define_class_under(ns, name, parent); \
+	rb_undef_alloc_func(var);
+	SCRIPTUP_CLASSES(SCRIPTUP_CREATE_CLASS)
 
-	Entities_Init(Sketchup, rb_cObject);
-	VALUE Sketchup_Entity = Entity_Init(Sketchup, rb_cObject);
-	Materials_Init(Sketchup, Sketchup_Entity);
-	Material_Init(Sketchup, Sketchup_Entity);
-	DefinitionList_Init(Sketchup, Sketchup_Entity);
-	AttributeDictionary_Init(Sketchup, Sketchup_Entity);
-	AttributeDictionaries_Init(Sketchup, Sketchup_Entity);
-	Texture_Init(Sketchup, Sketchup_Entity);
-	Behavior_Init(Sketchup, Sketchup_Entity);
-	Layer_Init(Sketchup, Sketchup_Entity);
-	
-	VALUE Geom = rb_define_module(GEOM);
-	BoundingBox_Init(Geom, rb_cObject);
+	rb_define_singleton_method(mSketchup, "open_file", sketchup_open_file, -1);
+	rb_define_singleton_method(mSketchup, "active_model", sketchup_active_model, 0);
+	rb_define_singleton_method(mSketchup, "file_new", sketchup_file_new, 0);
 
-	VALUE Sketchup_DrawingElement = DrawingElement_Init(Sketchup, Sketchup_Entity);
-	ComponentInstance_Init(Sketchup, Sketchup_DrawingElement);
-	ComponentDefinition_Init(Sketchup, Sketchup_DrawingElement);
-	Face_Init(Sketchup, Sketchup_DrawingElement);
-	ConstructionLine_Init(Sketchup, Sketchup_DrawingElement);
-	ConstructionPoint_Init(Sketchup, Sketchup_DrawingElement);
-	Dimension_Init(Sketchup, Sketchup_DrawingElement);
-	Edge_Init(Sketchup, Sketchup_DrawingElement);
-	Group_Init(Sketchup, Sketchup_DrawingElement);
-	Image_Init(Sketchup, Sketchup_DrawingElement);
-	SectionPlane_Init(Sketchup, Sketchup_DrawingElement);
-	Text_Init(Sketchup, Sketchup_DrawingElement);
+	Init_arc_curve();
+	Init_attribute_dictionaries();
+	Init_attribute_dictionary();
+	Init_axes();
+	Init_behavior();
+	Init_bounding_box();
+	Init_camera();
+	Init_classifications();
+	Init_color();
+	Init_component_definition();
+	Init_component_instance();
+	Init_construction();
+	Init_curve();
+	Init_definition_list();
+	Init_drawing_element();
+	Init_entities();
+	Init_entities_builder();
+	Init_edge();
+	Init_edge_use();
+	Init_entity();
+	Init_environments();
+	Init_face();
+	Init_geom();
+	Init_group();
+	Init_image();
+	Init_image_rep();
+	Init_instance_path();
+	Init_lat_long();
+	Init_layer();
+	Init_layer_folder();
+	Init_layers();
+	Init_length();
+	Init_line_styles();
+	Init_loop();
+	Init_material();
+	Init_materials();
+	Init_model();
+	Init_options_store();
+	Init_page();
+	Init_pages();
+	Init_point2d();
+	Init_point3d();
+	Init_polygon_mesh();
+	Init_section_plane();
+	Init_styles();
+	Init_text();
+	Init_texture();
+	Init_texture_writer();
+	Init_transformation();
+	Init_transformation2d();
+	Init_uv_helper();
+	Init_vector2d();
+	Init_vector3d();
+	Init_vertex();
 }

@@ -1,262 +1,222 @@
-#include <stdbool.h>
-#include <entity.h>
-#include <SketchUpAPI/sketchup.h>
-#include <utils.h>
+#include <scriptup.h>
 
-static VALUE Sketchup_Entity_persistentId(VALUE self)
-{
-	SUEntityRef entity = {DATA_PTR(self)};
-	int64_t presistent_id = 0;
-	SUEntityGetPersistentID(entity, &presistent_id);
-	return LONG2NUM(presistent_id);
-}
+#define REF_TYPE_NAMES(X) \
+	X(AttributeDictionary) X(Camera) X(ComponentDefinition) X(ComponentInstance) X(Curve) X(Edge) X(EdgeUse) \
+	X(Entities) X(Face) X(Group) X(Image) X(Layer) X(Location) X(Loop) X(MeshHelper) X(Material) X(Model) \
+	X(Polyline3D) X(Scene) X(Texture) X(TextureWriter) X(TypedValue) X(UVHelper) X(Vertex) X(RenderingOptions) \
+	X(GuidePoint) X(GuideLine) X(Schema) X(SchemaType) X(ShadowInfo) X(Axes) X(ArcCurve) X(SectionPlane) \
+	X(DynamicComponentInfo) X(DynamicComponentAttribute) X(Style) X(Styles) X(ImageRep) X(InstancePath) X(Font) \
+	X(Dimension) X(DimensionLinear) X(DimensionRadial) X(DimensionStyle) X(Text) X(EntityList) \
+	X(EntityListIterator) X(DrawingElement) X(Entity) X(LengthFormatter) X(LineStyle) X(LineStyleManager) \
+	X(Selection) X(LayerFolder) X(Environment) X(Environments) X(Snap)
 
-static VALUE Sketchup_Entity_entityId(VALUE self)
+static const char* ref_type_name(enum SURefType type)
 {
-	SUEntityRef entity = {DATA_PTR(self)};
-	int32_t entityId = 0;
-	SUEntityGetID(entity, &entityId);
-	return LONG2NUM(entityId);
-}
-
-static VALUE Sketchup_Entity_typename(VALUE self)
-{
-	SUEntityRef entity = {DATA_PTR(self)};
-	switch (SUEntityGetType(entity))
+	switch (type)
 	{
-		case SURefType_Unknown: return rb_str_new2("Unknown");
-  		case SURefType_AttributeDictionary: return rb_str_new2("AttributeDictionary");
-  		case SURefType_Camera: return rb_str_new2("Camera");
-  		case SURefType_ComponentDefinition: return rb_str_new2("ComponentDefinition");
-  		case SURefType_ComponentInstance: return rb_str_new2("ComponentInstance");
-  		case SURefType_Curve: return rb_str_new2("Curve");
-  		case SURefType_Edge: return rb_str_new2("Edge");
-  		case SURefType_EdgeUse: return rb_str_new2("EdgeUse");
-  		case SURefType_Entities: return rb_str_new2("Entities");
-  		case SURefType_Face: return rb_str_new2("Face");
-  		case SURefType_Group: return rb_str_new2("Group");
-  		case SURefType_Image: return rb_str_new2("Image");
-  		case SURefType_Layer: return rb_str_new2("Layer");
-  		case SURefType_Location: return rb_str_new2("Location");
-  		case SURefType_Loop: return rb_str_new2("Loop");
-  		case SURefType_MeshHelper: return rb_str_new2("MeshHelper");
-  		case SURefType_Material: return rb_str_new2("Material");
-  		case SURefType_Model: return rb_str_new2("Model");
-  		case SURefType_Polyline3D: return rb_str_new2("Polyline3D");
-  		case SURefType_Scene: return rb_str_new2("Scene");
-  		case SURefType_Texture: return rb_str_new2("Texture");
-  		case SURefType_TextureWriter: return rb_str_new2("TextureWriter");
-  		case SURefType_TypedValue: return rb_str_new2("TypedValue");
-  		case SURefType_UVHelper: return rb_str_new2("UVHelper");
-  		case SURefType_Vertex: return rb_str_new2("Vertex");
-  		case SURefType_RenderingOptions: return rb_str_new2("RenderingOptions");
-  		case SURefType_GuidePoint: return rb_str_new2("GuidePoint");
-  		case SURefType_GuideLine: return rb_str_new2("GuideLine");
-  		case SURefType_Schema: return rb_str_new2("Schema");
-  		case SURefType_SchemaType: return rb_str_new2("SchemaType");
-  		case SURefType_ShadowInfo: return rb_str_new2("ShadowInfo");
-  		case SURefType_Axes: return rb_str_new2("Axes");
-  		case SURefType_ArcCurve: return rb_str_new2("ArcCurve");
-  		case SURefType_SectionPlane: return rb_str_new2("SectionPlane");
-  		case SURefType_DynamicComponentInfo: return rb_str_new2("DynamicComponentInfo");
-  		case SURefType_DynamicComponentAttribute: return rb_str_new2("DynamicComponentAttribute");
-  		case SURefType_Style: return rb_str_new2("Style");
-  		case SURefType_Styles: return rb_str_new2("Styles");
-  		case SURefType_ImageRep: return rb_str_new2("ImageRep");
-  		case SURefType_InstancePath: return rb_str_new2("InstancePath");
-  		case SURefType_Font: return rb_str_new2("Font");
-  		case SURefType_Dimension: return rb_str_new2("Dimension");
-  		case SURefType_DimensionLinear: return rb_str_new2("DimensionLinear");
-  		case SURefType_DimensionRadial: return rb_str_new2("DimensionRadial");
-  		case SURefType_DimensionStyle: return rb_str_new2("DimensionStyle");
-  		case SURefType_Text: return rb_str_new2("Text");
-  		case SURefType_EntityList: return rb_str_new2("EntityList");
-  		case SURefType_EntityListIterator: return rb_str_new2("EntityListIterator");
-  		case SURefType_DrawingElement: return rb_str_new2("DrawingElement");
-  		case SURefType_Entity: return rb_str_new2("Entity");
-  		case SURefType_LengthFormatter: return rb_str_new2("LengthFormatter");
-  		case SURefType_LineStyle: return rb_str_new2("LineStyle");
-  		case SURefType_LineStyleManager: return rb_str_new2("LineStyleManager");
-  		case SURefType_Selection: return rb_str_new2("Selection");
-  		case SURefType_LayerFolder: return rb_str_new2("LayerFolder");
-		case SURefType_Environment: return rb_str_new2("Environment");
-		case SURefType_Environments: return rb_str_new2("Environments");
-		case SURefType_Snap: return rb_str_new2("Snap");
+#define REF_TYPE_CASE(name) case SURefType_##name: return #name;
+		REF_TYPE_NAMES(REF_TYPE_CASE)
+		default: return "Unknown";
 	}
 }
 
-static VALUE Sketchup_Entity_parent(VALUE self)
+DEFINE_GETTER(entity_persistent_id, SUEntityRef, SUEntityGetPersistentID, int64_t, 0, LL2NUM)
+DEFINE_GETTER(entity_entityID, SUEntityRef, SUEntityGetID, int32_t, 0, INT2NUM)
+DEFINE_REF_GETTER(entity_model, SUEntityRef, SUEntityGetModel, SUModelRef, cModel)
+DEFINE_REF_LIST(entity_dictionary_list, SUEntityRef, SUEntityGetNumAttributeDictionaries,
+	SUEntityGetAttributeDictionaries, SUAttributeDictionaryRef, cAttributeDictionary)
+
+static VALUE entity_typename(VALUE self)
 {
-	SUEntityRef entity = {DATA_PTR(self)};
-	SUEntitiesRef entities = SU_INVALID;
-	SUEntityGetParentEntities(entity, &entities);
-	return Data_Wrap_Struct(rb_path2class(SKETCHUP_DEFINITIONLIST), 0, 0, entities.ptr);
+	return rb_str_new_cstr(ref_type_name(SUEntityGetType(SU_REF(SUEntityRef, self))));
 }
 
-static VALUE Sketchup_Entity_model(VALUE self)
-{
-	SUEntityRef entity = {DATA_PTR(self)};
-	SUModelRef model = SU_INVALID;
-	SUEntityGetModel(entity, &model);
-	return Data_Wrap_Struct(rb_path2class(SKETCHUP_MODEL), 0, 0, model.ptr);
-}
-
-static VALUE Sketchup_Entity_remove_observer(VALUE self, VALUE observer)
-{
-	#pragma clang diagnostic push
-	#pragma clang diagnostic ignored "-Wcompound-token-split-by-macro"
-	if (!RTEST(rb_ivar_defined(self, rb_intern("@observers"))))
-	#pragma clang diagnostic pop
-		return Qfalse;
-
-	VALUE result = rb_hash_delete(rb_iv_get(self, "@observers"), observer);
-
-	return RTEST(result) ? Qtrue : Qfalse;
-}
-
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wcompound-token-split-by-macro"
-#pragma clang diagnostic ignored "-Wunused-but-set-variable"
-static VALUE Sketchup_Entity_add_observer(VALUE self, VALUE observer)
-{
-	VALUE observers = Qnil;
-	if (RTEST(rb_ivar_defined(self, rb_intern("@observers"))))
-	{
-		observers = rb_iv_get(self, "@observers");
-	}
-	else
-	{
-		observers = rb_hash_new();
-		rb_iv_set(self, "@observers", rb_hash_new());
-	}
-	rb_hash_aset(self, observer, observer);
-	return Qtrue;
-}
-#pragma clang diagnostic pop
-
-void Sketchup_Entity_attribute_dictionaries_Iterator(SUAttributeDictionaryRef dictionary, VALUE* ary)
-{
-	rb_ary_push(*ary, Data_Wrap_Struct(rb_path2class(SKETCHUP_ATTRIBUTEDICTIONARY), 0, 0, dictionary.ptr));
-}
-
-static VALUE Sketchup_Entity_attribute_dictionaries(VALUE self)
-{
-	SUEntityRef entity = {DATA_PTR(self)};
-	return Data_Wrap_Struct(rb_path2class(SKETCHUP_ATTRIBUTEDICTIONARIES), 0, 0, entity.ptr);
-}
-
-struct AttributeDictionaryIterationContext
-{
-	VALUE key;
-	SUAttributeDictionaryRef dictionary;
+static const struct { enum SURefType type; VALUE* klass; } entity_classes[] = {
+	{SURefType_ArcCurve, &cArcCurve},
+	{SURefType_AttributeDictionary, &cAttributeDictionary},
+	{SURefType_Axes, &cAxes},
+	{SURefType_Curve, &cCurve},
+	{SURefType_EdgeUse, &cEdgeUse},
+	{SURefType_Loop, &cLoop},
+	{SURefType_Vertex, &cVertex},
+	{SURefType_ComponentDefinition, &cComponentDefinition},
+	{SURefType_ComponentInstance, &cComponentInstance},
+	{SURefType_Dimension, &cDimension},
+	{SURefType_DimensionLinear, &cDimension},
+	{SURefType_DimensionRadial, &cDimension},
+	{SURefType_Edge, &cEdge},
+	{SURefType_Face, &cFace},
+	{SURefType_Group, &cGroup},
+	{SURefType_GuideLine, &cConstructionLine},
+	{SURefType_GuidePoint, &cConstructionPoint},
+	{SURefType_Image, &cImage},
+	{SURefType_Layer, &cLayer},
+	{SURefType_LayerFolder, &cLayerFolder},
+	{SURefType_LineStyle, &cLineStyle},
+	{SURefType_Material, &cMaterial},
+	{SURefType_Scene, &cPage},
+	{SURefType_RenderingOptions, &cRenderingOptions},
+	{SURefType_ShadowInfo, &cShadowInfo},
+	{SURefType_Style, &cStyle},
+	{SURefType_Styles, &cStyles},
+	{SURefType_Environment, &cEnvironment},
+	{SURefType_Environments, &cEnvironments},
+	{SURefType_SectionPlane, &cSectionPlane},
+	{SURefType_Text, &cText},
+	{SURefType_Texture, &cTexture},
 };
 
-
-void Sketchup_Entity_attribute_dictionary_Iterator(SUAttributeDictionaryRef dictionary, struct AttributeDictionaryIterationContext* attribute_dictionary_struct)
+// Wraps an entity as the Ruby class matching its runtime type.
+VALUE su_wrap_entity(SUEntityRef entity)
 {
-	VALUE output;
-	GETSTRING(SUAttributeDictionaryGetName, dictionary, output);
-	if (strcmp(StringValuePtr(output), StringValuePtr(attribute_dictionary_struct->key)) == 0)
-		attribute_dictionary_struct->dictionary = dictionary;
-}
-
-static VALUE Sketchup_Entity_attribute_dictionary(int argc, VALUE* argv, VALUE self)
-{
-	if (rb_obj_is_kind_of(self, rb_path2class(SKETCHUP_MATERIALS)))
+	if (SUIsInvalid(entity))
 		return Qnil;
-	if (rb_obj_is_kind_of(self, rb_path2class(SKETCHUP_DEFINITIONLIST)))
+	enum SURefType type = SUEntityGetType(entity);
+	for (size_t i = 0; i < sizeof(entity_classes) / sizeof(entity_classes[0]); i++)
+		if (entity_classes[i].type == type)
+			return su_wrap(*entity_classes[i].klass, entity.ptr);
+	return su_wrap(cEntity, entity.ptr);
+}
+
+static VALUE entity_parent(VALUE self)
+{
+	SUEntityRef entity = SU_REF(SUEntityRef, self);
+	if (SUEntityGetType(entity) == SURefType_ComponentDefinition)
+	{
+		SUModelRef model = SU_INVALID;
+		SUEntityGetModel(entity, &model);
+		return su_wrap_or_nil(cDefinitionList, model.ptr);
+	}
+	SUEntitiesRef entities = SU_INVALID;
+	struct SUEntitiesParent parent = {SU_INVALID, SU_INVALID};
+	if (SUEntityGetParentEntities(entity, &entities) != SU_ERROR_NONE || SUEntitiesGetParent(entities, &parent) != SU_ERROR_NONE)
 		return Qnil;
-	SUEntityRef entity = {DATA_PTR(self)};
-	struct AttributeDictionaryIterationContext attribute_dictionary_struct = {argv[0], SU_INVALID};
-	FOREACH(SUEntityGetNumAttributeDictionaries, SUEntityGetAttributeDictionaries, SUAttributeDictionaryRef, entity, Sketchup_Entity_attribute_dictionary_Iterator, &attribute_dictionary_struct);
-	if (SUIsInvalid(attribute_dictionary_struct.dictionary) && argc > 1 && argv[1])
-	{
-		SUAttributeDictionaryCreate(&attribute_dictionary_struct.dictionary, StringValuePtr(argv[0]));
-		SUEntityAddAttributeDictionary(entity, attribute_dictionary_struct.dictionary);
-		return Data_Wrap_Struct(rb_path2class(SKETCHUP_ATTRIBUTEDICTIONARY), 0, 0, attribute_dictionary_struct.dictionary.ptr);
-	}
-	else if(SUIsValid(attribute_dictionary_struct.dictionary))
-		return Data_Wrap_Struct(rb_path2class(SKETCHUP_ATTRIBUTEDICTIONARY), 0, 0, attribute_dictionary_struct.dictionary.ptr);
-	else
+	if (SUIsValid(parent.definition))
+		return su_wrap(cComponentDefinition, parent.definition.ptr);
+	return su_wrap_or_nil(cModel, parent.model.ptr);
+}
+
+// Entities are equal when they wrap the same ref or share an entity ID (refs aren't unique on every platform).
+static int32_t entity_id(VALUE self)
+{
+	int32_t id = 0;
+	SUEntityGetID(SU_REF(SUEntityRef, self), &id);
+	return id;
+}
+
+static VALUE entity_eq(VALUE self, VALUE other)
+{
+	if (!rb_obj_is_kind_of(other, cEntity))
+		return Qfalse;
+	if (DATA_PTR(self) == DATA_PTR(other))
+		return Qtrue;
+	int32_t id = entity_id(self);
+	return BOOL2RB(id != 0 && id == entity_id(other) && rb_obj_class(self) == rb_obj_class(other));
+}
+
+static VALUE entity_hash(VALUE self)
+{
+	int32_t id = entity_id(self);
+	VALUE key = id != 0 ? INT2NUM(id) : ULL2NUM((unsigned long long)(uintptr_t)DATA_PTR(self));
+	return rb_funcall(key, (rb_intern)("hash"), 0);
+}
+
+static VALUE entity_attribute_dictionaries(VALUE self)
+{
+	return su_wrap(cAttributeDictionaries, DATA_PTR(self));
+}
+
+static VALUE entity_find_dictionary(VALUE self, VALUE name)
+{
+	return su_find_by(entity_dictionary_list(SU_REF(SUEntityRef, self)), "name", name);
+}
+
+static VALUE entity_attribute_dictionary(int argc, VALUE* argv, VALUE self)
+{
+	VALUE name;
+	VALUE create;
+	rb_scan_args(argc, argv, "11", &name, &create);
+	StringValue(name);
+	if (rb_obj_is_kind_of(self, cMaterials) || rb_obj_is_kind_of(self, cDefinitionList))
 		return Qnil;
-}
 
-static VALUE Sketchup_Entity_delete_attribute(int argc, VALUE* argv, VALUE self)
-{
-	SUEntityRef entity = {DATA_PTR(self)};
-	if (argc == 0)
+	VALUE dictionary = entity_find_dictionary(self, name);
+	if (NIL_P(dictionary) && RTEST(create))
 	{
-		rb_raise(rb_eArgError, "Dictionary name required");
+		SUAttributeDictionaryRef created = SU_INVALID;
+		SUAttributeDictionaryCreate(&created, StringValueCStr(name));
+		SUEntityAddAttributeDictionary(SU_REF(SUEntityRef, self), created);
+		dictionary = su_wrap(cAttributeDictionary, created.ptr);
 	}
-	else if (argc == 1 && rb_type(argv[0]) == T_STRING)
-	{
-		if (strcmp(StringValuePtr(argv[0]), "SU_InstanceSet") == 0 || strcmp(StringValuePtr(argv[0]), "SU_DefinitionSet") == 0)
-			rb_raise(rb_eArgError, "Cannot delete internal");
-
-		struct AttributeDictionaryIterationContext attribute_dictionary_struct = {argv[0], SU_INVALID};
-		FOREACH(SUEntityGetNumAttributeDictionaries, SUEntityGetAttributeDictionaries, SUAttributeDictionaryRef, entity, Sketchup_Entity_attribute_dictionary_Iterator, &attribute_dictionary_struct);
-		if (SUIsValid(attribute_dictionary_struct.dictionary))
-		{
-			SUAttributeDictionaryRelease(&attribute_dictionary_struct.dictionary);
-			return Qtrue;
-		}
-	}
-	else if (argc > 1)
-	{
-		//ToDo use Sketchup_AttributeDictionary_delete_key
-	}
-	return Qfalse;
+	return dictionary;
 }
 
-static VALUE Sketchup_Entity_deleted(VALUE self)
+static VALUE entity_delete_attribute(int argc, VALUE* argv, VALUE self)
 {
-	SUEntityRef entity = {DATA_PTR(self)};
-	return SUIsInvalid(entity) ? Qtrue : Qfalse;	
+	VALUE name;
+	VALUE key;
+	rb_scan_args(argc, argv, "11", &name, &key);
+	const char* name_ptr = StringValueCStr(name);
+	if (strcmp(name_ptr, "SU_InstanceSet") == 0 || strcmp(name_ptr, "SU_DefinitionSet") == 0)
+		rb_raise(rb_eArgError, "Cannot delete internal");
+	if (!NIL_P(key))
+		rb_raise(rb_eNotImpError, "the C API cannot delete a single attribute key");
+
+	VALUE dictionary = entity_find_dictionary(self, name);
+	if (NIL_P(dictionary))
+		return Qfalse;
+	SUAttributeDictionaryRef ref = SU_REF(SUAttributeDictionaryRef, dictionary);
+	SUAttributeDictionaryRelease(&ref);
+	return Qtrue;
 }
 
-static VALUE Sketchup_Entity_valid(VALUE self)
+static VALUE entity_valid_p(VALUE self)
 {
-	SUEntityRef entity = {DATA_PTR(self)};
-	return SUIsValid(entity) ? Qtrue : Qfalse;	
+	return BOOL2RB(DATA_PTR(self) != NULL);
 }
 
-static VALUE Sketchup_Entity_get_attribute(int argc, VALUE* argv, VALUE self)
+static VALUE entity_deleted_p(VALUE self)
 {
-	SUEntityRef entity = {DATA_PTR(self)};
-	struct AttributeDictionaryIterationContext attribute_dictionary_struct = {argv[0], SU_INVALID};
-	FOREACH(SUEntityGetNumAttributeDictionaries, SUEntityGetAttributeDictionaries, SUAttributeDictionaryRef, entity, Sketchup_Entity_attribute_dictionary_Iterator, &attribute_dictionary_struct);
-	// use Sketchup_AttributeDictionary_get
-	return Qnil;
-	
+	return BOOL2RB(DATA_PTR(self) == NULL);
 }
 
-static VALUE Sketchup_Entity_set_attribute(int argc, VALUE* argv, VALUE self)
+static VALUE entity_get_attribute(int argc, VALUE* argv, VALUE self)
 {
-	SUEntityRef entity = {DATA_PTR(self)};
-	struct AttributeDictionaryIterationContext attribute_dictionary_struct = {argv[0], SU_INVALID};
-	FOREACH(SUEntityGetNumAttributeDictionaries, SUEntityGetAttributeDictionaries, SUAttributeDictionaryRef, entity, Sketchup_Entity_attribute_dictionary_Iterator, &attribute_dictionary_struct);
-	// use Sketchup_AttributeDictionary_set
-	return Qnil;
-	
+	VALUE name;
+	VALUE key;
+	VALUE default_value;
+	rb_scan_args(argc, argv, "21", &name, &key, &default_value);
+	StringValue(key);
+	VALUE dictionary = entity_find_dictionary(self, name);
+	VALUE value = NIL_P(dictionary) ? Qnil : rb_funcall(dictionary, (rb_intern)("[]"), 1, key);
+	return NIL_P(value) ? default_value : value;
 }
 
-VALUE Entity_Init(VALUE Sketchup, VALUE rb_cObject)
+static VALUE entity_set_attribute(VALUE self, VALUE name, VALUE key, VALUE value)
 {
-	VALUE Sketchup_Entity = rb_define_class_under(Sketchup, ENTITY, rb_cObject);
-	rb_undef_alloc_func(Sketchup_Entity);
-	rb_define_method(Sketchup_Entity, "persistent_id", Sketchup_Entity_persistentId, 0);
-	rb_define_method(Sketchup_Entity, "entityID", Sketchup_Entity_entityId, 0);
-	rb_define_method(Sketchup_Entity, "typename", Sketchup_Entity_typename, 0);
-	rb_define_method(Sketchup_Entity, "parent", Sketchup_Entity_parent, 0);
-	rb_define_method(Sketchup_Entity, "model", Sketchup_Entity_model, 0);
-	rb_define_method(Sketchup_Entity, "remove_observer", Sketchup_Entity_remove_observer, 1);
-	rb_define_method(Sketchup_Entity, "add_observer", Sketchup_Entity_add_observer, 1);
-	rb_define_method(Sketchup_Entity, "attribute_dictionaries", Sketchup_Entity_attribute_dictionaries, 0);
-	rb_define_method(Sketchup_Entity, "attribute_dictionary", Sketchup_Entity_attribute_dictionary, -1);
-	rb_define_method(Sketchup_Entity, "delete_attribute", Sketchup_Entity_delete_attribute, -1);
-	rb_define_method(Sketchup_Entity, "deleted?", Sketchup_Entity_deleted, 0);
-	rb_define_method(Sketchup_Entity, "valid?", Sketchup_Entity_valid, 0);
-	rb_define_method(Sketchup_Entity, "get_attribute", Sketchup_Entity_get_attribute, -1);
-	rb_define_method(Sketchup_Entity, "set_attribute", Sketchup_Entity_set_attribute, -1);
-	return Sketchup_Entity;
+	VALUE args[2] = {name, Qtrue};
+	VALUE dictionary = entity_attribute_dictionary(2, args, self);
+	if (NIL_P(dictionary))
+		rb_raise(rb_eArgError, "cannot set attributes on %"PRIsVALUE, rb_obj_class(self));
+	rb_funcall(dictionary, (rb_intern)("[]="), 2, key, value);
+	return value;
+}
+
+void Init_entity(void)
+{
+	rb_define_method(cEntity, "persistent_id", entity_persistent_id, 0);
+	rb_define_method(cEntity, "entityID", entity_entityID, 0);
+	rb_define_method(cEntity, "typename", entity_typename, 0);
+	rb_define_method(cEntity, "parent", entity_parent, 0);
+	rb_define_method(cEntity, "model", entity_model, 0);
+	rb_define_method(cEntity, "==", entity_eq, 1);
+	rb_define_method(cEntity, "eql?", entity_eq, 1);
+	rb_define_method(cEntity, "hash", entity_hash, 0);
+	rb_define_method(cEntity, "attribute_dictionaries", entity_attribute_dictionaries, 0);
+	rb_define_method(cEntity, "attribute_dictionary", entity_attribute_dictionary, -1);
+	rb_define_method(cEntity, "delete_attribute", entity_delete_attribute, -1);
+	rb_define_method(cEntity, "deleted?", entity_deleted_p, 0);
+	rb_define_method(cEntity, "valid?", entity_valid_p, 0);
+	rb_define_method(cEntity, "get_attribute", entity_get_attribute, -1);
+	rb_define_method(cEntity, "set_attribute", entity_set_attribute, 3);
 }

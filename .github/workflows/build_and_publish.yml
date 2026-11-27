@@ -19,17 +19,18 @@ jobs:
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '2.7'  # Updated Ruby version
+        ruby-version: '3.2'
 
     - name: Install dependencies
       run: |
         gem install bundler -v 2.4.22
         bundle install
+        bundle exec rake rbs:setup
 
     - name: Build gem
       run: |
         export SCRIPTUP_VERSION="${GITHUB_REF_NAME#v}"
-        bundler exec rake download
+        bundler exec rake download rbs:generate
         gem build scriptup.gemspec
 
     - name: Publish gem to RubyGems

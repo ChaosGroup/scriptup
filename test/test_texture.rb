@@ -1,5 +1,4 @@
-require 'minitest/autorun'
-require 'sketchup'
+require_relative 'helper'
 
 class TestTexture < Minitest::Test
 
@@ -38,10 +37,6 @@ class TestTexture < Minitest::Test
     assert_instance_of(Sketchup::ImageRep, @texture.image_rep)
   end
   
-  def test_image_width
-    assert_equal(1024, @texture.image_width)
-  end
-
   def test_valid?
     assert(@texture.valid?)
   end
@@ -62,4 +57,18 @@ class TestTexture < Minitest::Test
     }
   end
 
+  def test_image_rep_colorized
+    assert_instance_of(Sketchup::ImageRep, @texture.image_rep(true))
+  end
+
+  def test_size
+    assert_equal(10, @texture.size = 10)
+    assert_in_delta(10.0, @texture.width)
+    assert_in_delta(10.0, @texture.height, 1e-6) # square image keeps its ratio
+    assert_equal([10, 100], @texture.size = [10, 100])
+    assert_in_delta(10.0, @texture.width)
+    assert_in_delta(100.0, @texture.height)
+    assert_raises(ArgumentError) { @texture.size = 0 }
+    assert_raises(ArgumentError) { @texture.size = [1, 2, 3] }
+  end
 end

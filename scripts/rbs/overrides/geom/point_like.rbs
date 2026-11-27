@@ -1,0 +1,8 @@
+module Geom
+  type point3d_like = Geom::Point3d | Sketchup::Vertex | Sketchup::InputPoint | [ Numeric, Numeric ] | [ Numeric, Numeric, Numeric ]
+  type vector3d_like = Geom::Vector3d | [ Numeric, Numeric ] | [ Numeric, Numeric, Numeric ]
+end
+
+class Geom::Point3d
+  def distance: (Geom::point3d_like point2) -> Length
+end

@@ -1,5 +1,4 @@
-require 'minitest/autorun'
-require 'sketchup'
+require_relative 'helper'
 
 class TestAttributeDictionaries < Minitest::Test
 
@@ -14,7 +13,6 @@ class TestAttributeDictionaries < Minitest::Test
   end
 
   def test_accessor
-    skip
     assert_instance_of(Sketchup::AttributeDictionary, @attribute_dictionaries['GeoReference'])
     assert_instance_of(Sketchup::AttributeDictionary, @attribute_dictionaries[@attribute_dictionaries['GeoReference']])
   end
@@ -24,16 +22,14 @@ class TestAttributeDictionaries < Minitest::Test
   end
 
   def test_delete
-    skip
-  end
-
-  def test_each
-    counter = 0
-    @attribute_dictionaries.each { |attribute_dictionary|
-      assert_instance_of(Sketchup::AttributeDictionary, attribute_dictionary)
-      counter += 1
-    }
-    assert_equal(3, counter)
+    dictionary = @attribute_dictionaries['GeoReference']
+    assert_equal(dictionary, @attribute_dictionaries.delete('GeoReference'))
+    assert_nil(@attribute_dictionaries['GeoReference'])
+    assert_nil(@attribute_dictionaries.delete('GeoReference'))
+    entity = Sketchup.active_model.definitions['Heather']
+    temp = entity.attribute_dictionaries['temp']
+    assert_equal(temp, entity.attribute_dictionaries.delete(temp))
+    assert_nil(entity.attribute_dictionary('temp'))
   end
 
   def test_length

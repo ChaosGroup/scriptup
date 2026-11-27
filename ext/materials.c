@@ -1,81 +1,70 @@
-#include <stdbool.h>
-#include <materials.h>
-#include <SketchUpAPI/sketchup.h>
-#include <utils.h>
+#include <scriptup.h>
 
-void Sketchup_Materials_Iterator(SUMaterialRef material, void* _)
+DEFINE_REF_LIST(materials_to_a, SUModelRef, SUModelGetNumMaterials, SUModelGetMaterials, SUMaterialRef, cMaterial)
+
+static VALUE materials_each(VALUE self)
 {
-	rb_yield(Data_Wrap_Struct(rb_path2class(SKETCHUP_MATERIAL), 0, 0, material.ptr));
+	return su_yield_each(self, materials_to_a(SU_REF(SUModelRef, self)));
 }
 
-static VALUE Sketchup_Materials_each(VALUE self)
+static VALUE materials_aref(VALUE self, VALUE key)
 {
-	if (rb_block_given_p())
-	{
-		SUModelRef model = {DATA_PTR(self)};
-		FOREACH(SUModelGetNumMaterials, SUModelGetMaterials, SUMaterialRef, model, Sketchup_Materials_Iterator, 0);
-	}
-	return self;
+	VALUE materials = materials_to_a(SU_REF(SUModelRef, self));
+	return RB_TYPE_P(key, T_STRING) ? su_find_by(materials, "name", key) : su_fetch(materials, key);
 }
 
-struct MaterialStringIterationContext
+static VALUE materials_length(VALUE self)
 {
-	VALUE key;
-	SUMaterialRef material;
-};
-
-void Sketchup_Materials_Get_By_String_Iterator(SUMaterialRef material, struct MaterialStringIterationContext* material_struct)
-{
-	VALUE output;
-	GETSTRING(SUMaterialGetName, material, output);
-	if (strcmp(StringValuePtr(output), StringValuePtr(material_struct->key)) == 0)
-		material_struct->material = material;
+	size_t count = 0;
+	SUModelGetNumMaterials(SU_REF(SUModelRef, self), &count);
+	return SIZET2NUM(count);
 }
 
-struct MaterialIndexIterationContext
+static VALUE materials_unique_name(VALUE self, VALUE name)
 {
-	int targetIndex;
-	int currentIndex;
-	SUMaterialRef material;
-};
-
-void Sketchup_Materials_Get_By_Index_Iterator(SUMaterialRef material, struct MaterialIndexIterationContext* material_struct)
-{
-	if (material_struct->targetIndex == material_struct->currentIndex)
-		material_struct->material = material;
-	material_struct->currentIndex += 1;
+	SUStringRef unique = SU_INVALID;
+	SUStringCreate(&unique);
+	SUModelGenerateUniqueMaterialName(SU_REF(SUModelRef, self), StringValueCStr(name), &unique);
+	VALUE output = su_string_to_rb(unique);
+	SUStringRelease(&unique);
+	return output;
 }
 
-static VALUE Sketchup_Materials_get(VALUE self, VALUE key)
+static VALUE materials_add(VALUE self, VALUE name)
 {
-	SUModelRef model = {DATA_PTR(self)};
-	if (rb_type(key) == T_STRING)
-	{
-		struct MaterialStringIterationContext material_struct = {key, SU_INVALID};
-		FOREACH(SUModelGetNumMaterials, SUModelGetMaterials, SUMaterialRef, model, Sketchup_Materials_Get_By_String_Iterator, &material_struct);
-		if (SUIsInvalid(material_struct.material))
-			return Qnil;
-		return Data_Wrap_Struct(rb_path2class(SKETCHUP_MATERIAL), 0, 0, material_struct.material.ptr);
-	}
-	else
-	{
-		struct MaterialIndexIterationContext material_struct = {NUM2INT(key), 0, SU_INVALID};
-		FOREACH(SUModelGetNumMaterials, SUModelGetMaterials, SUMaterialRef, model, Sketchup_Materials_Get_By_Index_Iterator, &material_struct);
-		if (SUIsInvalid(material_struct.material))
-		{
-			if (material_struct.targetIndex >= material_struct.currentIndex)
-				rb_raise(rb_eIndexError, "index %d out of range [0, %d)", material_struct.targetIndex, material_struct.currentIndex);
-		}
-		return Data_Wrap_Struct(rb_path2class(SKETCHUP_MATERIAL), 0, 0, material_struct.material.ptr);
-	}
+	VALUE unique = materials_unique_name(self, name);
+	SUMaterialRef material = SU_INVALID;
+	SUMaterialCreate(&material);
+	SUMaterialSetName(material, StringValueCStr(unique));
+	SUModelAddMaterials(SU_REF(SUModelRef, self), 1, &material);
+	return su_wrap(cMaterial, material.ptr);
 }
 
-VALUE Materials_Init(VALUE Sketchup, VALUE Sketchup_Entity)
+static VALUE materials_load(VALUE self, VALUE path)
 {
-	VALUE Sketchup_Materials = rb_define_class_under(Sketchup, MATERIALS, Sketchup_Entity);
-	rb_undef_alloc_func(Sketchup_Materials);
-	rb_include_module(Sketchup_Materials, rb_mEnumerable);
-	rb_define_method(Sketchup_Materials, "each", Sketchup_Materials_each, 0);
-	rb_define_method(Sketchup_Materials, "[]", Sketchup_Materials_get, 1);
-	return Sketchup_Materials;
+	SUMaterialRef material = SU_INVALID;
+	if (SUModelLoadMaterial(SU_REF(SUModelRef, self), StringValueCStr(path), &material) != SU_ERROR_NONE)
+		rb_raise(rb_eArgError, "cannot load material from %"PRIsVALUE, path);
+	return su_wrap(cMaterial, material.ptr);
+}
+
+static VALUE materials_remove(VALUE self, VALUE material)
+{
+	SUMaterialRef ref = {su_unwrap(material, cMaterial)};
+	return BOOL2RB(SUModelRemoveMaterials(SU_REF(SUModelRef, self), 1, &ref) == SU_ERROR_NONE);
+}
+
+void Init_materials(void)
+{
+	rb_include_module(cMaterials, rb_mEnumerable);
+	rb_define_method(cMaterials, "each", materials_each, 0);
+	rb_define_method(cMaterials, "[]", materials_aref, 1);
+	rb_define_method(cMaterials, "at", materials_aref, 1);
+	rb_define_method(cMaterials, "count", materials_length, 0);
+	rb_define_method(cMaterials, "length", materials_length, 0);
+	rb_define_method(cMaterials, "size", materials_length, 0);
+	rb_define_method(cMaterials, "add", materials_add, 1);
+	rb_define_method(cMaterials, "load", materials_load, 1);
+	rb_define_method(cMaterials, "remove", materials_remove, 1);
+	rb_define_method(cMaterials, "unique_name", materials_unique_name, 1);
 }

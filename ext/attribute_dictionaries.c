@@ -1,46 +1,63 @@
-#include <stdbool.h>
-#include <attribute_dictionaries.h>
-#include <utils.h>
-#include <SketchUpAPI/sketchup.h>
+#include <scriptup.h>
 
-static VALUE Sketchup_AttributeDictionaries_get(VALUE self, VALUE key)
+// Wraps either a model or an entity; models are flagged with a hidden ivar.
+#define OWNER_IS_MODEL "__owner_is_model"
+
+DEFINE_REF_LIST(model_dictionaries, SUModelRef, SUModelGetNumAttributeDictionaries,
+	SUModelGetAttributeDictionaries, SUAttributeDictionaryRef, cAttributeDictionary)
+DEFINE_REF_LIST(entity_dictionaries, SUEntityRef, SUEntityGetNumAttributeDictionaries,
+	SUEntityGetAttributeDictionaries, SUAttributeDictionaryRef, cAttributeDictionary)
+
+VALUE su_model_attribute_dictionaries(SUModelRef model)
 {
-	SUModelRef model = {DATA_PTR(self)};
-	SUAttributeDictionaryRef dictionary = SU_INVALID;
-	enum SUResult result = SUModelGetAttributeDictionary(model, StringValuePtr(key), &dictionary);
-	if (result != SU_ERROR_NONE)
+	VALUE obj = su_wrap(cAttributeDictionaries, model.ptr);
+	rb_ivar_set(obj, (rb_intern)(OWNER_IS_MODEL), Qtrue);
+	return obj;
+}
+
+static VALUE attributedictionaries_to_a(VALUE self)
+{
+	if (RTEST(rb_attr_get(self, (rb_intern)(OWNER_IS_MODEL))))
+		return model_dictionaries(SU_REF(SUModelRef, self));
+	return entity_dictionaries(SU_REF(SUEntityRef, self));
+}
+
+// Accepts a dictionary name or a dictionary.
+static VALUE attributedictionaries_aref(VALUE self, VALUE key)
+{
+	VALUE dictionaries = attributedictionaries_to_a(self);
+	if (rb_obj_is_kind_of(key, cAttributeDictionary))
+		return RTEST(rb_ary_includes(dictionaries, key)) ? key : Qnil;
+	return su_find_by(dictionaries, "name", StringValue(key));
+}
+
+// Releasing a dictionary removes it from its owner.
+static VALUE attributedictionaries_delete(VALUE self, VALUE key)
+{
+	VALUE dictionary = attributedictionaries_aref(self, key);
+	if (NIL_P(dictionary))
 		return Qnil;
-	return Data_Wrap_Struct(rb_path2class(SKETCHUP_ATTRIBUTEDICTIONARY), 0, 0, dictionary.ptr);
+	SUAttributeDictionaryRef ref = SU_REF(SUAttributeDictionaryRef, dictionary);
+	SUAttributeDictionaryRelease(&ref);
+	return dictionary;
 }
 
-void Sketchup_AttributeDictionaries_Iterator(SUAttributeDictionaryRef group, void* _)
+static VALUE attributedictionaries_each(VALUE self)
 {
-	rb_yield(Data_Wrap_Struct(rb_path2class(SKETCHUP_ATTRIBUTEDICTIONARY), 0, 0, group.ptr));
+	return su_yield_each(self, attributedictionaries_to_a(self));
 }
 
-static VALUE Sketchup_AttributeDictionaries_each(VALUE self)
+static VALUE attributedictionaries_length(VALUE self)
 {
-	SUModelRef model = {DATA_PTR(self)};
-	FOREACH(SUModelGetNumAttributeDictionaries, SUModelGetAttributeDictionaries, SUAttributeDictionaryRef, model, Sketchup_AttributeDictionaries_Iterator, 0);
-	return self;
+	return LONG2NUM(RARRAY_LEN(attributedictionaries_to_a(self)));
 }
 
-static VALUE Sketchup_AttributeDictionaries_length(VALUE self)
+void Init_attribute_dictionaries(void)
 {
-	SUModelRef model = {DATA_PTR(self)};
-	size_t count;
-	SUModelGetNumAttributeDictionaries(model, &count);
-	return ULL2NUM(count);
-}
-
-VALUE AttributeDictionaries_Init(VALUE Sketchup, VALUE Sketchup_Entity)
-{
-	VALUE Sketchup_AttributeDictionaries = rb_define_class_under(Sketchup, ATTRIBUTEDICTIONARIES, Sketchup_Entity);
-	rb_undef_alloc_func(Sketchup_AttributeDictionaries);
-	rb_include_module(Sketchup_AttributeDictionaries, rb_mEnumerable);
-	rb_define_method(Sketchup_AttributeDictionaries, "[]", Sketchup_AttributeDictionaries_get, 1);
-	rb_define_method(Sketchup_AttributeDictionaries, "each", Sketchup_AttributeDictionaries_each, 0);
-	rb_define_method(Sketchup_AttributeDictionaries, "length", Sketchup_AttributeDictionaries_length, 0);
-	rb_define_method(Sketchup_AttributeDictionaries, "size", Sketchup_AttributeDictionaries_length, 0);
-	return Sketchup_AttributeDictionaries;
+	rb_include_module(cAttributeDictionaries, rb_mEnumerable);
+	rb_define_method(cAttributeDictionaries, "[]", attributedictionaries_aref, 1);
+	rb_define_method(cAttributeDictionaries, "delete", attributedictionaries_delete, 1);
+	rb_define_method(cAttributeDictionaries, "each", attributedictionaries_each, 0);
+	rb_define_method(cAttributeDictionaries, "length", attributedictionaries_length, 0);
+	rb_define_method(cAttributeDictionaries, "size", attributedictionaries_length, 0);
 }

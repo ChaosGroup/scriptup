@@ -38,4 +38,50 @@ Rake::TestTask.new do |t|
   t.test_files = FileList['test/**/test_*.rb']
 end
 
+desc 'Fail if the extension calls SketchUp C API functions the SDK library does not export (macOS)'
+task check_symbols: :compile do
+  library = "#{__dir__}/sketchup-sdk-mac/SketchUpAPI.framework/Versions/A/SketchUpAPI"
+  used = `nm -u #{__dir__}/lib/sketchup.bundle`.split.grep(/\A_SU/)
+  exported = `nm -gU #{library}`.lines.map { |l| l.split.last }
+  missing = used - exported
+  abort "Not exported by the SketchUp SDK (only available inside SketchUp?): #{missing.join(', ')}" unless missing.empty?
+  puts "All #{used.size} SketchUp API functions are exported"
+end
+
 task default: [:download, :compile, :test]
+
+namespace :rbs do
+  rbs_bundle = lambda do |cmd|
+    Bundler.with_unbundled_env do
+      sh({ 'BUNDLE_GEMFILE' => "#{__dir__}/scripts/rbs/Gemfile" }, "bundle exec #{cmd}", chdir: __dir__)
+    end
+  end
+
+  desc 'Install the RBS tooling bundle (scripts/rbs/Gemfile)'
+  task :setup do
+    Bundler.with_unbundled_env { sh({ 'BUNDLE_GEMFILE' => "#{__dir__}/scripts/rbs/Gemfile" }, 'bundle install') }
+  end
+
+  desc 'Generate the Ruby API RBS into sig/ (reports in workspace/rbs/reports)'
+  task :generate do
+    rbs_bundle.call('ruby scripts/rbs/bin/generate')
+  end
+
+  desc 'Validate the generated RBS'
+  task validate: :generate do
+    rbs_bundle.call('rbs -I sig validate')
+  end
+
+  desc 'Compare the compiled extension with sig/ (CLASSES="Sketchup::Face ..." to filter)'
+  task coverage: :compile do
+    rbs_bundle.call("ruby scripts/rbs/bin/coverage #{ENV.fetch('CLASSES', '')}")
+  end
+
+  desc 'Run the RBS generator tests'
+  task :test do
+    rbs_bundle.call(%q(ruby -e 'Dir["scripts/rbs/test/test_*.rb"].each { |f| require File.expand_path(f) }'))
+  end
+end
+
+desc 'Generate, validate and test RBS'
+task rbs: %w[rbs:generate rbs:validate rbs:test]

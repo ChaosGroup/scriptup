@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+require 'optparse'
+require_relative '../lib/scriptup_rbs'
+
+target = ScriptupRbs.target_version
+out_dir = nil
+OptionParser.new do |o|
+  o.on('--sketchup VERSION') { |v| target = Gem::Version.new(v) }
+  o.on('--out DIR') { |v| out_dir = v }
+end.parse!
+out_dir ||= ScriptupRbs.sig_dir
+
+report = ScriptupRbs::Report.new
+registry = ScriptupRbs::YardLoader.load
+files = ScriptupRbs::Emitter.new(registry, target, report).build
+ScriptupRbs::Overrides.new(File.join(ScriptupRbs::SCRIPTS_DIR, 'overrides'), target, report).apply(files)
+
+stubs = ScriptupRbs::YardLoader.stubs_version
+ScriptupRbs.write_files(out_dir, files, "# Generated from sketchup-api-stubs #{stubs} for SketchUp #{target}. Do not edit.")
+
+registry.all.each do |object|
+  object.docstring.all.each_line do |line|
+    report.log(:version_notes, "#{object.path}: #{line.strip}") if line =~ /Prior to|Added in|Since SketchUp|before version/i
+  end
+end
+
+reports = File.join(ScriptupRbs::WORKSPACE_DIR, 'reports')
+FileUtils.mkdir_p(reports)
+report.write(:untyped, "#{reports}/untyped.txt", "# Places that fell back to untyped (SketchUp #{target})")
+report.write(:version_notes, "#{reports}/version_notes.txt", '# Prose-only version changes (candidates for since=/until= overrides)')
+report.write(:overrides, "#{reports}/overrides.txt", '# Override warnings')
+report[:version].uniq.each { |l| warn l }
+puts "Wrote #{files.size} files to #{out_dir} (untyped: #{report[:untyped].uniq.size})"

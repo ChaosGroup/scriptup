@@ -1,0 +1,12 @@
+class Sketchup::Texture
+  %a{sketchup_rbs:until=2020.0}
+  def filename: () -> Symbol
+
+  %a{sketchup_rbs:since=2020.0}
+  def width: () -> Float
+
+  %a{sketchup_rbs:remove}
+  def height: () -> untyped
+
+  def no_such_method: () -> nil
+end

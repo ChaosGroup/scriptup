@@ -1,0 +1,46 @@
+#!/usr/bin/env ruby
+# Compares the compiled extension with sig/. Usage: coverage [Class::Name ...]
+require 'rbs'
+require_relative '../lib/scriptup_rbs'
+require File.join(ScriptupRbs::ROOT, 'lib', 'sketchup')
+
+api = {}
+Dir[File.join(ScriptupRbs.sig_dir, '**', '*.rbs')].each do |path|
+  _, _, decls = RBS::Parser.parse_signature(File.read(path))
+  decls.each do |decl|
+    next unless decl.is_a?(RBS::AST::Declarations::Class) || decl.is_a?(RBS::AST::Declarations::Module)
+
+    methods = decl.members.grep(RBS::AST::Members::MethodDefinition).map do |m|
+      m.kind == :singleton ? "self.#{m.name}" : m.name.to_s
+    end
+    (api[decl.name.to_s] ||= []).concat(methods)
+  end
+end
+
+core = [Object, Kernel, BasicObject, Module]
+implemented = lambda do |mod|
+  instance = mod.instance_methods.select do |m|
+    !core.include?(mod.instance_method(m).owner) || %i[inspect to_s == hash eql? clone dup].include?(m)
+  end
+  instance << :initialize if mod.is_a?(Class) && mod.private_instance_methods.include?(:initialize) &&
+                             mod.instance_method(:initialize).owner == mod
+  instance.map(&:to_s) + mod.singleton_methods.map { |m| "self.#{m}" }
+end
+
+walk = lambda do |mod, out|
+  out << mod
+  mod.constants(false).map { |c| mod.const_get(c) }.grep(Module).each { |m| walk.call(m, out) unless out.include?(m) }
+  out
+end
+mods = (walk.call(Sketchup, []) + walk.call(Geom, []) + [Object.const_defined?(:Length) ? Object.const_get(:Length) : nil].compact).uniq
+filter = ARGV
+mods.sort_by(&:name).each do |mod|
+  next unless filter.empty? || filter.include?(mod.name)
+
+  expected = api[mod.name]
+  next puts("#{mod.name}: not in the Ruby API") unless expected
+
+  missing = expected.uniq - implemented.call(mod)
+  total = expected.uniq.size
+  puts format('%-36s %3d/%-3d %s', mod.name, total - missing.size, total, missing.empty? ? '' : "missing: #{missing.join(' ')}")
+end

@@ -1,0 +1,8 @@
+class Sketchup::Entities
+  def add_cpoint: (Geom::point3d_like point) -> Sketchup::ConstructionPoint
+  def add_edges: (Array[Geom::point3d_like] points) -> Array[Sketchup::Edge]
+               | (*Geom::point3d_like points) -> Array[Sketchup::Edge]
+  def add_face: (Array[Sketchup::Edge] | Array[Geom::point3d_like] | Sketchup::Curve entities) -> Sketchup::Face?
+              | (*Sketchup::Edge | Geom::point3d_like entities) -> Sketchup::Face?
+  def add_line: (Geom::point3d_like point1, Geom::point3d_like point2) -> Sketchup::Edge?
+end
